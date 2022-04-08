@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig-base.json",
+  "files": [],
+  "include": [
+    "./packages/runtime/src",
+    "./packages/types/src",
+    "./packages/yeux/src"
+  ],
+  "references": [
+    {
+      "path": "./packages/runtime"
+    },
+    {
+      "path": "./packages/types"
+    },
+    {
+      "path": "./packages/yeux"
+    }
+  ]
+}

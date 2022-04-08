@@ -1,0 +1,16 @@
+ls:
+  .ts: kebab-case
+  .js: kebab-case
+  .mjs: kebab-case
+  .cjs: kebab-case
+  .d.ts: kebab-case
+  .spec.ts: kebab-case
+
+ignore:
+  - coverage
+  - .eslintrc.json
+  - .git
+  - .github
+  - .vscode
+  - lib
+  - node_modules

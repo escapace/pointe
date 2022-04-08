@@ -1,0 +1,58 @@
+{
+  "name": "@yeuxjs/runtime",
+  "description": "",
+  "version": "0.0.0",
+  "author": "escapace <opensource@escapace.com>",
+  "bugs": "https://github.com/escapace/yeux/issues",
+  "devDependencies": {
+    "@types/chai": "4.3.0",
+    "@types/lodash-es": "4.17.6",
+    "@types/mocha": "9.1.0",
+    "@types/node": "17.0.23",
+    "@typescript-eslint/eslint-plugin": "5.16.0",
+    "@typescript-eslint/parser": "5.16.0",
+    "@yeuxjs/types": "workspace:*",
+    "chai": "4.3.6",
+    "esbuild": "0.14.28",
+    "eslint": "8.12.0",
+    "eslint-config-escapace": "3.12.5",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-editorconfig": "3.2.0",
+    "eslint-plugin-no-null": "1.0.2",
+    "lodash-es": "4.17.21",
+    "picocolors": "1.0.0",
+    "prettier": "2.6.1",
+    "prettier-config-escapace": "1.0.4",
+    "typescript": "4.6.3"
+  },
+  "engines": {
+    "node": ">=14.19.1"
+  },
+  "exports": {
+    ".": {
+      "require": "./lib/cjs/index.cjs"
+    }
+  },
+  "files": [
+    "lib/cjs",
+    "lib/types"
+  ],
+  "homepage": "https://github.com/escapace/yeux",
+  "license": "MPL-2.0",
+  "main": "lib/cjs/index.cjs",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/escapace/yeux.git",
+  "scripts": {
+    "build": "node ../../scripts/build.mjs",
+    "lint": "eslint 'src/**/*.ts'",
+    "publish": "node ../../scripts/publish.mjs",
+    "test": "node ../../scripts/test.mjs && c8 mocha --enable-source-maps 'lib/tests/**/*.spec.js'",
+    "typecheck": "tsc --noEmit"
+  },
+  "sideEffects": false,
+  "type": "commonjs",
+  "types": "lib/types/index.d.ts"
+}
