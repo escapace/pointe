@@ -41,7 +41,7 @@
     "build": "pnpm run -r --filter {packages} build",
     "lint": "ls-lint && pnpm run -r --filter {packages} lint",
     "prepare": "is-ci || husky install",
-    "publish": "pnpm run -r --filter {packages} publish -- --dry-run",
+    "publish": "pnpm run -r --filter {packages} publish --",
     "typecheck": "pnpm run -r --filter {packages} typecheck"
   }
 }
