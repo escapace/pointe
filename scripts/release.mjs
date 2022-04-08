@@ -38,6 +38,8 @@ async function main() {
     )
   }
 
+  console.log(`Releasing ${packageJson.name}@${packageJson.version}`)
+
   fse.writeJSON(packageJsonPath, { ...packageJson, version })
 
   await execa('pnpm', [

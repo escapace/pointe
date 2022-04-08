@@ -21,6 +21,9 @@
   "engines": {
     "node": ">=16.14.0"
   },
+  "files": [
+    "lib/types"
+  ],
   "homepage": "https://github.com/escapace/yeux",
   "license": "MPL-2.0",
   "main": "lib/cjs/index.cjs",
@@ -35,7 +38,7 @@
   "scripts": {
     "build": "rm -rf lib && tsc -b",
     "lint": "eslint 'src/**/*.ts?(x)'",
-    "publish": "node ../../scripts/publish.mjs",
+    "release": "node ../../scripts/release.mjs",
     "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,

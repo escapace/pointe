@@ -48,7 +48,7 @@
   "scripts": {
     "build": "node ../../scripts/build.mjs",
     "lint": "eslint 'src/**/*.ts'",
-    "publish": "node ../../scripts/publish.mjs",
+    "release": "node ../../scripts/release.mjs",
     "test": "node ../../scripts/test.mjs && c8 mocha --enable-source-maps 'lib/tests/**/*.spec.js'",
     "typecheck": "tsc --noEmit"
   },
