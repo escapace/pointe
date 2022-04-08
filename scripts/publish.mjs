@@ -58,12 +58,7 @@ async function main() {
       '--publish-branch',
       'trunk',
       args['--dry-run'] ? '--dry-run' : undefined
-    ].filter((value) => value !== undefined),
-    {
-      env: {
-        NPM_TOKEN: process.env.NPM_TOKEN
-      }
-    }
+    ].filter((value) => value !== undefined)
   )
 }
 
