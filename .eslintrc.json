@@ -1,8 +1,0 @@
-{
-  "parserOptions": {
-    "warnOnUnsupportedTypeScriptVersion": false,
-    "project": "./tsconfig.json",
-    "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true
-  },
-  "extends": ["escapace"]
-}

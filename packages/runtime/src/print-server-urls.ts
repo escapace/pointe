@@ -22,26 +22,28 @@ const filterNetworkInterfaces = (address: AddressInfo) =>
         !value.address.startsWith('fe80')
     )
 
-export const printServerUrls = (address: AddressInfo, info = console.log) => {
+export const printServerUrls = (address: AddressInfo, log = console.log) => {
+  console.log(`Listening on:\n`)
+
   if (includes(['127.0.0.1', '::1'], address.address)) {
-    info(`  > Local: ${toString(address)}`)
-    info(`  > Network: ${colors.dim('use `--host` to expose')}`)
+    log(`  Local: ${toString(address)}`)
+    log(`  Network: ${colors.dim('use `--host` to expose')}`)
   } else if (includes(['0.0.0.0', '::'], address.address)) {
     filterNetworkInterfaces(address)
       .map((value) => {
         const type =
           value.address.includes('127.0.0.1') || value.address.includes('::1')
-            ? 'Local:   '
-            : 'Network: '
+            ? '  Local:   '
+            : '  Network: '
 
-        return `  > ${type} ${toString({
+        return `${type} ${toString({
           ...address,
           family: value.family,
           address: value.address
         })}`
       })
-      .forEach((msg) => info(msg))
+      .forEach((msg) => log(msg))
   } else {
-    info(`  > Network: ${toString(address)}`)
+    log(`  Network: ${toString(address)}`)
   }
 }

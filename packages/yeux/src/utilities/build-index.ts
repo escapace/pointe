@@ -3,8 +3,29 @@ import { esbuildExternalPlugin } from '../plugins/external'
 import { build as esbuild } from 'esbuild'
 import path from 'path'
 import { resolve } from './resolve'
+import { step } from './log'
 
-export const buildIndex = async (contents: string, state: State) =>
+// await esbuild({
+//   stdin: {
+//     contents: INDEX_CJS_CONTENTS(state),
+//     resolveDir: path.dirname(state.ssrOutputDirectory),
+//     loader: 'js'
+//   },
+//   bundle: true,
+//   format: 'cjs',
+//   logLevel: 'error',
+//   outfile: state.ssrIndexPath,
+//   platform: 'node',
+//   plugins: [esbuildExternalPlugin()],
+//   external: ['./*', `${resolve('fastify-static', state)}`],
+//   sourcemap: true,
+//   minify: false,
+//   target: state.target
+// })
+
+export const buildIndex = async (contents: string, state: State) => {
+  step(`Index Build`)
+
   await esbuild({
     stdin: {
       contents,
@@ -17,7 +38,8 @@ export const buildIndex = async (contents: string, state: State) =>
     },
     bundle: true,
     format: 'cjs',
-    logLevel: 'error',
+    color: state.color,
+    logLevel: 'info',
     outfile: state.command === 'dev' ? state.devIndexPath : state.ssrIndexPath,
     platform: 'node',
     plugins: [esbuildExternalPlugin()],
@@ -35,3 +57,4 @@ export const buildIndex = async (contents: string, state: State) =>
     minify: false,
     target: state.target
   })
+}

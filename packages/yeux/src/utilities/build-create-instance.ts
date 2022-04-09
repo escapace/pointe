@@ -3,6 +3,7 @@ import { esbuildExternalPlugin } from '../plugins/external'
 import { build as esbuild, BuildFailure, BuildResult } from 'esbuild'
 import { mkdirp } from 'fs-extra'
 import path from 'path'
+import { step } from './log'
 
 export const buildCreateInstance = async (
   state: State,
@@ -12,7 +13,9 @@ export const buildCreateInstance = async (
 
   await mkdirp(outdir)
 
-  return await esbuild({
+  step(`Instance Build`)
+
+  await esbuild({
     bundle: true,
     entryPoints: [state.createInstancePath],
     plugins: [esbuildExternalPlugin()],
@@ -26,7 +29,7 @@ export const buildCreateInstance = async (
     platform: 'node',
     sourcemap: true,
     target: state.target,
-    logLevel: 'error',
+    logLevel: 'info',
     watch:
       state.command === 'dev'
         ? {

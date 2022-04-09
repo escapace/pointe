@@ -1,0 +1,6 @@
+{
+  "extends": ["escapace"],
+  "env": {
+    "node": true
+  }
+}

@@ -5,11 +5,12 @@ import path from 'path'
 import process from 'process'
 import type { State, ViteInlineConfig } from '../types'
 import { buildCreateInstance } from '../utilities/build-create-instance'
-import { build as esbuild } from 'esbuild'
-import { esbuildExternalPlugin } from '../plugins/external'
 import { resolve } from '../utilities/resolve'
+import { buildIndex } from '../utilities/build-index'
+import { step } from '../utilities/log'
 
 const INDEX_CJS_CONTENTS = (state: State) => `#!/usr/bin/env node
+require("source-map-support").install();
 const process = require('process')
 const { readFile } = require('fs/promises')
 
@@ -110,6 +111,7 @@ const PACKAGE_JSON = (state: State) =>
       license: state.packageJson.license,
       description: state.packageJson.description,
       dependencies: {
+        'source-map-support': state.sourceMapSupportVersion,
         ...(state.packageJson.dependencies ?? {})
       }
     },
@@ -152,9 +154,11 @@ export async function build(state: State) {
     }
   }
 
+  step(`Browser Build`)
   await fse.emptyDir(state.browserOutputDirectory)
   await state.vite.build(browserConfig)
 
+  step(`SSR Build`)
   await fse.emptyDir(state.ssrOutputDirectory)
   await state.vite.build(ssrConfig)
 
@@ -169,11 +173,14 @@ export async function build(state: State) {
     path.join(state.browserOutputDirectory, 'index.html'),
     state.ssrTemplatePath
   )
+
   const packageJSONPath = path.join(state.ssrOutputDirectory, 'package.json')
   await fse.writeJSON(packageJSONPath, PACKAGE_JSON(state), { spaces: 2 })
 
   const pnpmLockfile = path.join(state.directory, 'pnpm-lock.yaml')
   const npmLockfile = path.join(state.directory, 'package-lock.json')
+
+  step(`Dependencies`)
 
   if (await fse.pathExists(pnpmLockfile)) {
     await fse.copyFile(
@@ -203,21 +210,5 @@ export async function build(state: State) {
     })
   }
 
-  await esbuild({
-    stdin: {
-      contents: INDEX_CJS_CONTENTS(state),
-      resolveDir: path.dirname(state.ssrOutputDirectory),
-      loader: 'js'
-    },
-    bundle: true,
-    format: 'cjs',
-    logLevel: 'error',
-    outfile: state.ssrIndexPath,
-    platform: 'node',
-    plugins: [esbuildExternalPlugin()],
-    external: ['./*', `${resolve('fastify-static', state)}`],
-    sourcemap: true,
-    minify: false,
-    target: state.target
-  })
+  await buildIndex(INDEX_CJS_CONTENTS(state), state)
 }

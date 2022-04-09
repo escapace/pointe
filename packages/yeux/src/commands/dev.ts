@@ -1,11 +1,12 @@
+import { execa, ExecaChildProcess } from 'execa'
+import path from 'path'
+import process from 'process'
 import { State } from '../types'
 import { buildCreateInstance } from '../utilities/build-create-instance'
-import path from 'path'
-import { execa, ExecaChildProcess } from 'execa'
-import process from 'process'
 import { buildIndex } from '../utilities/build-index'
+import { info } from '../utilities/log'
+import { prefixChildProcess } from '../utilities/prefix-child-process'
 import { resolve } from '../utilities/resolve'
-import { stderrPrefix, stdoutPrefix } from '../utilities/prefix-stream'
 
 const INDEX_CJS_CONTENTS = (state: State) => `#!/usr/bin/env node
 require("${resolve('source-map-support', state)}").install();
@@ -126,6 +127,9 @@ export async function dev(state: State) {
 
   let server: ExecaChildProcess<string> | undefined
 
+  const { devIndexPath } = state
+  // const relativeDevIndexPath = path.relative(state.directory, devIndexPath)
+
   const exitHandler = () => {
     if (server !== undefined) {
       if (server.kill()) {
@@ -146,31 +150,27 @@ export async function dev(state: State) {
 
   const restart = () => {
     if (server !== undefined) {
-      exitHandler()
+      info(`restarting dev server`)
 
-      console.log(`${new Date().toLocaleTimeString()} Restarting`)
+      exitHandler()
     } else {
-      console.log(`${new Date().toLocaleTimeString()} Starting`)
+      info(`starting dev server`)
     }
 
-    server = execa(
-      'node',
-      [path.relative(state.directory, state.devIndexPath)],
-      {
-        detached: true,
-        buffer: false,
-        env: {
-          HOST: state.host,
-          PORT: `${state.port}`
-        },
-        // stdout: process.stdout,
-        // stderr: process.stderr,
-        cwd: state.directory
-      }
-    )
+    server = execa('node', [devIndexPath], {
+      detached: true,
+      buffer: false,
+      env: {
+        HOST: state.host,
+        PORT: `${state.port}`,
+        [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
+      },
+      // stdout: process.stdout,
+      // stderr: process.stderr,
+      cwd: state.directory
+    })
 
-    server.stdout?.pipe(stdoutPrefix()).pipe(process.stdout)
-    server.stderr?.pipe(stderrPrefix()).pipe(process.stderr)
+    prefixChildProcess(server)
   }
 
   await buildCreateInstance(state, restart)

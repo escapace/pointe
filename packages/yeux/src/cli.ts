@@ -1,7 +1,6 @@
 import 'source-map-support/register'
 import arg from 'arg'
 import { includes } from 'lodash'
-import { yeux } from './index'
 
 // Usage:
 //   $ vite [root]
@@ -74,6 +73,8 @@ void (async () => {
   }
 
   const directory = process.cwd()
+
+  const { yeux } = await import('./index')
 
   await yeux({
     command,

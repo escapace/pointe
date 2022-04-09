@@ -20,6 +20,7 @@ export interface Vite {
 export interface State {
   basedir: string
   browserOutputDirectory: string
+  color: boolean
   command: 'build' | 'dev' | 'preview'
   createInstanceCompiledPath: string
   createInstancePath: string
@@ -32,6 +33,7 @@ export interface State {
   nodeEnv: string
   packageJson: PackageManifest
   port: number
+  sourceMapSupportVersion: string
   ssrEntryCompiledPath: string
   ssrEntryPath: string
   ssrIndexPath: string

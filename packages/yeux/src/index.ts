@@ -4,6 +4,7 @@ import { find, isString } from 'lodash'
 import path from 'path'
 import { sync as resolve } from 'resolve'
 import { State, Vite, ViteConfig } from './types'
+import supportsColor from 'supports-color'
 
 const TARGET = 'node17'
 
@@ -17,6 +18,8 @@ interface Options {
 
 export const createState = async (options: Options): Promise<State> => {
   const { directory, command } = options
+
+  const basedir = path.resolve(__dirname, '../../')
 
   const port = options.port ?? 3000
   const host = options.host ?? '127.0.0.1'
@@ -60,6 +63,11 @@ export const createState = async (options: Options): Promise<State> => {
   }
 
   const packageJson = await readPackageJson(packageJSONPath)
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const sourceMapSupportVersion = (await readPackageJson(
+    path.join(basedir, 'package.json')
+  ))!.dependencies!['source-map-support']
 
   const vite = (await import(
     resolve('vite', {
@@ -115,9 +123,10 @@ export const createState = async (options: Options): Promise<State> => {
   }[command]
 
   return {
-    basedir: path.resolve(__dirname, '../../'),
+    basedir,
     browserOutputDirectory,
     command,
+    color: !(supportsColor.stdout === false),
     createInstanceCompiledPath,
     createInstancePath,
     devIndexPath,
@@ -128,6 +137,7 @@ export const createState = async (options: Options): Promise<State> => {
     host,
     nodeEnv,
     packageJson,
+    sourceMapSupportVersion,
     port,
     ssrEntryCompiledPath,
     ssrEntryPath,
