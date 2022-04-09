@@ -38,7 +38,7 @@ async function main() {
     )
   }
 
-  console.log(`Releasing ${packageJson.name}@${packageJson.version}`)
+  console.log(`Releasing ${packageJson.name}@${version}`)
 
   fse.writeJSON(packageJsonPath, { ...packageJson, version })
 
