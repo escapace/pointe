@@ -1,16 +1,18 @@
 ls:
-  .ts: kebab-case
-  .js: kebab-case
-  .mjs: kebab-case
-  .cjs: kebab-case
-  .d.ts: kebab-case
-  .spec.ts: kebab-case
+  packages/*/src:
+    .ts: kebab-case
+    .d.ts: kebab-case
+    .spec.ts: kebab-case
+  scripts:
+    .js: kebab-case
+    .mjs: kebab-case
+    .cjs: kebab-case
 
 ignore:
-  - coverage
   - .eslintrc.json
   - .git
   - .github
   - .vscode
+  - coverage
   - lib
   - node_modules

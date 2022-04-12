@@ -34,9 +34,15 @@ const run = async () => {
     state.createInstanceCompiledPath
   )}')
 
+${
+  state.apiEntryEnable
+    ? `
   const { handler: apiHandler } = await import('./${path.basename(
     state.apiEntryCompiledPath
   )}')
+`
+    : ''
+}
 
   const { instance, context } = await createInstance()
 
@@ -87,7 +93,14 @@ const run = async () => {
 
   await instance.use(server.middlewares)
 
+
+${
+  state.apiEntryEnable
+    ? `
   await apiHandler(instance, context)
+`
+    : ''
+}
 
   let ssrHandler
   let template

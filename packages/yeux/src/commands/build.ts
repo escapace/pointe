@@ -39,9 +39,16 @@ const run = async () => {
   const { handler: ssrHandler } = await import('./${path.basename(
     state.ssrEntryCompiledPath
   )}')
+
+${
+  state.apiEntryEnable
+    ? `
   const { handler: apiHandler } = await import('./${path.basename(
     state.apiEntryCompiledPath
   )}')
+`
+    : ''
+}
 
   const manifest = JSON.parse(await readFile('./${path.basename(
     state.ssrManifestPath
@@ -90,7 +97,14 @@ ${
     : ''
 }
 
+
+${
+  state.apiEntryEnable
+    ? `
   await apiHandler(instance, context)
+`
+    : ''
+}
 
   instance.get('*', async (request, reply) => {
     try {

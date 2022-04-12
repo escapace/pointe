@@ -17,7 +17,7 @@ interface Options {
   port?: number
 }
 
-export const createState = async (options: Options): Promise<State> => {
+const createState = async (options: Options): Promise<State> => {
   const { directory, command } = options
 
   const basedir = path.resolve(
@@ -95,10 +95,6 @@ export const createState = async (options: Options): Promise<State> => {
     throw new Error(`${path.relative(directory, ssrEntryPath)}: No such file.`)
   }
 
-  if (!(await fse.pathExists(apiEntryPath))) {
-    throw new Error(`${path.relative(directory, apiEntryPath)}: No such file.`)
-  }
-
   if (!(await fse.pathExists(createInstancePath))) {
     throw new Error(
       `${path.relative(directory, createInstancePath)}: No such file.`
@@ -139,6 +135,7 @@ export const createState = async (options: Options): Promise<State> => {
   return {
     apiEntryCompiledPath,
     apiEntryPath,
+    apiEntryEnable: await fse.pathExists(apiEntryPath),
     basedir,
     browserOutputDirectory,
     color: !(supportsColor.stdout === false),

@@ -6,10 +6,13 @@ import path from 'path'
 import process from 'process'
 import { cwd, external, name } from './constants.mjs'
 
+console.log(external)
+
 const options = {
   esm: {
     outdir: path.join(cwd, 'lib/esm'),
     tsconfig: name === 'yeux' ? undefined : path.join(cwd, 'tsconfig.json'),
+    splitting: name === 'yeux',
     entryPoints:
       name === 'yeux'
         ? ['lib/tsc/index.js', 'lib/tsc/cli.js']
@@ -43,6 +46,7 @@ await Promise.all(
       format,
       logLevel: 'info',
       outExtension: { '.js': `.${format === 'esm' ? 'mjs' : 'cjs'}` },
+      splitting: options.splitting,
       platform: 'node',
       sourcemap: true,
       ...options[format]
