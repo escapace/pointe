@@ -4,9 +4,7 @@ import fse from 'fs-extra'
 import { mkdir } from 'fs/promises'
 import path from 'path'
 import process from 'process'
-import { cwd, external, name } from './constants.mjs'
-
-console.log(external)
+import { cwd, external, name, version } from './constants.mjs'
 
 const options = {
   esm: {
@@ -44,6 +42,9 @@ await Promise.all(
       bundle: true,
       external,
       format,
+      define: {
+        VERSION: JSON.stringify(version)
+      },
       logLevel: 'info',
       outExtension: { '.js': `.${format === 'esm' ? 'mjs' : 'cjs'}` },
       splitting: options.splitting,
