@@ -1,26 +1,41 @@
 import { execa, ExecaChildProcess } from 'execa'
+import fse from 'fs-extra'
+import { throttle } from 'lodash-es'
 import path from 'path'
 import process from 'process'
 import { State } from '../types'
+import { buildApi } from '../utilities/build-api'
 import { buildCreateInstance } from '../utilities/build-create-instance'
 import { buildIndex } from '../utilities/build-index'
-import { info } from '../utilities/log'
+import { info, warn } from '../utilities/log'
 import { prefixChildProcess } from '../utilities/prefix-child-process'
 import { resolve } from '../utilities/resolve'
 
-const INDEX_CJS_CONTENTS = (state: State) => `#!/usr/bin/env node
-require("${resolve('source-map-support', state)}").install();
+const INDEX_CONTENTS = async (state: State) => `#!/usr/bin/env node
+import sourceMapSupport from '${await resolve(
+  'source-map-support',
+  state.basedir
+)}'
+sourceMapSupport.install()
 
-const vite = require('vite')
-const process = require('process')
-const { readFile } = require('fs/promises')
+import vite from 'vite'
+import process from 'process'
+import { readFile } from 'fs/promises'
+import { printServerUrls } from '${await resolve(
+  '@yeuxjs/runtime',
+  state.basedir
+)}'
 
 process.env.NODE_ENV = 'development'
 process.cwd("${state.directory}")
 
 const run = async () => {
-  const { createInstance } = require('./${path.basename(
+  const { createInstance } = await import('./${path.basename(
     state.createInstanceCompiledPath
+  )}')
+
+  const { handler: apiHandler } = await import('./${path.basename(
+    state.apiEntryCompiledPath
   )}')
 
   const { instance, context } = await createInstance()
@@ -51,7 +66,10 @@ const run = async () => {
       .catch(() => process.exit(1))
   )
 
-  await instance.register(require('${resolve('middie', state)}'))
+  await instance.register(await import('${await resolve(
+    'middie',
+    state.basedir
+  )}'))
 
   const server = await vite.createServer({
     root: '${state.directory}',
@@ -69,7 +87,9 @@ const run = async () => {
 
   await instance.use(server.middlewares)
 
-  let handler
+  await apiHandler(instance, context)
+
+  let ssrHandler
   let template
 
   instance.get('*', async (request, reply) => {
@@ -85,12 +105,12 @@ const run = async () => {
         state.ssrEntryPath
       )}')
 
-      handler = (await server.ssrLoadModule('${path.relative(
+      ssrHandler = (await server.ssrLoadModule('${path.relative(
         state.directory,
         state.ssrEntryPath
       )}')).handler
 
-      return await handler({
+      return await ssrHandler({
         manifest,
         reply,
         request,
@@ -114,8 +134,6 @@ const run = async () => {
     host: process.env.HOST ?? '${state.host}'
   })
 
-  const { printServerUrls } = require("${resolve('@yeuxjs/runtime', state)}")
-
   printServerUrls(instance.server.address())
 }
 
@@ -123,19 +141,27 @@ run()
 `
 
 export async function dev(state: State) {
-  await buildIndex(INDEX_CJS_CONTENTS(state), state)
+  await fse.emptyDir(state.devOutputDirectory)
+
+  await buildIndex(await INDEX_CONTENTS(state), state)
 
   let server: ExecaChildProcess<string> | undefined
 
   const { devIndexPath } = state
   // const relativeDevIndexPath = path.relative(state.directory, devIndexPath)
 
-  const exitHandler = () => {
+  const exitHandler = (signal: NodeJS.Signals = 'SIGTERM') => {
     if (server !== undefined) {
-      if (server.kill()) {
+      if (server.kill(signal)) {
         server = undefined
+      } else {
+        warn(`Unable to ${signal} process with pid '${server.pid as number}'.`)
+
+        setTimeout(() => exitHandler('SIGKILL'), 1500)
+
+        // eslint-disable-next-line no-unmodified-loop-condition, no-empty
+        while (server !== undefined) {}
       }
-      // TODO: SIGTEMR in few seconds
     }
   }
 
@@ -148,32 +174,37 @@ export async function dev(state: State) {
       })
   )
 
-  const restart = () => {
-    if (server !== undefined) {
-      info(`restarting dev server`)
+  const restart = throttle(
+    () => {
+      if (server !== undefined) {
+        info(`restarting dev server`)
 
-      exitHandler()
-    } else {
-      info(`starting dev server`)
-    }
+        exitHandler()
+      } else {
+        info(`starting dev server`)
+      }
 
-    server = execa('node', [devIndexPath], {
-      detached: true,
-      buffer: false,
-      env: {
-        HOST: state.host,
-        PORT: `${state.port}`,
-        [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
-      },
-      // stdout: process.stdout,
-      // stderr: process.stderr,
-      cwd: state.directory
-    })
+      server = execa('node', [devIndexPath], {
+        detached: true,
+        buffer: false,
+        env: {
+          HOST: state.host,
+          PORT: `${state.port}`,
+          [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
+        },
+        // stdout: process.stdout,
+        // stderr: process.stderr,
+        cwd: state.directory
+      })
 
-    prefixChildProcess(server)
-  }
+      prefixChildProcess(server)
+    },
+    1000,
+    { leading: true }
+  )
 
   await buildCreateInstance(state, restart)
+  await buildApi(state, restart)
 
   restart()
 }

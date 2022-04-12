@@ -1,6 +1,6 @@
 import type { ExecaChildProcess } from 'execa'
 import { EOL } from 'os'
-import picocolors from 'picocolors'
+import colors from 'chalk'
 import split from 'split'
 import { Transform } from 'stream'
 import process from 'process'
@@ -31,14 +31,14 @@ export const prefixChildProcess = (value: ExecaChildProcess<any>) => {
   if (value.stdout !== null) {
     value.stdout
       .pipe(split(/\r?\n/, null, { trailing: false, maxLength: 2 }))
-      .pipe(new PrefixStream(picocolors.dim(`${icon} `)))
+      .pipe(new PrefixStream(colors.dim(`${icon} `)))
       .pipe(process.stdout)
   }
 
   if (value.stderr !== null) {
     value.stderr
       .pipe(split(/\r?\n/, null, { trailing: false, maxLength: 2 }))
-      .pipe(new PrefixStream(picocolors.red(`${icon} `)))
+      .pipe(new PrefixStream(colors.red(`${icon} `)))
       .pipe(process.stderr)
   }
 }

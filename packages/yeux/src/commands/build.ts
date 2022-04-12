@@ -1,6 +1,6 @@
 import { execa } from 'execa'
 import fse from 'fs-extra'
-import { omitBy } from 'lodash'
+import { omitBy } from 'lodash-es'
 import path from 'path'
 import process from 'process'
 import type { State, ViteInlineConfig } from '../types'
@@ -8,22 +8,44 @@ import { buildCreateInstance } from '../utilities/build-create-instance'
 import { resolve } from '../utilities/resolve'
 import { buildIndex } from '../utilities/build-index'
 import { step } from '../utilities/log'
+import { buildApi } from '../utilities/build-api'
+import { pathToFileURL } from 'url'
 
-const INDEX_CJS_CONTENTS = (state: State) => `#!/usr/bin/env node
-require("source-map-support").install();
-const process = require('process')
-const { readFile } = require('fs/promises')
+const INDEX_CONTENTS = async (state: State) => `#!/usr/bin/env node
+import sourceMapSupport from 'source-map-support'
+sourceMapSupport.install()
+
+import { fileURLToPath } from 'url'
+import path from 'path'
+import process from 'process'
+import { readFile } from 'fs/promises'
+
+${
+  state.command === 'preview'
+    ? `
+import { printServerUrls } from '@yeuxjs/runtime'
+`
+    : ''
+}
 
 process.env.NODE_ENV = '${state.command === 'build' ? 'production' : 'staging'}'
-process.cwd(__dirname)
+process.cwd(path.dirname(fileURLToPath(import.meta.url)))
 
 const run = async () => {
-  const { createInstance } = require('./${path.basename(
+  const { createInstance } = await import('./${path.basename(
     state.createInstanceCompiledPath
   )}')
-  const { handler } = require('./${path.basename(state.ssrEntryCompiledPath)}')
 
-  const manifest = require('./${path.basename(state.ssrManifestPath)}')
+  const { handler: ssrHandler } = await import('./${path.basename(
+    state.ssrEntryCompiledPath
+  )}')
+  const { handler: apiHandler } = await import('./${path.basename(
+    state.apiEntryCompiledPath
+  )}')
+
+  const manifest = JSON.parse(await readFile('./${path.basename(
+    state.ssrManifestPath
+  )}'))
   const template = await readFile('./${path.basename(
     state.ssrTemplatePath
   )}', 'utf-8')
@@ -56,7 +78,10 @@ const run = async () => {
 ${
   state.command === 'preview'
     ? `
-  await instance.register(require('${resolve('fastify-static', state)}'), {
+  await instance.register(await import('${await resolve(
+    'fastify-static',
+    state.basedir
+  )}'), {
     root: '${state.browserOutputDirectory}',
     wildcard: false,
     maxAge: 60000
@@ -65,9 +90,11 @@ ${
     : ''
 }
 
+  await apiHandler(instance, context)
+
   instance.get('*', async (request, reply) => {
     try {
-      return await handler(
+      return await ssrHandler(
         {
           manifest,
           reply,
@@ -91,8 +118,6 @@ ${
 ${
   state.command === 'preview'
     ? `
-  const { printServerUrls } = require("${resolve('@yeuxjs/runtime', state)}")
-
   printServerUrls(instance.server.address())
 `
     : ''
@@ -102,7 +127,7 @@ ${
 run()
 `
 
-const PACKAGE_JSON = (state: State) =>
+const PACKAGE_JSON = async (state: State) =>
   omitBy(
     {
       name: state.packageJson.name,
@@ -111,6 +136,15 @@ const PACKAGE_JSON = (state: State) =>
       license: state.packageJson.license,
       description: state.packageJson.description,
       dependencies: {
+        '@yeuxjs/runtime':
+          state.command === 'preview'
+            ? pathToFileURL(
+                path.resolve(
+                  path.dirname(await resolve('@yeuxjs/runtime', state.basedir)),
+                  '../../'
+                )
+              )
+            : '*',
         'source-map-support': state.sourceMapSupportVersion,
         ...(state.packageJson.dependencies ?? {})
       }
@@ -143,9 +177,9 @@ export async function build(state: State) {
       terserOptions: undefined,
       rollupOptions: {
         output: {
-          entryFileNames: '[name].cjs',
-          chunkFileNames: '[name]-[hash].cjs'
-          // format: 'cjs'
+          entryFileNames: '[name].mjs',
+          chunkFileNames: '[name]-[hash].mjs',
+          format: 'esm'
         }
       },
       sourcemap: true,
@@ -163,6 +197,7 @@ export async function build(state: State) {
   await state.vite.build(ssrConfig)
 
   await buildCreateInstance(state)
+  await buildApi(state)
 
   await fse.move(
     path.join(state.browserOutputDirectory, 'ssr-manifest.json'),
@@ -175,7 +210,7 @@ export async function build(state: State) {
   )
 
   const packageJSONPath = path.join(state.ssrOutputDirectory, 'package.json')
-  await fse.writeJSON(packageJSONPath, PACKAGE_JSON(state), { spaces: 2 })
+  await fse.writeJSON(packageJSONPath, await PACKAGE_JSON(state), { spaces: 2 })
 
   const pnpmLockfile = path.join(state.directory, 'pnpm-lock.yaml')
   const npmLockfile = path.join(state.directory, 'package-lock.json')
@@ -210,5 +245,5 @@ export async function build(state: State) {
     })
   }
 
-  await buildIndex(INDEX_CJS_CONTENTS(state), state)
+  await buildIndex(await INDEX_CONTENTS(state), state)
 }

@@ -5,19 +5,19 @@ import path from 'path'
 import { step } from './log'
 import { buildOptions } from './build-options'
 
-export const buildCreateInstance = async (
+export const buildApi = async (
   state: State,
   onRebuild?: (error: BuildFailure | null, result: BuildResult | null) => void
 ) => {
-  const outdir = path.dirname(state.createInstanceCompiledPath)
+  const outdir = path.dirname(state.apiEntryCompiledPath)
 
   await mkdirp(outdir)
 
-  step(`Instance Build`)
+  step(`API Build`)
 
   await esbuild({
     ...buildOptions(state),
-    entryPoints: [state.createInstancePath],
+    entryPoints: [state.apiEntryPath],
     outdir,
     watch:
       state.command === 'dev'

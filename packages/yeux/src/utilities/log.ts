@@ -1,4 +1,4 @@
-import { color } from './color'
+import color from 'chalk'
 import { EOL } from 'os'
 
 const icon = '↬'

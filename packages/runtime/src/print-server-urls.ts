@@ -1,4 +1,4 @@
-import colors from 'picocolors'
+import colors from 'chalk'
 import { networkInterfaces } from 'os'
 import { includes, isString } from 'lodash-es'
 import { AddressInfo } from 'net'

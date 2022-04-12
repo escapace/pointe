@@ -20,7 +20,7 @@ pnpm exec syncpack format \
   --source 'packages/*/package.json' || exit 1
 
 pnpm install
-git add package.json pnpm-lock.yaml
+git add package.json pnpm-lock.yaml packages/*/package.json
 
 pnpm exec ls-lint || exit 1
 # pnpm exec lint || exit 1

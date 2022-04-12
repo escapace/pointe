@@ -5,17 +5,20 @@ export type CreateInstance<T extends object = {}> = () => Promise<{
   context: T
 }>
 
-interface HandlerOptions {
+interface SSRHandlerOptions {
   request: FastifyRequest
   reply: FastifyReply
   template: string
   manifest: Record<string, string[]>
 }
 
-export type Handler<T extends object = {}> = (
-  options: HandlerOptions,
+export type SSRHandler<T extends object = {}> = (
+  options: SSRHandlerOptions,
   context: T
-) => Promise<{
-  instance: FastifyInstance
+) => Promise<FastifyReply>
+
+export type APIHandler<T extends object = {}> = (
+  instance: FastifyInstance,
   context: T
-}>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+) => any

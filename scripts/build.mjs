@@ -7,8 +7,8 @@ import process from 'process'
 import { cwd, external, name } from './constants.mjs'
 
 const options = {
-  cjs: {
-    outdir: path.join(cwd, 'lib/cjs'),
+  esm: {
+    outdir: path.join(cwd, 'lib/esm'),
     tsconfig: name === 'yeux' ? undefined : path.join(cwd, 'tsconfig.json'),
     entryPoints:
       name === 'yeux'

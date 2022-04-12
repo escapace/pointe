@@ -1,7 +1,16 @@
-import { sync } from 'resolve'
-import { State } from '../types'
-import { memoize } from 'lodash'
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+// import { sync } from 'resolve'
+// import { memoize } from 'lodash'
+import { resolvePath } from 'mlly'
+import { pathToFileURL } from 'url'
 
-export const resolve = memoize((id: string, state: State) =>
-  sync(id, { extensions: ['.js', '.cjs'], basedir: state.basedir })
-)
+// export const resolve = memoize((id: string, state: State) =>
+//   sync(id, { extensions: ['.js', '.mjs', '.cjs'], basedir: state.basedir })
+// )
+
+export const resolve = async (id: string, basedir: string): Promise<string> =>
+  await resolvePath(id, {
+    extensions: ['.mjs', '.cjs', '.js', '.json'],
+    conditions: ['node', 'import', 'require'],
+    url: pathToFileURL(basedir)
+  })

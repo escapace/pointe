@@ -1,6 +1,8 @@
-import 'source-map-support/register'
+import sourceMapSupport from 'source-map-support'
+sourceMapSupport.install()
+
 import arg from 'arg'
-import { includes } from 'lodash'
+import { includes } from 'lodash-es'
 
 // Usage:
 //   $ vite [root]

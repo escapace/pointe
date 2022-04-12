@@ -18,6 +18,8 @@ export interface Vite {
 }
 
 export interface State {
+  apiEntryCompiledPath: string
+  apiEntryPath: string
   basedir: string
   browserOutputDirectory: string
   color: boolean
