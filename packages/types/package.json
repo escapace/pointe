@@ -4,9 +4,6 @@
   "version": "0.0.0",
   "author": "escapace <opensource@escapace.com>",
   "bugs": "https://github.com/escapace/yeux/issues",
-  "dependencies": {
-    "@yeuxjs/types": "0.0.0"
-  },
   "devDependencies": {
     "@types/node": "17.0.23",
     "@typescript-eslint/eslint-plugin": "5.19.0",
