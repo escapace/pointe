@@ -28,7 +28,7 @@ import { printServerUrls } from '@yeuxjs/runtime'
     : ''
 }
 
-process.env.NODE_ENV = '${state.command === 'build' ? 'production' : 'staging'}'
+process.env.NODE_ENV = ${JSON.stringify(state.nodeEnv)}
 process.cwd(path.dirname(fileURLToPath(import.meta.url)))
 
 const run = async () => {
@@ -169,7 +169,7 @@ const PACKAGE_JSON = async (state: State) =>
 export async function build(state: State) {
   const browserConfig: ViteInlineConfig = {
     root: state.directory,
-    mode: 'production',
+    mode: state.nodeEnv,
     build: {
       ...state.viteConfig.build,
       minify: 'esbuild',
@@ -182,7 +182,7 @@ export async function build(state: State) {
 
   const ssrConfig: ViteInlineConfig = {
     root: state.directory,
-    mode: 'production',
+    mode: state.nodeEnv,
     publicDir: false,
     build: {
       ...state.viteConfig.build,

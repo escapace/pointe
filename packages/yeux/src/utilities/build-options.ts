@@ -1,20 +1,28 @@
 import { BuildOptions } from 'esbuild'
 import { State } from '../types'
 import { esbuildExternalPlugin } from '../plugins/external'
+import { mapValues, mapKeys } from 'lodash-es'
 
-export const buildOptions = (state: State): BuildOptions => ({
-  bundle: true,
-  color: state.color,
-  define: {
-    'import.meta.env.SSR': 'true',
-    'process.env.NODE_ENV': JSON.stringify(state.nodeEnv)
-  },
-  format: 'esm',
-  logLevel: 'info',
-  minify: false,
-  outExtension: { '.js': `.mjs` },
-  platform: 'node',
-  plugins: [esbuildExternalPlugin()],
-  sourcemap: true,
-  target: state.target
-})
+export const buildOptions = (state: State): BuildOptions => {
+  const define = {
+    'import.meta.env.SSR': JSON.stringify(true),
+    ...mapValues(
+      mapKeys(state.viteConfig.env, (_, key) => `import.meta.env.${key}`),
+      (value) => JSON.stringify(value)
+    )
+  }
+
+  return {
+    bundle: true,
+    color: state.color,
+    define,
+    format: 'esm',
+    logLevel: 'info',
+    minify: false,
+    outExtension: { '.js': `.mjs` },
+    platform: 'node',
+    plugins: [esbuildExternalPlugin()],
+    sourcemap: true,
+    target: state.target
+  }
+}

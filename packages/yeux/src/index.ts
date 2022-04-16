@@ -2,10 +2,10 @@ import { safeReadPackage as readPackageJson } from '@pnpm/read-package-json'
 import fse from 'fs-extra'
 import { find, isString } from 'lodash-es'
 import path from 'path'
-import { State, Vite, ViteConfig } from './types'
 import supportsColor from 'supports-color'
-import { resolve } from './utilities/resolve'
 import { fileURLToPath } from 'url'
+import { State, Vite, ViteConfig } from './types'
+import { resolve } from './utilities/resolve'
 
 const TARGET = 'node17'
 
@@ -80,9 +80,16 @@ const createState = async (options: Options): Promise<State> => {
 
   const vite = (await import(await resolve('vite', directory))) as Vite
 
+  const nodeEnv = {
+    build: 'production',
+    preview: 'staging',
+    dev: 'development'
+  }[command]
+
   const viteConfig: ViteConfig = await vite.resolveConfig(
     { configFile: configPath, root: directory },
-    'build'
+    'build',
+    nodeEnv
   )
 
   if (!(await fse.pathExists(browserEntryPath))) {
@@ -125,14 +132,6 @@ const createState = async (options: Options): Promise<State> => {
 
   const ssrIndexPath = path.join(ssrOutputDirectory, 'index.mjs')
   const devIndexPath = path.join(devOutputDirectory, 'index.mjs')
-
-  const nodeEnv = {
-    build: 'production',
-    preview: 'staging',
-    dev: 'development'
-  }[command]
-
-  // TODO: loadEnv
 
   return {
     apiEntryCompiledPath,
