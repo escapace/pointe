@@ -1,6 +1,6 @@
 import { execa } from 'execa'
 import fse from 'fs-extra'
-import { omitBy } from 'lodash-es'
+import { omitBy, template } from 'lodash-es'
 import path from 'path'
 import process from 'process'
 import type { State, ViteInlineConfig } from '../types'
@@ -52,7 +52,7 @@ ${
 
   const manifest = JSON.parse(await readFile('./${path.basename(
     state.ssrManifestPath
-  )}'))
+  )}', 'utf-8'))
   const template = await readFile('./${path.basename(
     state.ssrTemplatePath
   )}', 'utf-8')
@@ -231,7 +231,13 @@ export async function build(state: State) {
 
   step(`Dependencies`)
 
-  if (await fse.pathExists(pnpmLockfile)) {
+  const packageManager = (await fse.pathExists(pnpmLockfile))
+    ? 'pnpm'
+    : (await fse.pathExists(npmLockfile))
+    ? 'npm'
+    : undefined
+
+  if (packageManager === 'pnpm') {
     await fse.copyFile(
       pnpmLockfile,
       path.join(state.ssrOutputDirectory, 'pnpm-lock.yaml')
@@ -246,7 +252,9 @@ export async function build(state: State) {
         cwd: state.ssrOutputDirectory
       }
     )
-  } else if (await fse.pathExists(npmLockfile)) {
+  }
+
+  if (packageManager === 'npm') {
     await fse.copyFile(
       pnpmLockfile,
       path.join(state.ssrOutputDirectory, 'package-lock.json')
@@ -260,4 +268,34 @@ export async function build(state: State) {
   }
 
   await buildIndex(await INDEX_CONTENTS(state), state)
+
+  if (state.command === 'build') {
+    step(`Dockerfile`)
+
+    const templateDockerfile = template(
+      await fse.readFile(
+        path.join(state.basedir, 'templates', 'Dockerfile.ejs'),
+        'utf-8'
+      )
+    )
+
+    const templateEntrypoint = await fse.readFile(
+      path.join(state.basedir, 'templates', 'docker-entrypoint.sh.ejs'),
+      'utf-8'
+    )
+
+    await fse.writeFile(
+      path.join(state.ssrOutputDirectory, '.dockerignore'),
+      'node_modules'
+    )
+
+    await fse.writeFile(
+      path.join(state.ssrOutputDirectory, 'Dockerfile'),
+      templateDockerfile({ packageManager })
+    )
+    await fse.writeFile(
+      path.join(state.ssrOutputDirectory, 'docker-entrypoint.sh'),
+      templateEntrypoint
+    )
+  }
 }

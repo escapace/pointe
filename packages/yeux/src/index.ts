@@ -132,6 +132,8 @@ const createState = async (options: Options): Promise<State> => {
     dev: 'development'
   }[command]
 
+  // TODO: loadEnv
+
   return {
     apiEntryCompiledPath,
     apiEntryPath,
