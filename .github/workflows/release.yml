@@ -57,9 +57,14 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: release
         if: github.repository == 'escapace/yeux' && github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
-        run: pnpm run release -- ${{ github.ref_name }}
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm run release -- ${{ github.ref_name }}
+      - name: changelog
+        if: github.repository == 'escapace/yeux' && github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          pnpm exec conventional-changelog -p angular -r 1 | gh release create ${{ github.ref_name }} --notes-file -
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: code coverage
       #   uses: codecov/codecov-action@v2.1.0
       #   with:

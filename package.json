@@ -12,6 +12,7 @@
     "@typescript-eslint/eslint-plugin": "5.20.0",
     "@typescript-eslint/parser": "5.20.0",
     "arg": "5.0.1",
+    "conventional-changelog-cli": "2.2.2",
     "esbuild": "0.14.36",
     "eslint": "8.13.0",
     "eslint-config-escapace": "3.12.5",
