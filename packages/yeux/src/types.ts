@@ -19,8 +19,10 @@ export interface Vite {
 
 export interface State {
   apiEntryCompiledPath: string
-  apiEntryPath: string
   apiEntryEnable: boolean
+  fileMask: number
+  directoryMask: number
+  apiEntryPath: string
   basedir: string
   browserOutputDirectory: string
   color: boolean
@@ -46,6 +48,7 @@ export interface State {
   target: string
   templatePath: string
   tsconfigPath: string
+  umask: number
   vite: Vite
   viteConfig: ViteConfig
 }

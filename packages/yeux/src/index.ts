@@ -133,10 +133,14 @@ const createState = async (options: Options): Promise<State> => {
   const ssrIndexPath = path.join(ssrOutputDirectory, 'index.mjs')
   const devIndexPath = path.join(devOutputDirectory, 'index.mjs')
 
+  const umask = 0o027
+  const fileMask = 0o666 & ~umask
+  const directoryMask = 0o777 & ~umask
+
   return {
     apiEntryCompiledPath,
-    apiEntryPath,
     apiEntryEnable: await fse.pathExists(apiEntryPath),
+    apiEntryPath,
     basedir,
     browserOutputDirectory,
     color: !(supportsColor.stdout === false),
@@ -146,6 +150,8 @@ const createState = async (options: Options): Promise<State> => {
     devIndexPath,
     devOutputDirectory,
     directory,
+    directoryMask,
+    fileMask,
     hmrPort: 24678,
     hmrPrefix: '/hmr',
     host,
@@ -162,6 +168,7 @@ const createState = async (options: Options): Promise<State> => {
     target: TARGET,
     templatePath,
     tsconfigPath,
+    umask,
     vite,
     viteConfig
   }
@@ -176,7 +183,7 @@ export const yeux = async (options: Options) => {
     process.env.NODE_ENV = 'production'
   }
 
-  process.umask(0o022)
+  process.umask(state.umask)
   process.chdir(state.directory)
 
   if (state.command === 'build') {

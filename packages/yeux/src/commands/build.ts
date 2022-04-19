@@ -10,6 +10,7 @@ import { buildIndex } from '../utilities/build-index'
 import { step } from '../utilities/log'
 import { buildApi } from '../utilities/build-api'
 import { pathToFileURL } from 'url'
+import { writeFile, readFile, copyFile, chmod } from 'fs/promises'
 
 const INDEX_CONTENTS = async (state: State) => `#!/usr/bin/env node
 import sourceMapSupport from 'source-map-support'
@@ -238,10 +239,12 @@ export async function build(state: State) {
     : undefined
 
   if (packageManager === 'pnpm') {
-    await fse.copyFile(
-      pnpmLockfile,
-      path.join(state.ssrOutputDirectory, 'pnpm-lock.yaml')
+    const destPnpmLockfile = path.join(
+      state.ssrOutputDirectory,
+      'pnpm-lock.yaml'
     )
+
+    await copyFile(pnpmLockfile, destPnpmLockfile)
 
     await execa(
       'pnpm',
@@ -252,19 +255,25 @@ export async function build(state: State) {
         cwd: state.ssrOutputDirectory
       }
     )
+
+    await chmod(pnpmLockfile, state.fileMask)
   }
 
   if (packageManager === 'npm') {
-    await fse.copyFile(
-      pnpmLockfile,
-      path.join(state.ssrOutputDirectory, 'package-lock.json')
+    const destNpmLockfile = path.join(
+      state.ssrOutputDirectory,
+      'package-lock.json'
     )
+
+    await copyFile(npmLockfile, destNpmLockfile)
 
     await execa('npm', ['install', '--production'], {
       stdout: process.stdout,
       stderr: process.stderr,
       cwd: state.ssrOutputDirectory
     })
+
+    await chmod(destNpmLockfile, state.fileMask)
   }
 
   await buildIndex(await INDEX_CONTENTS(state), state)
@@ -273,29 +282,33 @@ export async function build(state: State) {
     step(`Dockerfile`)
 
     const templateDockerfile = template(
-      await fse.readFile(
+      await readFile(
         path.join(state.basedir, 'templates', 'Dockerfile.ejs'),
         'utf-8'
       )
     )
 
-    const templateEntrypoint = await fse.readFile(
+    const templateEntrypoint = await readFile(
       path.join(state.basedir, 'templates', 'docker-entrypoint.sh.ejs'),
       'utf-8'
     )
 
-    await fse.writeFile(
+    await writeFile(
       path.join(state.ssrOutputDirectory, '.dockerignore'),
-      'node_modules'
+      'node_modules',
+      { mode: state.fileMask }
     )
 
-    await fse.writeFile(
+    await writeFile(
       path.join(state.ssrOutputDirectory, 'Dockerfile'),
-      templateDockerfile({ packageManager })
+      templateDockerfile({ packageManager }),
+      { mode: state.fileMask }
     )
-    await fse.writeFile(
+
+    await writeFile(
       path.join(state.ssrOutputDirectory, 'docker-entrypoint.sh'),
-      templateEntrypoint
+      templateEntrypoint,
+      { mode: state.fileMask + 0o110 }
     )
   }
 }

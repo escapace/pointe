@@ -4,9 +4,8 @@ ARG UID=1000
 ARG GID=1000
 ARG GOSU_VERSION=1.14
 ARG NODE_VERSION=17.9.0
-<% if (packageManager === 'pnpm') { %>ARG PNPM_VERSION=6.32.7<% } %>
+<% if (packageManager === 'pnpm') { %>ARG PNPM_VERSION=6.32.8<% } %>
 <% if (packageManager === 'npm') { %>ARG NPM_VERSION=8.5.3<% } %>
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN set -eux; \
   export GNUPGHOME="$(mktemp -d)"; \
@@ -59,10 +58,8 @@ RUN set -eux; \
   groupadd --gid=$GID node; \
   useradd --shell=/bin/sh --uid=$UID -g node node; \
   mkdir -p /opt/app; \
-  chmod 755 /usr/local/bin/docker-entrypoint.sh; \
   chmod 770 /opt/app; \
   chown $UID:$GID /opt/app; \
-  chown root:root /usr/local/bin/docker-entrypoint.sh; \
   <% if (packageManager === 'pnpm') { %>npm install -g pnpm@$PNPM_VERSION; \<% } %><% if (packageManager === 'npm') { %>npm install -g npm@$NPM_VERSION; \<% } %>
   gosu --version; \
   node --version; \
@@ -70,6 +67,7 @@ RUN set -eux; \
 
 WORKDIR /opt/app
 COPY --chown=$UID:$GID . /opt/app
+COPY --chown=root:root docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 <% if (packageManager === 'npm') { %>RUN /usr/local/bin/gosu "$UID:$GID" npm ci<% } %><% if (packageManager === 'pnpm') { %>RUN /usr/local/bin/gosu "$UID:$GID" pnpm install --prod --frozen-lockfile<% } %>
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

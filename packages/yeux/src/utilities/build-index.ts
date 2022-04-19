@@ -4,6 +4,7 @@ import path from 'path'
 import { step } from './log'
 import { buildOptions } from './build-options'
 import { resolve } from './resolve'
+import { chmod } from 'fs/promises'
 
 // await esbuild({
 //   stdin: {
@@ -26,6 +27,9 @@ import { resolve } from './resolve'
 export const buildIndex = async (contents: string, state: State) => {
   step(`Index Build`)
 
+  const outfile =
+    state.command === 'dev' ? state.devIndexPath : state.ssrIndexPath
+
   await esbuild({
     ...buildOptions(state),
     stdin: {
@@ -44,6 +48,8 @@ export const buildIndex = async (contents: string, state: State) => {
       `${await resolve('middie', state.basedir)}`,
       `${await resolve('source-map-support', state.basedir)}`
     ],
-    outfile: state.command === 'dev' ? state.devIndexPath : state.ssrIndexPath
+    outfile
   })
+
+  await chmod(outfile, state.fileMask + 0o110)
 }
