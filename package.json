@@ -5,15 +5,15 @@
   "author": "escapace <opensource@escapace.com>",
   "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
-    "@commitlint/cli": "16.2.3",
-    "@commitlint/config-conventional": "16.2.1",
+    "@commitlint/cli": "16.2.4",
+    "@commitlint/config-conventional": "16.2.4",
     "@ls-lint/ls-lint": "1.11.0",
-    "@types/node": "17.0.23",
-    "@typescript-eslint/eslint-plugin": "5.20.0",
-    "@typescript-eslint/parser": "5.20.0",
+    "@types/node": "17.0.31",
+    "@typescript-eslint/eslint-plugin": "5.22.0",
+    "@typescript-eslint/parser": "5.22.0",
     "arg": "5.0.1",
-    "esbuild": "0.14.36",
-    "eslint": "8.13.0",
+    "esbuild": "0.14.38",
+    "eslint": "8.14.0",
     "eslint-config-escapace": "3.12.5",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-editorconfig": "3.2.0",
@@ -23,12 +23,12 @@
     "fs-extra": "10.1.0",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
-    "lint-staged": "12.3.8",
+    "lint-staged": "12.4.1",
     "prettier": "2.6.2",
     "prettier-config-escapace": "1.0.4",
     "semver": "7.3.7",
-    "syncpack": "6.2.1",
-    "typescript": "4.6.3"
+    "syncpack": "7.2.1",
+    "typescript": "4.6.4"
   },
   "engines": {
     "node": ">=16.14.2"
@@ -38,10 +38,10 @@
   "private": true,
   "repository": "https://github.com/escapace/yeux.git",
   "scripts": {
-    "build": "pnpm run -r --filter {packages} build",
-    "lint": "ls-lint && pnpm run -r --filter {packages} lint",
+    "build": "pnpm run -r --filter './packages/*' build",
+    "lint": "ls-lint && pnpm run -r --filter './packages/*' lint",
     "prepare": "is-ci || husky install",
-    "release": "pnpm run -r --filter {packages} release --",
-    "typecheck": "pnpm run -r --filter {packages} typecheck"
+    "release": "pnpm run -r --filter './packages/*' release",
+    "typecheck": "pnpm run -r --filter './packages/*' typecheck"
   }
 }

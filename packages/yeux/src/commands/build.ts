@@ -1,6 +1,6 @@
 import { execa } from 'execa'
 import fse from 'fs-extra'
-import { omitBy, template } from 'lodash-es'
+import { omitBy } from 'lodash-es'
 import path from 'path'
 import process from 'process'
 import type { State, ViteInlineConfig } from '../types'
@@ -10,7 +10,7 @@ import { buildIndex } from '../utilities/build-index'
 import { step } from '../utilities/log'
 import { buildApi } from '../utilities/build-api'
 import { pathToFileURL } from 'url'
-import { writeFile, readFile, copyFile, chmod } from 'fs/promises'
+import { copyFile, chmod } from 'fs/promises'
 
 const INDEX_CONTENTS = async (state: State) => `#!/usr/bin/env node
 import sourceMapSupport from 'source-map-support'
@@ -87,10 +87,10 @@ ${
   state.command === 'preview'
     ? `
   await instance.register(await import('${await resolve(
-    'fastify-static',
+    '@fastify/static',
     state.basedir
   )}'), {
-    root: '${state.browserOutputDirectory}',
+    root: '${state.clientOutputDirectory}',
     wildcard: false,
     maxAge: 60000
   })
@@ -177,7 +177,7 @@ export async function build(state: State) {
       sourcemap: 'hidden',
       terserOptions: undefined,
       ssrManifest: true,
-      outDir: path.relative(state.directory, state.browserOutputDirectory)
+      outDir: path.relative(state.directory, state.clientOutputDirectory)
     }
   }
 
@@ -204,7 +204,7 @@ export async function build(state: State) {
   }
 
   step(`Browser Build`)
-  await fse.emptyDir(state.browserOutputDirectory)
+  await fse.emptyDir(state.clientOutputDirectory)
   await state.vite.build(browserConfig)
 
   step(`SSR Build`)
@@ -215,12 +215,12 @@ export async function build(state: State) {
   await buildApi(state)
 
   await fse.move(
-    path.join(state.browserOutputDirectory, 'ssr-manifest.json'),
+    path.join(state.clientOutputDirectory, 'ssr-manifest.json'),
     state.ssrManifestPath
   )
 
   await fse.move(
-    path.join(state.browserOutputDirectory, 'index.html'),
+    path.join(state.clientOutputDirectory, 'index.html'),
     state.ssrTemplatePath
   )
 
@@ -277,38 +277,4 @@ export async function build(state: State) {
   }
 
   await buildIndex(await INDEX_CONTENTS(state), state)
-
-  if (state.command === 'build') {
-    step(`Dockerfile`)
-
-    const templateDockerfile = template(
-      await readFile(
-        path.join(state.basedir, 'templates', 'Dockerfile.ejs'),
-        'utf-8'
-      )
-    )
-
-    const templateEntrypoint = await readFile(
-      path.join(state.basedir, 'templates', 'docker-entrypoint.sh.ejs'),
-      'utf-8'
-    )
-
-    await writeFile(
-      path.join(state.ssrOutputDirectory, '.dockerignore'),
-      'node_modules',
-      { mode: state.fileMask }
-    )
-
-    await writeFile(
-      path.join(state.ssrOutputDirectory, 'Dockerfile'),
-      templateDockerfile({ packageManager }),
-      { mode: state.fileMask }
-    )
-
-    await writeFile(
-      path.join(state.ssrOutputDirectory, 'docker-entrypoint.sh'),
-      templateEntrypoint,
-      { mode: state.fileMask + 0o110 }
-    )
-  }
 }

@@ -4,7 +4,6 @@
 pnpm exec syncpack set-semver-ranges \
   --prod \
   --dev \
-  --peer \
   --source 'package.json' \
   --source 'packages/*/package.json' || exit 1
 

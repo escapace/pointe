@@ -113,8 +113,8 @@ const createState = async (options: Options): Promise<State> => {
   }
 
   const outputDirectory = path.resolve(directory, viteConfig.build.outDir)
-  const browserOutputDirectory = path.join(outputDirectory, 'browser')
-  const ssrOutputDirectory = path.join(outputDirectory, 'ssr')
+  const clientOutputDirectory = path.join(outputDirectory, 'client')
+  const ssrOutputDirectory = path.join(outputDirectory, 'server')
   const devOutputDirectory = path.join(outputDirectory, 'dev')
 
   const ssrManifestPath = path.join(ssrOutputDirectory, 'manifest.json')
@@ -142,7 +142,7 @@ const createState = async (options: Options): Promise<State> => {
     apiEntryEnable: await fse.pathExists(apiEntryPath),
     apiEntryPath,
     basedir,
-    browserOutputDirectory,
+    clientOutputDirectory,
     color: !(supportsColor.stdout === false),
     command,
     createInstanceCompiledPath,
@@ -156,6 +156,7 @@ const createState = async (options: Options): Promise<State> => {
     hmrPrefix: '/hmr',
     host,
     nodeEnv,
+    outputDirectory,
     packageJson,
     port,
     sourceMapSupportVersion,

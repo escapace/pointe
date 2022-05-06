@@ -20,11 +20,9 @@ export interface Vite {
 export interface State {
   apiEntryCompiledPath: string
   apiEntryEnable: boolean
-  fileMask: number
-  directoryMask: number
   apiEntryPath: string
   basedir: string
-  browserOutputDirectory: string
+  clientOutputDirectory: string
   color: boolean
   command: 'build' | 'dev' | 'preview'
   createInstanceCompiledPath: string
@@ -32,10 +30,13 @@ export interface State {
   devIndexPath: string
   devOutputDirectory: string
   directory: string
+  directoryMask: number
+  fileMask: number
   hmrPort: number
   hmrPrefix: string
   host: string
   nodeEnv: string
+  outputDirectory: string
   packageJson: PackageManifest
   port: number
   sourceMapSupportVersion: string
