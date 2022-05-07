@@ -3,13 +3,11 @@ sourceMapSupport.install()
 
 import arg from 'arg'
 import colors from 'chalk'
-import { includes } from 'lodash-es'
+import { includes, pick, flatMap } from 'lodash-es'
 import process from 'process'
+import { ZodError } from 'zod'
 
 declare const VERSION: string
-
-// Documentation:
-//   https://esbuild.github.io/
 
 const HELP = () => `yeux/${VERSION}
 
@@ -25,8 +23,9 @@ ${colors.bold('Commands:')}
   preview          locally preview production build
 
 ${colors.bold('Options:')}
-  --host [host]           [string] specify hostname
-  --port <port>           [number] specify port
+  --host [host]           [string] specify hostname (default: "127.0.0.1")
+  --port <port>           [number] specify port (default: 3000)
+  --target                [string] specify the target node semver version (default: "node17")
   -h, --help              Display this message
   -v, --version           Display version number
 `
@@ -49,6 +48,7 @@ void (async () => {
     '--help': Boolean,
     '--host': String,
     '--port': Number,
+    '--target': String,
     '--version': Boolean,
 
     // aliases
@@ -80,10 +80,35 @@ void (async () => {
 
   const { yeux } = await import('./index')
 
-  await yeux({
-    command,
-    directory,
-    host: args['--host'],
-    port: args['--port']
-  })
+  try {
+    await yeux({
+      command,
+      directory,
+      host: args['--host'],
+      port: args['--port'],
+      target: args['--target']
+    })
+  } catch (e) {
+    if (e instanceof ZodError) {
+      help(
+        flatMap(
+          pick(e.format(), ['host', 'port', 'target']) as Record<
+            string,
+            { _errors: string[] }
+          >,
+          (value, key) =>
+            flatMap(
+              value._errors,
+              (message) => `${colors.red('Error:')} --${key} ${message}`
+            )
+        ).join('\n')
+      )
+    } else if (e instanceof Error) {
+      console.error(`${colors.red('Error:')} ${e.message}`)
+      process.exit(1)
+    } else {
+      console.error('Unknown Error')
+      process.exit(1)
+    }
+  }
 })()
