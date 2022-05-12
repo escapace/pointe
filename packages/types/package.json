@@ -6,9 +6,9 @@
   "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
     "@types/node": "17.0.31",
-    "@typescript-eslint/eslint-plugin": "5.22.0",
-    "@typescript-eslint/parser": "5.22.0",
-    "eslint": "8.14.0",
+    "@typescript-eslint/eslint-plugin": "5.23.0",
+    "@typescript-eslint/parser": "5.23.0",
+    "eslint": "8.15.0",
     "eslint-config-escapace": "3.12.5",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-editorconfig": "3.2.0",

@@ -14,18 +14,18 @@
     "@yeuxjs/types": "workspace:*",
     "arg": "5.0.1",
     "chalk": "5.0.1",
-    "esbuild": "0.14.38",
+    "esbuild": "0.14.39",
     "execa": "6.1.0",
     "fs-extra": "10.1.0",
     "lodash-es": "4.17.21",
-    "middie": "6.0.0",
+    "middie": "6.1.0",
     "mlly": "0.5.2",
     "resolve": "1.22.0",
     "semver": "7.3.7",
     "source-map-support": "0.5.21",
     "split": "1.0.1",
     "supports-color": "9.2.2",
-    "zod": "3.15.1"
+    "zod": "3.16.0"
   },
   "devDependencies": {
     "@pnpm/types": "8.0.1",
@@ -38,10 +38,10 @@
     "@types/semver": "7.3.9",
     "@types/source-map-support": "0.5.4",
     "@types/split": "1.0.1",
-    "@typescript-eslint/eslint-plugin": "5.22.0",
-    "@typescript-eslint/parser": "5.22.0",
+    "@typescript-eslint/eslint-plugin": "5.23.0",
+    "@typescript-eslint/parser": "5.23.0",
     "chai": "4.3.6",
-    "eslint": "8.14.0",
+    "eslint": "8.15.0",
     "eslint-config-escapace": "3.12.5",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-editorconfig": "3.2.0",
@@ -49,7 +49,7 @@
     "prettier": "2.6.2",
     "prettier-config-escapace": "1.0.4",
     "typescript": "4.6.4",
-    "vite": "2.9.8"
+    "vite": "2.9.9"
   },
   "engines": {
     "node": ">=16.14.0"
