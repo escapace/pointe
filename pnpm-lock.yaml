@@ -155,7 +155,7 @@ importers:
       execa: 6.1.0
       fs-extra: 10.1.0
       lodash-es: 4.17.21
-      middie: 6.1.0
+      middie: 7.1.0
       mlly: 0.5.2
       prettier: 2.6.2
       prettier-config-escapace: 1.0.4
@@ -178,7 +178,7 @@ importers:
       execa: 6.1.0
       fs-extra: 10.1.0
       lodash-es: 4.17.21
-      middie: 6.1.0
+      middie: 7.1.0
       mlly: 0.5.2
       resolve: 1.22.0
       semver: 7.3.7
@@ -2541,13 +2541,19 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /middie/6.1.0:
-    resolution: {integrity: sha512-akpWXv9QFJ3mXq26kiej7nI4EiID1zEVLq5dxRbrkESMUNNOdTFJjt7Uk9mkcR7D9oR+6km3l3Oah9uQof+Uig==}
-    engines: {node: '>=10.0.0'}
+  /middie/7.0.0:
+    resolution: {integrity: sha512-gAX1DrlTOMsDW6MskZrCJQW1j56I7VHqKFdwGSMtZuIbymye2j89R1juPLLCyEMrx0sZR9EZ+VqnWqOh9KH4PQ==}
     dependencies:
       fastify-plugin: 3.0.1
       path-to-regexp: 6.2.0
       reusify: 1.0.4
+    dev: false
+
+  /middie/7.1.0:
+    resolution: {integrity: sha512-1Fq0i+nGYlPyVv5pBbnXSdkcQ4in1d9pNv2DMwTKGztsqyAng9PN/PNl4PMhccScEWOvj+HT5QtANsA0AuYHFw==}
+    dependencies:
+      middie-deprecated: /middie/7.0.0
+      process-warning: 1.0.0
     dev: false
 
   /mime/1.6.0:
@@ -2859,7 +2865,6 @@ packages:
 
   /process-warning/1.0.0:
     resolution: {integrity: sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==}
-    dev: true
 
   /proxy-addr/2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
