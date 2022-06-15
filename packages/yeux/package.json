@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/escapace/yeux/issues",
   "dependencies": {
-    "@fastify/static": "5.0.2",
+    "@fastify/static": "6.4.0",
     "@pnpm/read-package-json": "6.0.3",
     "@yeuxjs/runtime": "workspace:*",
     "@yeuxjs/types": "workspace:*",
