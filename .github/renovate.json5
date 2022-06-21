@@ -10,6 +10,7 @@
     'group:allNonMajor'
   ],
   automerge: false,
+  stabilityDays: 7,
   packageRules: [
     {
       matchDepTypes: ['devDependencies'],
@@ -20,8 +21,16 @@
       matchDepTypes: ['dependencies'],
       rangeStrategy: 'bump',
       semanticCommitType: 'fix'
+    },
+    {
+      matchDepTypes: ['peerDependencies'],
+      rangeStrategy: 'widen',
+      semanticCommitType: 'fix'
     }
   ],
+  vulnerabilityAlerts: {
+    stabilityDays: 0
+  },
   lockFileMaintenance: {
     enabled: true
   },
@@ -29,5 +38,6 @@
   ignorePresets: [':prHourlyLimit2'],
   labels: ['dependencies'],
   node: false,
+  prCreation: 'not-pending',
   rebaseWhen: 'conflicted'
 }
