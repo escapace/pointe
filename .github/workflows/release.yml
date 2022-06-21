@@ -32,7 +32,7 @@ jobs:
       - name: install pnpm
         uses: pnpm/action-setup@v2.2.2
         with:
-          version: 7.0.0
+          version: 7.2.1
       - name: setup node
         uses: actions/setup-node@v3
         with:
