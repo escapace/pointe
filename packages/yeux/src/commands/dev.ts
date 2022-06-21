@@ -147,7 +147,7 @@ ${
     host: process.env.HOST ?? '${state.host}'
   })
 
-  printServerUrls(instance.server.address())
+  printServerUrls(instance.addresses())
 }
 
 run()

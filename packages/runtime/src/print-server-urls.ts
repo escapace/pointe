@@ -1,13 +1,20 @@
 import colors from 'chalk'
 import { networkInterfaces } from 'os'
-import { includes, isString } from 'lodash-es'
-import { AddressInfo } from 'net'
+import { includes, isString, flatMap, map, uniqBy, forEach } from 'lodash-es'
+
+interface AddressInfo {
+  address: string
+  family: 'IPv4' | 'IPv6' | 4 | 6
+  port: number
+}
 
 const toString = (address: AddressInfo) =>
   `${colors.cyan(
     new URL(
       `http://${
-        address.family === 'IPv4' ? address.address : `[${address.address}]`
+        address.family === 4 || address.family === 'IPv4'
+          ? address.address
+          : `[${address.address}]`
       }:${address.port}/`
     ).toString()
   )}`
@@ -22,28 +29,27 @@ const filterNetworkInterfaces = (address: AddressInfo) =>
         !value.address.startsWith('fe80')
     )
 
-export const printServerUrls = (address: AddressInfo, log = console.log) => {
+export const parseAddresses = (addresses: AddressInfo[]) =>
+  uniqBy(
+    flatMap(addresses, (address) => {
+      if (includes(['0.0.0.0', '::'], address.address)) {
+        return map(filterNetworkInterfaces(address), (value) => ({
+          address: value.address,
+          family: value.family,
+          port: address.port
+        }))
+      } else {
+        return [address]
+      }
+    }),
+    (value) => toString(value)
+  )
+
+export const printServerUrls = (
+  addresses: AddressInfo[],
+  log = console.log
+) => {
   console.log(`Listening on:\n`)
 
-  if (includes(['127.0.0.1', '::1'], address.address)) {
-    log(`  Local: ${toString(address)}`)
-    log(`  Network: ${colors.dim('use `--host` to expose')}`)
-  } else if (includes(['0.0.0.0', '::'], address.address)) {
-    filterNetworkInterfaces(address)
-      .map((value) => {
-        const type =
-          value.address.includes('127.0.0.1') || value.address.includes('::1')
-            ? '  Local:   '
-            : '  Network: '
-
-        return `${type} ${toString({
-          ...address,
-          family: value.family,
-          address: value.address
-        })}`
-      })
-      .forEach((msg) => log(msg))
-  } else {
-    log(`  Network: ${toString(address)}`)
-  }
+  forEach(parseAddresses(addresses), (address) => log(toString(address)))
 }

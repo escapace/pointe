@@ -133,7 +133,7 @@ ${
 ${
   state.command === 'preview'
     ? `
-  printServerUrls(instance.server.address())
+  printServerUrls(instance.addresses())
 `
     : ''
 }
