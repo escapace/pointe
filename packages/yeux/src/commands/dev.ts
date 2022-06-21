@@ -73,7 +73,7 @@ ${
   )
 
   await instance.register(await import('${await resolve(
-    'middie',
+    '@fastify/middie',
     state.basedir
   )}'))
 

@@ -127,6 +127,7 @@ importers:
 
   packages/yeux:
     specifiers:
+      '@fastify/middie': 8.0.0
       '@fastify/static': 6.4.0
       '@pnpm/read-package-json': 6.0.4
       '@pnpm/types': 8.2.0
@@ -135,7 +136,6 @@ importers:
       '@types/lodash-es': 4.17.6
       '@types/mocha': 9.1.1
       '@types/node': 17.0.31
-      '@types/resolve': 1.20.2
       '@types/semver': 7.3.10
       '@types/source-map-support': 0.5.4
       '@types/split': 1.0.1
@@ -155,11 +155,9 @@ importers:
       execa: 6.1.0
       fs-extra: 10.1.0
       lodash-es: 4.17.21
-      middie: 7.1.0
       mlly: 0.5.3
       prettier: 2.7.1
       prettier-config-escapace: 1.0.4
-      resolve: 1.22.1
       semver: 7.3.7
       source-map-support: 0.5.21
       split: 1.0.1
@@ -168,6 +166,7 @@ importers:
       vite: 2.9.12
       zod: 3.17.3
     dependencies:
+      '@fastify/middie': 8.0.0
       '@fastify/static': 6.4.0_supports-color@9.2.2
       '@pnpm/read-package-json': 6.0.4
       '@yeuxjs/runtime': link:../runtime
@@ -178,9 +177,7 @@ importers:
       execa: 6.1.0
       fs-extra: 10.1.0
       lodash-es: 4.17.21
-      middie: 7.1.0
       mlly: 0.5.3
-      resolve: 1.22.1
       semver: 7.3.7
       source-map-support: 0.5.21
       split: 1.0.1
@@ -193,7 +190,6 @@ importers:
       '@types/lodash-es': 4.17.6
       '@types/mocha': 9.1.1
       '@types/node': 17.0.31
-      '@types/resolve': 1.20.2
       '@types/semver': 7.3.10
       '@types/source-map-support': 0.5.4
       '@types/split': 1.0.1
@@ -449,6 +445,14 @@ packages:
       fast-json-stringify: 4.2.0
     dev: true
 
+  /@fastify/middie/8.0.0:
+    resolution: {integrity: sha512-SsZUzJwRV2IBhko8TNI5gGzUdUp2Xd0XCrU+pBTfsMN8LYGsksDI/Hb3qcUZ2/Kfg6ecbFEeRO4nZmHeFCDpHQ==}
+    dependencies:
+      fastify-plugin: 3.0.1
+      path-to-regexp: 6.2.1
+      reusify: 1.0.4
+    dev: false
+
   /@fastify/static/6.4.0_supports-color@9.2.2:
     resolution: {integrity: sha512-1GFNBKh4ArUpHMCwPUILurpfV3+mTvn+6r6aOQUwP8KKqWJtEAQ1blIwjE16JetmgpIYYamcBUUmojjHDfhgKA==}
     dependencies:
@@ -617,10 +621,6 @@ packages:
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
-    dev: true
-
-  /@types/resolve/1.20.2:
-    resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
     dev: true
 
   /@types/semver/7.3.10:
@@ -2583,21 +2583,6 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /middie/7.0.0:
-    resolution: {integrity: sha512-gAX1DrlTOMsDW6MskZrCJQW1j56I7VHqKFdwGSMtZuIbymye2j89R1juPLLCyEMrx0sZR9EZ+VqnWqOh9KH4PQ==}
-    dependencies:
-      fastify-plugin: 3.0.1
-      path-to-regexp: 6.2.1
-      reusify: 1.0.4
-    dev: false
-
-  /middie/7.1.0:
-    resolution: {integrity: sha512-1Fq0i+nGYlPyVv5pBbnXSdkcQ4in1d9pNv2DMwTKGztsqyAng9PN/PNl4PMhccScEWOvj+HT5QtANsA0AuYHFw==}
-    dependencies:
-      middie-deprecated: /middie/7.0.0
-      process-warning: 1.0.0
-    dev: false
-
   /mime/1.6.0:
     resolution: {integrity: sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==}
     engines: {node: '>=4'}
@@ -2832,6 +2817,7 @@ packages:
 
   /path-parse/1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
+    dev: true
 
   /path-to-regexp/6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
@@ -2931,6 +2917,7 @@ packages:
 
   /process-warning/1.0.0:
     resolution: {integrity: sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==}
+    dev: true
 
   /process-warning/2.0.0:
     resolution: {integrity: sha512-+MmoAXoUX+VTHAlwns0h+kFUWFs/3FZy+ZuchkgjyOu3oioLAo2LB5aCfKPh2+P9O18i3m43tUEv3YqttSy0Ww==}
@@ -3063,6 +3050,7 @@ packages:
       is-core-module: 2.9.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+    dev: true
 
   /restore-cursor/3.1.0:
     resolution: {integrity: sha512-l+sSefzHpj5qimhFSE5a8nufZYAM3sBSVMAPtYkmC+4EH2anSGaEMXSD0izRQbu9nfyQ9y5JrVmp7E8oZrUjvA==}
@@ -3376,6 +3364,7 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: true
 
   /syncpack/8.0.0:
     resolution: {integrity: sha512-/hiK6UXYM+ttfyonZ9WCPnm+ORTxAmzc5wlTwQfnw1nojHW19RVWCWBe5Z8G9HLbYzaBdVUCmvRCjNuqsU1YNw==}

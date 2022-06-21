@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-// import { sync } from 'resolve'
 // import { memoize } from 'lodash'
 import { resolvePath } from 'mlly'
 import { pathToFileURL } from 'url'
