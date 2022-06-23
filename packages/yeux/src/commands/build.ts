@@ -11,6 +11,14 @@ import { step } from '../utilities/log'
 import { buildApi } from '../utilities/build-api'
 import { pathToFileURL } from 'url'
 import { copyFile, chmod } from 'fs/promises'
+import { envPrefix } from '../utilities/env-prefix'
+
+// import { env } from '../utilities/env'
+// for (const [key, value] of Object.entries(${JSON.stringify(env(state, true))})) {
+//   if (typeof process.env[key] !== 'string') {
+//     process.env[key] = value
+//   }
+// }
 
 const INDEX_CONTENTS = async (state: State) => `#!/usr/bin/env node
 import sourceMapSupport from 'source-map-support'
@@ -29,33 +37,34 @@ import { printServerUrls } from '@yeuxjs/runtime'
     : ''
 }
 
-process.env.NODE_ENV = ${JSON.stringify(state.nodeEnv)}
 process.cwd(path.dirname(fileURLToPath(import.meta.url)))
+
+process.env.NODE_ENV = ${JSON.stringify(state.nodeEnv)}
 
 const run = async () => {
   const { createInstance } = await import('./${path.basename(
-    state.createInstanceCompiledPath
+    state.serverCreateInstanceCompiledPath
   )}')
 
   const { handler: ssrHandler } = await import('./${path.basename(
-    state.ssrEntryCompiledPath
+    state.serverSSREntryCompiledPath
   )}')
 
 ${
-  state.apiEntryEnable
+  state.serverAPIEntryEnable
     ? `
   const { handler: apiHandler } = await import('./${path.basename(
-    state.apiEntryCompiledPath
+    state.serverAPIEntryCompiledPath
   )}')
 `
     : ''
 }
 
   const manifest = JSON.parse(await readFile('./${path.basename(
-    state.ssrManifestPath
+    state.serverSSRManifestPath
   )}', 'utf-8'))
   const template = await readFile('./${path.basename(
-    state.ssrTemplatePath
+    state.serverSSRTemplatePath
   )}', 'utf-8')
   const { instance, context } = await createInstance()
 
@@ -100,7 +109,7 @@ ${
 
 
 ${
-  state.apiEntryEnable
+  state.serverAPIEntryEnable
     ? `
   await apiHandler(instance, context)
 `
@@ -125,9 +134,9 @@ ${
 
   await instance.listen({
     port: process.env.PORT === undefined ? ${
-      state.port
+      state.serverPort
     } : parseInt(process.env.PORT, 10),
-    host: process.env.HOST ?? '${state.host}'
+    host: process.env.HOST ?? '${state.serverHost}'
   })
 
 ${
@@ -168,9 +177,10 @@ const PACKAGE_JSON = async (state: State) =>
   )
 
 export async function build(state: State) {
-  const browserConfig: ViteInlineConfig = {
+  const clientConfig: ViteInlineConfig = {
     root: state.directory,
     mode: state.nodeEnv,
+    envPrefix: envPrefix(state, false),
     build: {
       ...state.viteConfig.build,
       minify: 'esbuild',
@@ -181,9 +191,10 @@ export async function build(state: State) {
     }
   }
 
-  const ssrConfig: ViteInlineConfig = {
+  const serverConfig: ViteInlineConfig = {
     root: state.directory,
     mode: state.nodeEnv,
+    envPrefix: envPrefix(state, true),
     publicDir: false,
     build: {
       ...state.viteConfig.build,
@@ -198,33 +209,33 @@ export async function build(state: State) {
         }
       },
       sourcemap: true,
-      ssr: path.relative(state.directory, state.ssrEntryPath),
-      outDir: path.relative(state.directory, state.ssrOutputDirectory)
+      ssr: path.relative(state.directory, state.serverSSREntryPath),
+      outDir: path.relative(state.directory, state.serverOutputDirectory)
     }
   }
 
-  step(`Browser Build`)
+  step(`Client Build`)
   await fse.emptyDir(state.clientOutputDirectory)
-  await state.vite.build(browserConfig)
+  await state.vite.build(clientConfig)
 
-  step(`SSR Build`)
-  await fse.emptyDir(state.ssrOutputDirectory)
-  await state.vite.build(ssrConfig)
+  step(`Server Build`)
+  await fse.emptyDir(state.serverOutputDirectory)
+  await state.vite.build(serverConfig)
 
   await buildCreateInstance(state)
   await buildApi(state)
 
   await fse.move(
     path.join(state.clientOutputDirectory, 'ssr-manifest.json'),
-    state.ssrManifestPath
+    state.serverSSRManifestPath
   )
 
   await fse.move(
     path.join(state.clientOutputDirectory, 'index.html'),
-    state.ssrTemplatePath
+    state.serverSSRTemplatePath
   )
 
-  const packageJSONPath = path.join(state.ssrOutputDirectory, 'package.json')
+  const packageJSONPath = path.join(state.serverOutputDirectory, 'package.json')
   await fse.writeJSON(packageJSONPath, await PACKAGE_JSON(state), { spaces: 2 })
 
   const pnpmLockfile = path.join(state.directory, 'pnpm-lock.yaml')
@@ -240,7 +251,7 @@ export async function build(state: State) {
 
   if (packageManager === 'pnpm') {
     const destPnpmLockfile = path.join(
-      state.ssrOutputDirectory,
+      state.serverOutputDirectory,
       'pnpm-lock.yaml'
     )
 
@@ -252,16 +263,16 @@ export async function build(state: State) {
       {
         stdout: process.stdout,
         stderr: process.stderr,
-        cwd: state.ssrOutputDirectory
+        cwd: state.serverOutputDirectory
       }
     )
 
-    await chmod(pnpmLockfile, state.fileMask)
+    await chmod(pnpmLockfile, state.maskFile)
   }
 
   if (packageManager === 'npm') {
     const destNpmLockfile = path.join(
-      state.ssrOutputDirectory,
+      state.serverOutputDirectory,
       'package-lock.json'
     )
 
@@ -270,10 +281,10 @@ export async function build(state: State) {
     await execa('npm', ['install', '--production'], {
       stdout: process.stdout,
       stderr: process.stderr,
-      cwd: state.ssrOutputDirectory
+      cwd: state.serverOutputDirectory
     })
 
-    await chmod(destNpmLockfile, state.fileMask)
+    await chmod(destNpmLockfile, state.maskFile)
   }
 
   await buildIndex(await INDEX_CONTENTS(state), state)

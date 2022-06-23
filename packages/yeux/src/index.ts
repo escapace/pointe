@@ -50,10 +50,13 @@ const createState = async (
 
   const templatePath = path.join(directory, 'index.html')
 
-  const ssrEntryPath = path.join(directory, 'src/entry-ssr.ts')
-  const browserEntryPath = path.join(directory, 'src/entry-browser.ts')
-  const createInstancePath = path.join(directory, 'src/create-instance.ts')
-  const apiEntryPath = path.join(directory, 'src/entry-api.ts')
+  const serverSSREntryPath = path.join(directory, 'src/entry-ssr.ts')
+  const clientEntryPath = path.join(directory, 'src/entry-browser.ts')
+  const serverCreateInstancePath = path.join(
+    directory,
+    'src/create-instance.ts'
+  )
+  const serverAPIEntryPath = path.join(directory, 'src/entry-api.ts')
 
   const configPath =
     _configPath === undefined
@@ -126,19 +129,21 @@ const createState = async (
     nodeEnv
   )
 
-  if (!(await fse.pathExists(browserEntryPath))) {
+  if (!(await fse.pathExists(clientEntryPath))) {
     throw new Error(
-      `${path.relative(directory, browserEntryPath)}: No such file.`
+      `${path.relative(directory, clientEntryPath)}: No such file.`
     )
   }
 
-  if (!(await fse.pathExists(ssrEntryPath))) {
-    throw new Error(`${path.relative(directory, ssrEntryPath)}: No such file.`)
+  if (!(await fse.pathExists(serverSSREntryPath))) {
+    throw new Error(
+      `${path.relative(directory, serverSSREntryPath)}: No such file.`
+    )
   }
 
-  if (!(await fse.pathExists(createInstancePath))) {
+  if (!(await fse.pathExists(serverCreateInstancePath))) {
     throw new Error(
-      `${path.relative(directory, createInstancePath)}: No such file.`
+      `${path.relative(directory, serverCreateInstancePath)}: No such file.`
     )
   }
 
@@ -148,58 +153,63 @@ const createState = async (
 
   const outputDirectory = path.resolve(directory, viteConfig.build.outDir)
   const clientOutputDirectory = path.join(outputDirectory, 'client')
-  const ssrOutputDirectory = path.join(outputDirectory, 'server')
-  const devOutputDirectory = path.join(outputDirectory, 'dev')
+  const serverOutputDirectory = path.join(
+    outputDirectory,
+    command === 'dev' ? 'dev' : 'server'
+  )
 
-  const ssrManifestPath = path.join(ssrOutputDirectory, 'manifest.json')
-  const ssrEntryCompiledPath = path.join(ssrOutputDirectory, 'entry-ssr.mjs')
-  const ssrTemplatePath = path.join(ssrOutputDirectory, 'index.html')
-  const createInstanceCompiledPath = path.join(
-    command === 'dev' ? devOutputDirectory : ssrOutputDirectory,
+  const serverSSRManifestPath = path.join(
+    serverOutputDirectory,
+    'manifest.json'
+  )
+  const serverSSREntryCompiledPath = path.join(
+    serverOutputDirectory,
+    'entry-ssr.mjs'
+  )
+  const serverSSRTemplatePath = path.join(serverOutputDirectory, 'index.html')
+  const serverCreateInstanceCompiledPath = path.join(
+    serverOutputDirectory,
     'create-instance.mjs'
   )
 
-  const apiEntryCompiledPath = path.join(
-    command === 'dev' ? devOutputDirectory : ssrOutputDirectory,
+  const serverAPIEntryCompiledPath = path.join(
+    serverOutputDirectory,
     'entry-api.mjs'
   )
 
-  const ssrIndexPath = path.join(ssrOutputDirectory, 'index.mjs')
-  const devIndexPath = path.join(devOutputDirectory, 'index.mjs')
+  const serverIndexPath = path.join(serverOutputDirectory, 'index.mjs')
 
   const umask = 0o027
-  const fileMask = 0o666 & ~umask
-  const directoryMask = 0o777 & ~umask
+  const maskFile = 0o666 & ~umask
+  const maskDirectory = 0o777 & ~umask
 
   return {
-    apiEntryCompiledPath,
-    apiEntryEnable: await fse.pathExists(apiEntryPath),
-    apiEntryPath,
     basedir,
     clientOutputDirectory,
     color: !(supportsColor.stdout === false),
     command,
-    createInstanceCompiledPath,
-    createInstancePath,
-    devIndexPath,
-    devOutputDirectory,
     directory,
-    directoryMask,
-    fileMask,
-    hmrPort: 24678,
-    hmrPrefix: '/hmr',
-    host,
+    maskDirectory,
+    maskFile,
     nodeEnv,
     outputDirectory,
     packageJson,
-    port,
+    serverAPIEntryCompiledPath,
+    serverAPIEntryEnable: await fse.pathExists(serverAPIEntryPath),
+    serverAPIEntryPath,
+    serverCreateInstanceCompiledPath,
+    serverCreateInstancePath,
+    serverHMRPort: 24678,
+    serverHMRPrefix: '/hmr',
+    serverHost: host,
+    serverIndexPath,
+    serverOutputDirectory,
+    serverPort: port,
+    serverSSREntryCompiledPath,
+    serverSSREntryPath,
+    serverSSRManifestPath,
+    serverSSRTemplatePath,
     sourceMapSupportVersion,
-    ssrEntryCompiledPath,
-    ssrEntryPath,
-    ssrIndexPath,
-    ssrManifestPath,
-    ssrOutputDirectory,
-    ssrTemplatePath,
     target: `node${targetVersion}`,
     templatePath,
     tsconfigPath,

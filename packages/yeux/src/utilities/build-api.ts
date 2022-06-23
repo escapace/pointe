@@ -9,8 +9,8 @@ export const buildApi = async (
   state: State,
   onRebuild?: (error: BuildFailure | null, result: BuildResult | null) => void
 ) => {
-  if (state.apiEntryEnable) {
-    const outdir = path.dirname(state.apiEntryCompiledPath)
+  if (state.serverAPIEntryEnable) {
+    const outdir = path.dirname(state.serverAPIEntryCompiledPath)
 
     await mkdirp(outdir)
 
@@ -18,7 +18,7 @@ export const buildApi = async (
 
     await esbuild({
       ...buildOptions(state),
-      entryPoints: [state.apiEntryPath],
+      entryPoints: [state.serverAPIEntryPath],
       outdir,
       watch:
         state.command === 'dev'

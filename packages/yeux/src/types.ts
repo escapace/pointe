@@ -1,51 +1,44 @@
 import type { PackageManifest } from '@pnpm/types'
 
+import * as ViteDefault from 'vite'
+
 import type {
-  build,
-  createServer,
   InlineConfig as ViteInlineConfig,
-  resolveConfig,
   ResolvedConfig as ViteConfig,
   ViteDevServer
 } from 'vite'
 
 export type { ViteConfig, ViteDevServer, ViteInlineConfig }
 
-export interface Vite {
-  build: typeof build
-  createServer: typeof createServer
-  resolveConfig: typeof resolveConfig
-}
+export type Vite = typeof ViteDefault
 
 export interface State {
-  apiEntryCompiledPath: string
-  apiEntryEnable: boolean
-  apiEntryPath: string
   basedir: string
   clientOutputDirectory: string
   color: boolean
   command: 'build' | 'dev' | 'preview'
-  createInstanceCompiledPath: string
-  createInstancePath: string
-  devIndexPath: string
-  devOutputDirectory: string
   directory: string
-  directoryMask: number
-  fileMask: number
-  hmrPort: number
-  hmrPrefix: string
-  host: string
+  maskDirectory: number
+  maskFile: number
   nodeEnv: string
   outputDirectory: string
   packageJson: PackageManifest
-  port: number
+  serverAPIEntryCompiledPath: string
+  serverAPIEntryEnable: boolean
+  serverAPIEntryPath: string
+  serverCreateInstanceCompiledPath: string
+  serverCreateInstancePath: string
+  serverHMRPort: number
+  serverHMRPrefix: string
+  serverHost: string
+  serverOutputDirectory: string
+  serverPort: number
+  serverSSREntryCompiledPath: string
+  serverSSREntryPath: string
+  serverIndexPath: string
+  serverSSRManifestPath: string
+  serverSSRTemplatePath: string
   sourceMapSupportVersion: string
-  ssrEntryCompiledPath: string
-  ssrEntryPath: string
-  ssrIndexPath: string
-  ssrManifestPath: string
-  ssrOutputDirectory: string
-  ssrTemplatePath: string
   target: string
   templatePath: string
   tsconfigPath: string

@@ -2,12 +2,13 @@ import { BuildOptions } from 'esbuild'
 import { State } from '../types'
 import { esbuildExternalPlugin } from '../plugins/external'
 import { mapValues, mapKeys } from 'lodash-es'
+import { env } from './env'
 
 export const buildOptions = (state: State): BuildOptions => {
   const define = {
     'import.meta.env.SSR': JSON.stringify(true),
     ...mapValues(
-      mapKeys(state.viteConfig.env, (_, key) => `import.meta.env.${key}`),
+      mapKeys(env(state, true), (_, key) => `import.meta.env.${key}`),
       (value) => JSON.stringify(value)
     )
   }

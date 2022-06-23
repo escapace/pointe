@@ -12,16 +12,14 @@ export const preview = async (state: State) => {
 
   const server = execa(
     'node',
-    [path.relative(state.ssrOutputDirectory, state.ssrIndexPath)],
+    [path.relative(state.serverOutputDirectory, state.serverIndexPath)],
     {
       env: {
-        HOST: state.host,
-        PORT: `${state.port}`,
+        HOST: state.serverHost,
+        PORT: `${state.serverPort}`,
         [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
       },
-      // stdout: stdoutPrefix().pipe(process.stdout),
-      // stderr: stderrPrefix().pipe(process.stderr),
-      cwd: state.ssrOutputDirectory
+      cwd: state.serverOutputDirectory
     }
   )
 

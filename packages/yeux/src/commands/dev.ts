@@ -7,6 +7,7 @@ import { State } from '../types'
 import { buildApi } from '../utilities/build-api'
 import { buildCreateInstance } from '../utilities/build-create-instance'
 import { buildIndex } from '../utilities/build-index'
+import { envPrefix } from '../utilities/env-prefix'
 import { info, warn } from '../utilities/log'
 import { prefixChildProcess } from '../utilities/prefix-child-process'
 import { resolve } from '../utilities/resolve'
@@ -31,14 +32,14 @@ process.cwd("${state.directory}")
 
 const run = async () => {
   const { createInstance } = await import('./${path.basename(
-    state.createInstanceCompiledPath
+    state.serverCreateInstanceCompiledPath
   )}')
 
 ${
-  state.apiEntryEnable
+  state.serverAPIEntryEnable
     ? `
   const { handler: apiHandler } = await import('./${path.basename(
-    state.apiEntryCompiledPath
+    state.serverAPIEntryCompiledPath
   )}')
 `
     : ''
@@ -81,21 +82,21 @@ ${
     root: '${state.directory}',
     mode: 'development',
     logLevel: 'info',
+    envPrefix: ${JSON.stringify(envPrefix(state, false))},
     server: {
       middlewareMode: true,
       hmr: {
-        clientPort: ${state.hmrPort},
-        path: '${state.hmrPrefix}',
-        port: ${state.hmrPort}
+        clientPort: ${state.serverHMRPort},
+        path: '${state.serverHMRPrefix}',
+        port: ${state.serverHMRPort}
       }
     }
   })
 
   await instance.use(server.middlewares)
 
-
 ${
-  state.apiEntryEnable
+  state.serverAPIEntryEnable
     ? `
   await apiHandler(instance, context)
 `
@@ -115,12 +116,12 @@ ${
 
       server.moduleGraph.onFileChange('${path.relative(
         state.directory,
-        state.ssrEntryPath
+        state.serverSSREntryPath
       )}')
 
       ssrHandler = (await server.ssrLoadModule('${path.relative(
         state.directory,
-        state.ssrEntryPath
+        state.serverSSREntryPath
       )}')).handler
 
       return await ssrHandler({
@@ -142,9 +143,9 @@ ${
 
   await instance.listen({
     port: process.env.PORT === undefined ? ${
-      state.port
+      state.serverPort
     } : parseInt(process.env.PORT, 10),
-    host: process.env.HOST ?? '${state.host}'
+    host: process.env.HOST ?? '${state.serverHost}'
   })
 
   printServerUrls(instance.addresses())
@@ -154,13 +155,13 @@ run()
 `
 
 export async function dev(state: State) {
-  await fse.emptyDir(state.devOutputDirectory)
+  await fse.emptyDir(state.serverOutputDirectory)
 
   await buildIndex(await INDEX_CONTENTS(state), state)
 
   let server: ExecaChildProcess<string> | undefined
 
-  const { devIndexPath } = state
+  const { serverIndexPath } = state
   // const relativeDevIndexPath = path.relative(state.directory, devIndexPath)
 
   const exitHandler = (signal: NodeJS.Signals = 'SIGTERM') => {
@@ -197,12 +198,12 @@ export async function dev(state: State) {
         info(`starting dev server`)
       }
 
-      server = execa('node', [devIndexPath], {
+      server = execa('node', [serverIndexPath], {
         detached: true,
         buffer: false,
         env: {
-          HOST: state.host,
-          PORT: `${state.port}`,
+          HOST: state.serverHost,
+          PORT: `${state.serverPort}`,
           [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
         },
         // stdout: process.stdout,

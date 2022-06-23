@@ -9,7 +9,7 @@ export const buildCreateInstance = async (
   state: State,
   onRebuild?: (error: BuildFailure | null, result: BuildResult | null) => void
 ) => {
-  const outdir = path.dirname(state.createInstanceCompiledPath)
+  const outdir = path.dirname(state.serverCreateInstanceCompiledPath)
 
   await mkdirp(outdir)
 
@@ -17,7 +17,7 @@ export const buildCreateInstance = async (
 
   await esbuild({
     ...buildOptions(state),
-    entryPoints: [state.createInstancePath],
+    entryPoints: [state.serverCreateInstancePath],
     outdir,
     watch:
       state.command === 'dev'

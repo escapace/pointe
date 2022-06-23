@@ -9,7 +9,7 @@ import { chmod } from 'fs/promises'
 // await esbuild({
 //   stdin: {
 //     contents: INDEX_CJS_CONTENTS(state),
-//     resolveDir: path.dirname(state.ssrOutputDirectory),
+//     resolveDir: path.dirname(state.serverOutputDirectory),
 //     loader: 'js'
 //   },
 //   bundle: true,
@@ -27,18 +27,13 @@ import { chmod } from 'fs/promises'
 export const buildIndex = async (contents: string, state: State) => {
   step(`Index Build`)
 
-  const outfile =
-    state.command === 'dev' ? state.devIndexPath : state.ssrIndexPath
+  const outfile = state.serverIndexPath
 
   await esbuild({
     ...buildOptions(state),
     stdin: {
       contents,
-      resolveDir: path.dirname(
-        state.command === 'dev'
-          ? state.devOutputDirectory
-          : state.ssrOutputDirectory
-      ),
+      resolveDir: path.dirname(state.serverOutputDirectory),
       loader: 'js'
     },
     external: [
@@ -51,5 +46,5 @@ export const buildIndex = async (contents: string, state: State) => {
     outfile
   })
 
-  await chmod(outfile, state.fileMask + 0o110)
+  await chmod(outfile, state.maskFile + 0o110)
 }
