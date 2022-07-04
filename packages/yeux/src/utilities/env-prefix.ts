@@ -1,21 +1,16 @@
-import { compact, uniq, filter } from 'lodash-es'
+import { compact, uniq } from 'lodash-es'
 import { State } from '../types'
 
-export const envPrefix = (state: State, server: boolean): string[] => {
-  const envPrefix =
-    state.viteConfig.envPrefix ?? (server ? 'VITE_SERVER_' : 'VITE_CLIENT_')
+export const envPrefix = (state: State): string[] => {
+  const envPrefix = state.viteConfig.envPrefix ?? 'VITE_'
 
-  return filter(
-    uniq(
-      compact([
-        ...(envPrefix === undefined
-          ? []
-          : Array.isArray(envPrefix)
-          ? envPrefix
-          : [envPrefix]),
-        server ? 'VITE_SERVER_' : 'VITE_CLIENT_'
-      ])
-    ),
-    (value) => value !== 'VITE_'
+  return uniq(
+    compact([
+      ...(envPrefix === undefined
+        ? []
+        : Array.isArray(envPrefix)
+        ? envPrefix
+        : [envPrefix])
+    ])
   )
 }

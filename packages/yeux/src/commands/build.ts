@@ -180,7 +180,7 @@ export async function build(state: State) {
   const clientConfig: ViteInlineConfig = {
     root: state.directory,
     mode: state.nodeEnv,
-    envPrefix: envPrefix(state, false),
+    envPrefix: envPrefix(state),
     build: {
       ...state.viteConfig.build,
       minify: 'esbuild',
@@ -194,7 +194,7 @@ export async function build(state: State) {
   const serverConfig: ViteInlineConfig = {
     root: state.directory,
     mode: state.nodeEnv,
-    envPrefix: envPrefix(state, true),
+    envPrefix: envPrefix(state),
     publicDir: false,
     build: {
       ...state.viteConfig.build,
@@ -257,15 +257,11 @@ export async function build(state: State) {
 
     await copyFile(pnpmLockfile, destPnpmLockfile)
 
-    await execa(
-      'pnpm',
-      ['install', '--prod', '--fix-lockfile', '--prefer-offline'],
-      {
-        stdout: process.stdout,
-        stderr: process.stderr,
-        cwd: state.serverOutputDirectory
-      }
-    )
+    await execa('pnpm', ['install', '--prod', '--prefer-offline'], {
+      stdout: process.stdout,
+      stderr: process.stderr,
+      cwd: state.serverOutputDirectory
+    })
 
     await chmod(pnpmLockfile, state.maskFile)
   }

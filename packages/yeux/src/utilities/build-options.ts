@@ -8,7 +8,7 @@ export const buildOptions = (state: State): BuildOptions => {
   const define = {
     'import.meta.env.SSR': JSON.stringify(true),
     ...mapValues(
-      mapKeys(env(state, true), (_, key) => `import.meta.env.${key}`),
+      mapKeys(env(state), (_, key) => `import.meta.env.${key}`),
       (value) => JSON.stringify(value)
     )
   }

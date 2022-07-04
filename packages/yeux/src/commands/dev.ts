@@ -82,7 +82,7 @@ ${
     root: '${state.directory}',
     mode: 'development',
     logLevel: 'info',
-    envPrefix: ${JSON.stringify(envPrefix(state, false))},
+    envPrefix: ${JSON.stringify(envPrefix(state))},
     server: {
       middlewareMode: true,
       hmr: {
