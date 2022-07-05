@@ -263,11 +263,15 @@ export async function build(state: State) {
 
     await copyFile(pnpmLockfile, destPnpmLockfile)
 
-    await execa('pnpm', ['install', '--prod', '--prefer-offline'], {
-      stdout: process.stdout,
-      stderr: process.stderr,
-      cwd: state.serverOutputDirectory
-    })
+    await execa(
+      'pnpm',
+      ['install', '--prod', '--prefer-offline', '--no-frozen-lockfile'],
+      {
+        stdout: process.stdout,
+        stderr: process.stderr,
+        cwd: state.serverOutputDirectory
+      }
+    )
 
     await chmod(pnpmLockfile, state.maskFile)
   }
