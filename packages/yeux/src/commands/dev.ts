@@ -19,7 +19,8 @@ import sourceMapSupport from '${await resolve(
 )}'
 sourceMapSupport.install()
 
-import vite from 'vite'
+import util from 'util'
+import { createServer } from 'vite'
 import process from 'process'
 import { readFile } from 'fs/promises'
 import { printServerUrls } from '${await resolve(
@@ -78,11 +79,12 @@ ${
     state.basedir
   )}'))
 
-  const server = await vite.createServer({
+  const server = await createServer({
     root: '${state.directory}',
     mode: 'development',
     logLevel: 'info',
     envPrefix: ${JSON.stringify(envPrefix(state))},
+    appType: 'custom',
     server: {
       middlewareMode: true,
       hmr: {
@@ -131,7 +133,7 @@ ${
         template
       }, context)
     } catch (e) {
-      if (isError(e)) {
+      if (util.types.isNativeError(e)) {
         server.ssrFixStacktrace(e)
 
         return await reply.status(500).send(e.stack)
