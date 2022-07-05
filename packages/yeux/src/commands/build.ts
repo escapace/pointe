@@ -196,13 +196,19 @@ export async function build(state: State) {
     mode: state.nodeEnv,
     envPrefix: envPrefix(state),
     publicDir: false,
+    // ssr: {
+    //   target: 'webworker',
+    //   noExternal: [/^((?!(node:)).)*$/]
+    // },
     build: {
       ...state.viteConfig.build,
       target: state.target,
       minify: false,
       terserOptions: undefined,
       rollupOptions: {
+        ...state.viteConfig.build.rollupOptions,
         output: {
+          ...state.viteConfig.build.rollupOptions.output,
           entryFileNames: '[name].mjs',
           chunkFileNames: '[name]-[hash].mjs',
           format: 'esm'

@@ -163,7 +163,7 @@ importers:
       split: 1.0.1
       supports-color: 9.2.2
       typescript: 4.7.4
-      vite: 2.9.12
+      vite: 3.0.0-beta.6
       zod: 3.17.3
     dependencies:
       '@fastify/middie': 8.0.0
@@ -204,7 +204,7 @@ importers:
       prettier: 2.7.1
       prettier-config-escapace: 1.0.4
       typescript: 4.7.4
-      vite: 2.9.12
+      vite: 3.0.0-beta.6
 
 packages:
 
@@ -1654,11 +1654,11 @@ packages:
       eslint-plugin-editorconfig: ^3.2.0
       eslint-plugin-no-null: ^1.0.2
     dependencies:
-      '@typescript-eslint/eslint-plugin': 5.29.0_qqmbkyiaixvppdwswpytuf2hgm
-      '@typescript-eslint/parser': 5.29.0_b5e7v2qnwxfo6hmiq56u52mz3e
-      eslint: 8.18.0
+      '@typescript-eslint/eslint-plugin': 5.29.0_ijkdxij7d25aq6ggiqwrxxd3hi
+      '@typescript-eslint/parser': 5.29.0_3o2s7p5m2t2ymupjqz5k2bvo4e
+      eslint: 8.18.0_supports-color@9.2.2
       eslint-config-prettier: 8.5.0_eslint@8.18.0
-      eslint-plugin-editorconfig: 3.2.0_treee22277sh3yq6pnqeflwlmi
+      eslint-plugin-editorconfig: 3.2.0_4qfoy4h64mhucrpt34ctmfgde4
       eslint-plugin-no-null: 1.0.2_eslint@8.18.0
     dev: true
 
@@ -1668,7 +1668,7 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
     dependencies:
-      eslint: 8.18.0
+      eslint: 8.18.0_supports-color@9.2.2
     dev: true
 
   /eslint-plugin-editorconfig/3.2.0_4qfoy4h64mhucrpt34ctmfgde4:
@@ -1703,7 +1703,7 @@ packages:
     peerDependencies:
       eslint: '>=3.0.0'
     dependencies:
-      eslint: 8.18.0
+      eslint: 8.18.0_supports-color@9.2.2
     dev: true
 
   /eslint-scope/5.1.1:
@@ -1728,7 +1728,7 @@ packages:
     peerDependencies:
       eslint: '>=5'
     dependencies:
-      eslint: 8.18.0
+      eslint: 8.18.0_supports-color@9.2.2
       eslint-visitor-keys: 2.1.0
     dev: true
 
@@ -3537,20 +3537,23 @@ packages:
       spdx-correct: 3.1.1
       spdx-expression-parse: 3.0.1
 
-  /vite/2.9.12:
-    resolution: {integrity: sha512-suxC36dQo9Rq1qMB2qiRorNJtJAdxguu5TMvBHOc/F370KvqAe9t48vYp+/TbPKRNrMh/J55tOUmkuIqstZaew==}
-    engines: {node: '>=12.2.0'}
+  /vite/3.0.0-beta.6:
+    resolution: {integrity: sha512-jAxxCGXs6oIO3dFh7gwDEP9RqFzYY+ULDWawS1dd3HfM4FCr8rkOnLljDoBBIDdTNM8M7pDzdoYSmpPEOJqyZQ==}
+    engines: {node: '>=14.18.0'}
     hasBin: true
     peerDependencies:
       less: '*'
       sass: '*'
       stylus: '*'
+      terser: ^5.4.0
     peerDependenciesMeta:
       less:
         optional: true
       sass:
         optional: true
       stylus:
+        optional: true
+      terser:
         optional: true
     dependencies:
       esbuild: 0.14.47
