@@ -17,6 +17,7 @@ export const buildOptions = (state: State): BuildOptions => {
     bundle: true,
     color: state.color,
     define,
+    treeShaking: true,
     format: 'esm',
     logLevel: 'info',
     minify: false,

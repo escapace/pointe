@@ -5,7 +5,7 @@ import path from 'path'
 import { step } from './log'
 import { buildOptions } from './build-options'
 
-export const buildCreateInstance = async (
+export const buildEntries = async (
   state: State,
   onRebuild?: (error: BuildFailure | null, result: BuildResult | null) => void
 ) => {
@@ -13,11 +13,13 @@ export const buildCreateInstance = async (
 
   await mkdirp(outdir)
 
-  step(`Instance Build`)
+  step(state.serverAPIEntryEnable ? `API & Instance Build` : `Instance Build`)
 
   await esbuild({
     ...buildOptions(state),
-    entryPoints: [state.serverCreateInstancePath],
+    entryPoints: state.serverAPIEntryEnable
+      ? [state.serverAPIEntryPath, state.serverCreateInstancePath]
+      : [state.serverCreateInstancePath],
     outdir,
     watch:
       state.command === 'dev'

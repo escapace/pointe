@@ -4,8 +4,7 @@ import { throttle } from 'lodash-es'
 import path from 'path'
 import process from 'process'
 import { State } from '../types'
-import { buildApi } from '../utilities/build-api'
-import { buildCreateInstance } from '../utilities/build-create-instance'
+import { buildEntries } from '../utilities/build-entries'
 import { buildIndex } from '../utilities/build-index'
 import { envPrefix } from '../utilities/env-prefix'
 import { info, warn } from '../utilities/log'
@@ -219,8 +218,7 @@ export async function dev(state: State) {
     { leading: true }
   )
 
-  await buildCreateInstance(state, restart)
-  await buildApi(state, restart)
+  await buildEntries(state, restart)
 
   restart()
 }

@@ -4,11 +4,10 @@ import { omitBy } from 'lodash-es'
 import path from 'path'
 import process from 'process'
 import type { State, ViteInlineConfig } from '../types'
-import { buildCreateInstance } from '../utilities/build-create-instance'
+import { buildEntries } from '../utilities/build-entries'
 import { resolve } from '../utilities/resolve'
 import { buildIndex } from '../utilities/build-index'
 import { step } from '../utilities/log'
-import { buildApi } from '../utilities/build-api'
 import { pathToFileURL } from 'url'
 import { copyFile, chmod } from 'fs/promises'
 import { envPrefix } from '../utilities/env-prefix'
@@ -228,8 +227,7 @@ export async function build(state: State) {
   await fse.emptyDir(state.serverOutputDirectory)
   await state.vite.build(serverConfig)
 
-  await buildCreateInstance(state)
-  await buildApi(state)
+  await buildEntries(state)
 
   await fse.move(
     path.join(state.clientOutputDirectory, 'ssr-manifest.json'),

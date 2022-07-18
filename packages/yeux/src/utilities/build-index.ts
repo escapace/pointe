@@ -6,24 +6,6 @@ import { buildOptions } from './build-options'
 import { resolve } from './resolve'
 import { chmod } from 'fs/promises'
 
-// await esbuild({
-//   stdin: {
-//     contents: INDEX_CJS_CONTENTS(state),
-//     resolveDir: path.dirname(state.serverOutputDirectory),
-//     loader: 'js'
-//   },
-//   bundle: true,
-//   format: 'cjs',
-//   logLevel: 'error',
-//   outfile: state.ssrIndexPath,
-//   platform: 'node',
-//   plugins: [esbuildExternalPlugin()],
-//   external: ['./*', `${resolve('fastify-static', state)}`],
-//   sourcemap: true,
-//   minify: false,
-//   target: state.target
-// })
-
 export const buildIndex = async (contents: string, state: State) => {
   step(`Index Build`)
 
