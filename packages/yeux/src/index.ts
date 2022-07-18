@@ -222,11 +222,7 @@ const createState = async (
 export const yeux = async (options: z.input<typeof Options>) => {
   const state = await createState(options)
 
-  if (state.command === 'dev') {
-    process.env.NODE_ENV = 'development'
-  } else {
-    process.env.NODE_ENV = 'production'
-  }
+  process.env.NODE_ENV = state.nodeEnv
 
   process.umask(state.umask)
   process.chdir(state.directory)

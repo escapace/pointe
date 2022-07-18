@@ -5,7 +5,8 @@ pnpm exec syncpack set-semver-ranges \
   --prod \
   --dev \
   --source 'package.json' \
-  --source 'packages/*/package.json' || exit 1
+  --source 'packages/*/package.json' \
+  --filter '^(?!@yeuxjs).*$'  || exit 1
 
 pnpm exec syncpack fix-mismatches \
   --dev \

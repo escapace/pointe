@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "lib/tsc",
+    "composite": true,
     "declarationDir": "lib/types",
-    "composite": true
+    "outDir": "lib/tsc",
+    "rootDir": "src"
   },
   "include": ["src"]
 }
