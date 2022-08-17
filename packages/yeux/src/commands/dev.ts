@@ -27,7 +27,6 @@ import { printServerUrls } from '${await resolve(
   state.basedir
 )}'
 
-process.env.NODE_ENV = 'development'
 process.cwd("${state.directory}")
 
 const run = async () => {
@@ -156,6 +155,7 @@ run()
 `
 
 export async function dev(state: State) {
+  await fse.emptyDir(state.clientOutputDirectory)
   await fse.emptyDir(state.serverOutputDirectory)
 
   await buildIndex(await INDEX_CONTENTS(state), state)
@@ -205,6 +205,7 @@ export async function dev(state: State) {
         env: {
           HOST: state.serverHost,
           PORT: `${state.serverPort}`,
+          NODE_ENV: `${state.nodeEnv}`,
           [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
         },
         // stdout: process.stdout,

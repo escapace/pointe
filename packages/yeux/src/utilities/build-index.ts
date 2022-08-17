@@ -21,7 +21,6 @@ export const buildIndex = async (contents: string, state: State) => {
     external: [
       './*',
       `${await resolve('@yeuxjs/runtime', state.basedir)}`,
-      `${await resolve('@fastify/static', state.basedir)}`,
       `${await resolve('@fastify/middie', state.basedir)}`,
       `${await resolve('source-map-support', state.basedir)}`
     ],

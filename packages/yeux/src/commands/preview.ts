@@ -17,6 +17,7 @@ export const preview = async (state: State) => {
       env: {
         HOST: state.serverHost,
         PORT: `${state.serverPort}`,
+        NODE_ENV: `${state.nodeEnv}`,
         [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
       },
       cwd: state.serverOutputDirectory

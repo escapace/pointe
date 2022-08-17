@@ -153,10 +153,7 @@ const createState = async (
 
   const outputDirectory = path.resolve(directory, viteConfig.build.outDir)
   const clientOutputDirectory = path.join(outputDirectory, 'client')
-  const serverOutputDirectory = path.join(
-    outputDirectory,
-    command === 'dev' ? 'dev' : 'server'
-  )
+  const serverOutputDirectory = path.join(outputDirectory, 'server')
 
   const serverSSRManifestPath = path.join(
     serverOutputDirectory,

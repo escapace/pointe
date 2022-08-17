@@ -19,7 +19,7 @@ import { envPrefix } from '../utilities/env-prefix'
 //   }
 // }
 
-const INDEX_CONTENTS = async (state: State) => `#!/usr/bin/env node
+const INDEX_CONTENTS = (state: State) => `#!/usr/bin/env node
 import sourceMapSupport from 'source-map-support'
 sourceMapSupport.install()
 
@@ -37,8 +37,6 @@ import { printServerUrls } from '@yeuxjs/runtime'
 }
 
 process.cwd(path.dirname(fileURLToPath(import.meta.url)))
-
-process.env.NODE_ENV = ${JSON.stringify(state.nodeEnv)}
 
 const run = async () => {
   const { createInstance } = await import('./${path.basename(
@@ -90,22 +88,6 @@ ${
       .then(() => process.exit(0))
       .catch(() => process.exit(1))
   )
-
-${
-  state.command === 'preview'
-    ? `
-  await instance.register(await import('${await resolve(
-    '@fastify/static',
-    state.basedir
-  )}'), {
-    root: '${state.clientOutputDirectory}',
-    wildcard: false,
-    maxAge: 60000
-  })
-`
-    : ''
-}
-
 
 ${
   state.serverAPIEntryEnable
@@ -291,5 +273,5 @@ export async function build(state: State) {
     await chmod(destNpmLockfile, state.maskFile)
   }
 
-  await buildIndex(await INDEX_CONTENTS(state), state)
+  await buildIndex(INDEX_CONTENTS(state), state)
 }
