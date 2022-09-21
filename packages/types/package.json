@@ -6,9 +6,9 @@
   "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
     "@types/node": "18.7.6",
-    "@typescript-eslint/eslint-plugin": "5.33.1",
-    "@typescript-eslint/parser": "5.33.1",
-    "eslint": "8.22.0",
+    "@typescript-eslint/eslint-plugin": "5.37.0",
+    "@typescript-eslint/parser": "5.37.0",
+    "eslint": "8.23.1",
     "eslint-config-escapace": "3.14.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-editorconfig": "4.0.2",
@@ -16,7 +16,7 @@
     "fastify": ">=4.0.3",
     "prettier": "2.7.1",
     "prettier-config-escapace": "1.0.4",
-    "typescript": "4.7.4"
+    "typescript": "4.8.3"
   },
   "engines": {
     "node": ">=16.14.0"

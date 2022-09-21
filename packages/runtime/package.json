@@ -5,7 +5,7 @@
   "author": "escapace <opensource@escapace.com>",
   "bugs": "https://github.com/escapace/yeux/issues",
   "dependencies": {
-    "c8": "7.11.3",
+    "c8": "7.12.0",
     "chalk": "5.0.1",
     "lodash-es": "4.17.21"
   },
@@ -14,12 +14,12 @@
     "@types/lodash-es": "4.17.6",
     "@types/mocha": "9.1.1",
     "@types/node": "18.7.6",
-    "@typescript-eslint/eslint-plugin": "5.33.1",
-    "@typescript-eslint/parser": "5.33.1",
+    "@typescript-eslint/eslint-plugin": "5.37.0",
+    "@typescript-eslint/parser": "5.37.0",
     "@yeuxjs/types": "workspace:*",
     "chai": "4.3.6",
-    "esbuild": "0.15.4",
-    "eslint": "8.22.0",
+    "esbuild": "0.15.7",
+    "eslint": "8.23.1",
     "eslint-config-escapace": "3.14.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-editorconfig": "4.0.2",
@@ -27,7 +27,7 @@
     "mocha": "10.0.0",
     "prettier": "2.7.1",
     "prettier-config-escapace": "1.0.4",
-    "typescript": "4.7.4"
+    "typescript": "4.8.3"
   },
   "engines": {
     "node": ">=14.19.1"

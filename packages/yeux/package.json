@@ -9,21 +9,21 @@
   "bugs": "https://github.com/escapace/yeux/issues",
   "dependencies": {
     "@fastify/middie": "8.0.0",
-    "@pnpm/read-package-json": "6.0.7",
+    "@pnpm/read-package-json": "6.0.8",
     "@yeuxjs/runtime": "workspace:*",
     "@yeuxjs/types": "workspace:*",
     "arg": "5.0.2",
     "chalk": "5.0.1",
-    "esbuild": "0.15.4",
+    "esbuild": "0.15.7",
     "execa": "6.1.0",
     "fs-extra": "10.1.0",
     "lodash-es": "4.17.21",
-    "mlly": "0.5.12",
+    "mlly": "0.5.14",
     "semver": "7.3.7",
     "source-map-support": "0.5.21",
     "split": "1.0.1",
-    "supports-color": "9.2.2",
-    "zod": "3.18.0"
+    "supports-color": "9.2.3",
+    "zod": "3.19.1"
   },
   "devDependencies": {
     "@pnpm/types": "8.5.0",
@@ -33,20 +33,20 @@
     "@types/mocha": "9.1.1",
     "@types/node": "18.7.6",
     "@types/semver": "7.3.12",
-    "@types/source-map-support": "0.5.4",
+    "@types/source-map-support": "0.5.6",
     "@types/split": "1.0.1",
-    "@typescript-eslint/eslint-plugin": "5.33.1",
-    "@typescript-eslint/parser": "5.33.1",
+    "@typescript-eslint/eslint-plugin": "5.37.0",
+    "@typescript-eslint/parser": "5.37.0",
     "chai": "4.3.6",
-    "eslint": "8.22.0",
+    "eslint": "8.23.1",
     "eslint-config-escapace": "3.14.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-editorconfig": "4.0.2",
     "eslint-plugin-no-null": "1.0.2",
     "prettier": "2.7.1",
     "prettier-config-escapace": "1.0.4",
-    "typescript": "4.7.4",
-    "vite": "3.0.8"
+    "typescript": "4.8.3",
+    "vite": "3.1.0"
   },
   "engines": {
     "node": ">=16.14.0"
