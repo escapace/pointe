@@ -136,7 +136,7 @@ importers:
   packages/yeux:
     specifiers:
       '@fastify/middie': 8.0.0
-      '@pnpm/read-package-json': 6.0.8
+      '@pnpm/read-package-json': 7.0.2
       '@pnpm/types': 8.5.0
       '@types/chai': 4.3.3
       '@types/fs-extra': 9.0.13
@@ -174,7 +174,7 @@ importers:
       zod: 3.19.1
     dependencies:
       '@fastify/middie': 8.0.0
-      '@pnpm/read-package-json': 6.0.8
+      '@pnpm/read-package-json': 7.0.2
       '@yeuxjs/runtime': link:../runtime
       '@yeuxjs/types': link:../types
       arg: 5.0.2
@@ -575,19 +575,19 @@ packages:
     engines: {node: '>=14.19'}
     dev: false
 
-  /@pnpm/error/3.0.1:
-    resolution: {integrity: sha512-hMlbWbFcfcfolNfSjKjpeaZFow71kNg438LZ8rAd01swiVIYRUf/sRv8gGySru6AijYfz5UqslpIJRDbYBkgQA==}
-    engines: {node: '>=14.19'}
+  /@pnpm/error/4.0.0:
+    resolution: {integrity: sha512-NI4DFCMF6xb1SA0bZiiV5KrMCaJM2QmPJFC6p78FXujn7FpiRSWhT9r032wpuQumsl7DEmN4s3wl/P8TA+bL8w==}
+    engines: {node: '>=14.6'}
     dependencies:
       '@pnpm/constants': 6.1.0
     dev: false
 
-  /@pnpm/read-package-json/6.0.8:
-    resolution: {integrity: sha512-UhtRjLVAkGe1oAbS0crP/PK+0xUxMvOMOr3ia56EyxgdT4V0I95vMv+CIhuNUKlnjqQCHYbBEcOpbZAO3j/cRw==}
+  /@pnpm/read-package-json/7.0.2:
+    resolution: {integrity: sha512-ZmCKb9HVzGDn+gRDLKQ5jDJxOujsLhuxJRngafnBwS8azAVuthA2lnG/ylwK5aMIXTqFfupSzmJ0lNHA+u6fxw==}
     engines: {node: '>=14.6'}
     dependencies:
-      '@pnpm/error': 3.0.1
-      '@pnpm/types': 8.5.0
+      '@pnpm/error': 4.0.0
+      '@pnpm/types': 8.9.0
       load-json-file: 6.2.0
       normalize-package-data: 4.0.1
     dev: false
@@ -595,6 +595,12 @@ packages:
   /@pnpm/types/8.5.0:
     resolution: {integrity: sha512-PSKnhkwgiZtp9dcWZR9mPz2W9UopmADr9o8FTqazo5kjUSh2xQmDUSJOJ/ZWcfNziO64Ix/VbcxKIZeplhog1Q==}
     engines: {node: '>=14.6'}
+    dev: true
+
+  /@pnpm/types/8.9.0:
+    resolution: {integrity: sha512-3MYHYm8epnciApn6w5Fzx6sepawmsNU7l6lvIq+ER22/DPSrr83YMhU/EQWnf4lORn2YyiXFj0FJSyJzEtIGmw==}
+    engines: {node: '>=14.6'}
+    dev: false
 
   /@tsconfig/node10/1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
@@ -3013,7 +3019,7 @@ packages:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.11.0
-      semver: 7.3.7
+      semver: 7.3.8
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -3023,7 +3029,7 @@ packages:
     dependencies:
       hosted-git-info: 5.1.0
       is-core-module: 2.11.0
-      semver: 7.3.7
+      semver: 7.3.8
       validate-npm-package-license: 3.0.4
     dev: false
 
@@ -3513,7 +3519,6 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
-    dev: true
 
   /serialize-javascript/6.0.0:
     resolution: {integrity: sha512-Qr3TosvguFt8ePWqsvRfrKyQXIiW+nGbYpy8XK24NQHE83caxWt+mIymTT19DGFbNWNLfEwsrkSmN64lVWB9ag==}
