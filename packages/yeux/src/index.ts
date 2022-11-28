@@ -1,4 +1,4 @@
-import { safeReadPackage as readPackageJson } from '@pnpm/read-package-json'
+import { safeReadPackageJson as readPackageJson } from '@pnpm/read-package-json'
 import fse from 'fs-extra'
 import { find, isString } from 'lodash-es'
 import path from 'path'
