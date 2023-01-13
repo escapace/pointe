@@ -85,6 +85,7 @@ ${
     appType: 'custom',
     server: {
       middlewareMode: true,
+      strictPort: true,
       hmr: {
         clientPort: ${state.serverHMRPort},
         path: '${state.serverHMRPrefix}',
