@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": false,
     "isolatedModules": true,
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom", "dom.iterable"],
     "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -26,7 +26,6 @@
     "typeRoots": ["node_modules/@types"],
     "useDefineForClassFields": true,
     "paths": {
-      "@yeuxjs/runtime": ["./packages/runtime/src"],
       "@yeuxjs/types": ["./packages/types/src"],
       "yeux": ["./packages/yeux/src"]
     }
