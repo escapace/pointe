@@ -23,11 +23,7 @@ const Options = z
       .number()
       .int()
       .default(3000)
-      .refine((value) => value > 0),
-    target: z
-      .string()
-      .refine((value) => semver.valid(value))
-      .optional()
+      .refine((value) => value > 0)
   })
   .strict()
 
@@ -38,7 +34,6 @@ const createState = async (
     directory,
     host,
     port,
-    target: _target,
     command,
     configPath: _configPath
   } = await Options.parseAsync(options)
@@ -93,13 +88,11 @@ const createState = async (
 
   const nodeMinVersion = semver.minVersion(NODE_SEMVER)?.version as string
 
-  const targetVersion =
-    _target ??
-    (semver.minVersion(
-      isString(packageJson.engines?.node)
-        ? semver.validRange(packageJson.engines?.node) ?? NODE_SEMVER
-        : NODE_SEMVER
-    )?.version as string)
+  const targetVersion = semver.minVersion(
+    isString(packageJson.engines?.node)
+      ? semver.validRange(packageJson.engines?.node) ?? NODE_SEMVER
+      : NODE_SEMVER
+  )?.version as string
 
   if (!semver.satisfies(targetVersion, NODE_SEMVER)) {
     throw new Error(`Minumum target version is ${nodeMinVersion}.`)
