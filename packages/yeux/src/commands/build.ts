@@ -53,6 +53,23 @@ export const serverConfig = (state: State): ViteInlineConfig => ({
   }
 })
 
+export const copyManifestTemplate = async (state: State) => {
+  const manifestPath = path.join(
+    state.clientOutputDirectory,
+    'ssr-manifest.json'
+  )
+
+  if (await fse.pathExists(manifestPath)) {
+    await fse.move(manifestPath, state.serverManifestPath, { overwrite: true })
+  }
+
+  const templatePath = path.join(state.clientOutputDirectory, 'index.html')
+
+  if (await fse.pathExists(templatePath)) {
+    await fse.move(templatePath, state.serverTemplatePath, { overwrite: true })
+  }
+}
+
 export const build = async (
   state: State
 ): Promise<{
@@ -68,20 +85,7 @@ export const build = async (
 
   step(`Server Build`)
 
-  const manifestPath = path.join(
-    state.clientOutputDirectory,
-    'ssr-manifest.json'
-  )
-
-  if (await fse.pathExists(manifestPath)) {
-    await fse.move(manifestPath, state.serverManifestPath)
-  }
-
-  const templatePath = path.join(state.clientOutputDirectory, 'index.html')
-
-  if (await fse.pathExists(templatePath)) {
-    await fse.move(templatePath, state.serverTemplatePath)
-  }
+  await copyManifestTemplate(state)
 
   const server = await state.vite.build(serverConfig(state))
 

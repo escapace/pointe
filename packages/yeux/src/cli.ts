@@ -25,7 +25,6 @@ ${colors.bold('Commands:')}
 ${colors.bold('Options:')}
   --host [host]           [string] specify hostname (default: "127.0.0.1")
   --port <port>           [number] specify port (default: 3000)
-  --target                [string] specify the target node semver version (default: "node17")
   -h, --help              Display this message
   -v, --version           Display version number
 `
@@ -48,7 +47,6 @@ void (async () => {
     '--help': Boolean,
     '--host': String,
     '--port': Number,
-    '--target': String,
     '--version': Boolean,
 
     // aliases
@@ -85,14 +83,13 @@ void (async () => {
       command,
       directory,
       host: args['--host'],
-      port: args['--port'],
-      target: args['--target']
+      port: args['--port']
     })
   } catch (e) {
     if (e instanceof ZodError) {
       help(
         flatMap(
-          pick(e.format(), ['host', 'port', 'target']) as Record<
+          pick(e.format(), ['host', 'port']) as Record<
             string,
             { _errors: string[] }
           >,
