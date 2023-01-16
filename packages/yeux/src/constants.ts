@@ -1,1 +1,1 @@
-export const NODE_SEMVER = '>=17.0.0'
+export const NODE_SEMVER = '>=18.3.0'
