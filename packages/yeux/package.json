@@ -52,17 +52,14 @@
     "vite": "4.0.4"
   },
   "engines": {
-    "node": ">=16.14.0"
+    "node": ">= 18.2.0",
+    "pnpm": ">= 7.14.0"
   },
   "exports": {
     ".": {
       "import": "./lib/esm/index.mjs"
     }
   },
-  "files": [
-    "lib/esm",
-    "lib/types"
-  ],
   "homepage": "https://github.com/escapace/yeux",
   "license": "MPL-2.0",
   "main": "lib/esm/index.mjs",
