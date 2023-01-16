@@ -1,15 +1,15 @@
 import { safeReadPackageJson as readPackageJson } from '@pnpm/read-package-json'
 import fse from 'fs-extra'
+import { stat } from 'fs/promises'
 import { find, isString } from 'lodash-es'
 import path from 'path'
+import semver from 'semver'
 import supportsColor from 'supports-color'
 import { fileURLToPath } from 'url'
+import { z } from 'zod'
+import { NODE_SEMVER } from './constants'
 import { State, Vite, ViteConfig } from './types'
 import { resolve } from './utilities/resolve'
-import semver from 'semver'
-import { NODE_SEMVER } from './constants'
-import { z } from 'zod'
-import { stat } from 'fs/promises'
 
 const Options = z
   .object({
@@ -50,13 +50,8 @@ const createState = async (
 
   const templatePath = path.join(directory, 'index.html')
 
-  const serverSSREntryPath = path.join(directory, 'src/entry-ssr.ts')
+  const serverEntryPath = path.join(directory, 'src/entry-server.ts')
   const clientEntryPath = path.join(directory, 'src/entry-browser.ts')
-  const serverCreateInstancePath = path.join(
-    directory,
-    'src/create-instance.ts'
-  )
-  const serverAPIEntryPath = path.join(directory, 'src/entry-api.ts')
 
   const configPath =
     _configPath === undefined
@@ -110,18 +105,15 @@ const createState = async (
     throw new Error(`Minumum target version is ${nodeMinVersion}.`)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const sourceMapSupportVersion = (await readPackageJson(
-    path.join(basedir, 'package.json')
-  ))!.dependencies!['source-map-support']
-
   const vite = (await import(await resolve('vite', directory))) as Vite
 
-  const nodeEnv = {
-    build: 'production',
-    preview: 'staging',
-    dev: 'development'
-  }[command]
+  const nodeEnv = (
+    {
+      build: 'production',
+      preview: 'staging',
+      dev: 'development'
+    } as const
+  )[command]
 
   const viteConfig: ViteConfig = await vite.resolveConfig(
     { configFile: configPath, root: directory },
@@ -135,15 +127,9 @@ const createState = async (
     )
   }
 
-  if (!(await fse.pathExists(serverSSREntryPath))) {
+  if (!(await fse.pathExists(serverEntryPath))) {
     throw new Error(
-      `${path.relative(directory, serverSSREntryPath)}: No such file.`
-    )
-  }
-
-  if (!(await fse.pathExists(serverCreateInstancePath))) {
-    throw new Error(
-      `${path.relative(directory, serverCreateInstancePath)}: No such file.`
+      `${path.relative(directory, serverEntryPath)}: No such file.`
     )
   }
 
@@ -155,26 +141,25 @@ const createState = async (
   const clientOutputDirectory = path.join(outputDirectory, 'client')
   const serverOutputDirectory = path.join(outputDirectory, 'server')
 
-  const serverSSRManifestPath = path.join(
+  const serverManifestPath = path.join(serverOutputDirectory, 'manifest.json')
+
+  const serverEntryCompiledPath = path.join(
     serverOutputDirectory,
-    'manifest.json'
-  )
-  const serverSSREntryCompiledPath = path.join(
-    serverOutputDirectory,
-    'entry-ssr.mjs'
-  )
-  const serverSSRTemplatePath = path.join(serverOutputDirectory, 'index.html')
-  const serverCreateInstanceCompiledPath = path.join(
-    serverOutputDirectory,
-    'create-instance.mjs'
+    'entry-server.mjs'
   )
 
-  const serverAPIEntryCompiledPath = path.join(
-    serverOutputDirectory,
-    'entry-api.mjs'
-  )
+  const serverTemplatePath = path.join(serverOutputDirectory, 'index.html')
+  // const serverCreateInstanceCompiledPath = path.join(
+  //   serverOutputDirectory,
+  //   'create-instance.mjs'
+  // )
 
-  const serverIndexPath = path.join(serverOutputDirectory, 'index.mjs')
+  // const serverAPIEntryCompiledPath = path.join(
+  //   serverOutputDirectory,
+  //   'entry-api.mjs'
+  // )
+
+  // const serverIndexPath = path.join(serverOutputDirectory, 'index.mjs')
 
   const umask = 0o027
   const maskFile = 0o666 & ~umask
@@ -191,22 +176,23 @@ const createState = async (
     nodeEnv,
     outputDirectory,
     packageJson,
-    serverAPIEntryCompiledPath,
-    serverAPIEntryEnable: await fse.pathExists(serverAPIEntryPath),
-    serverAPIEntryPath,
-    serverCreateInstanceCompiledPath,
-    serverCreateInstancePath,
+    packageJSONPath,
+    // serverAPIEntryCompiledPath,
+    // serverAPIEntryEnable: await fse.pathExists(serverAPIEntryPath),
+    // serverAPIEntryPath,
+    // serverCreateInstanceCompiledPath,
+    // serverCreateInstancePath,
     serverHMRPort: 24678,
     serverHMRPrefix: '/hmr',
     serverHost: host,
-    serverIndexPath,
+    // serverIndexPath,
     serverOutputDirectory,
     serverPort: port,
-    serverSSREntryCompiledPath,
-    serverSSREntryPath,
-    serverSSRManifestPath,
-    serverSSRTemplatePath,
-    sourceMapSupportVersion,
+    serverEntryCompiledPath,
+    serverEntryPath,
+    serverManifestPath,
+    serverTemplatePath,
+    // sourceMapSupportVersion,
     target: `node${targetVersion}`,
     templatePath,
     tsconfigPath,

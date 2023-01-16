@@ -20,25 +20,26 @@ export interface State {
   directory: string
   maskDirectory: number
   maskFile: number
-  nodeEnv: string
+  nodeEnv: 'production' | 'staging' | 'development'
   outputDirectory: string
   packageJson: PackageManifest
-  serverAPIEntryCompiledPath: string
-  serverAPIEntryEnable: boolean
-  serverAPIEntryPath: string
-  serverCreateInstanceCompiledPath: string
-  serverCreateInstancePath: string
+  packageJSONPath: string
+  // serverAPIEntryCompiledPath: string
+  // serverAPIEntryEnable: boolean
+  // serverAPIEntryPath: string
+  // serverCreateInstanceCompiledPath: string
+  // serverCreateInstancePath: string
   serverHMRPort: number
   serverHMRPrefix: string
   serverHost: string
   serverOutputDirectory: string
   serverPort: number
-  serverSSREntryCompiledPath: string
-  serverSSREntryPath: string
-  serverIndexPath: string
-  serverSSRManifestPath: string
-  serverSSRTemplatePath: string
-  sourceMapSupportVersion: string
+  serverEntryCompiledPath: string
+  serverEntryPath: string
+  // serverIndexPath: string
+  serverManifestPath: string
+  serverTemplatePath: string
+  // sourceMapSupportVersion: string
   target: string
   templatePath: string
   tsconfigPath: string
