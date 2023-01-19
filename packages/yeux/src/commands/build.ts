@@ -1,4 +1,5 @@
 import fse from 'fs-extra'
+import { mapValues, uniq } from 'lodash-es'
 import path from 'path'
 import type { RollupOutput, RollupWatcher } from 'rollup'
 import type { State, ViteInlineConfig } from '../types'
@@ -15,7 +16,16 @@ export const clientConfig = (state: State): ViteInlineConfig => ({
     sourcemap: 'hidden',
     terserOptions: undefined,
     ssrManifest: true,
-    outDir: path.relative(state.directory, state.clientOutputDirectory)
+    outDir: path.relative(state.directory, state.clientOutputDirectory),
+    rollupOptions: {
+      ...state.viteConfig.build.rollupOptions,
+      output: {
+        ...state.viteConfig.build.rollupOptions.output,
+        entryFileNames: '[name]-[hash].js',
+        assetFileNames: '[name]-[hash].[ext]',
+        chunkFileNames: '[name]-[hash].js'
+      }
+    }
   }
 })
 
@@ -43,6 +53,7 @@ export const serverConfig = (state: State): ViteInlineConfig => ({
         ...state.viteConfig.build.rollupOptions.output,
         entryFileNames: '[name].mjs',
         chunkFileNames: '[name]-[hash].mjs',
+        assetFileNames: '[name]-[hash].[ext]',
         format: 'esm'
       }
     },
@@ -60,7 +71,21 @@ export const copyManifestTemplate = async (state: State) => {
   )
 
   if (await fse.pathExists(manifestPath)) {
-    await fse.move(manifestPath, state.serverManifestPath, { overwrite: true })
+    const manifest = (await fse.readJSON(manifestPath)) as Record<
+      string,
+      string[] | undefined
+    >
+
+    await fse.writeJson(
+      state.serverManifestPath,
+      mapValues(manifest, (value) =>
+        value === undefined
+          ? undefined
+          : uniq(value).filter((value) =>
+              fse.existsSync(path.join(state.clientOutputDirectory, value))
+            )
+      )
+    )
   }
 
   const templatePath = path.join(state.clientOutputDirectory, 'index.html')
