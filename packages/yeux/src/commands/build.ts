@@ -15,7 +15,8 @@ export const clientConfig = (state: State): ViteInlineConfig => ({
     minify: 'esbuild',
     sourcemap: 'hidden',
     terserOptions: undefined,
-    ssrManifest: true,
+    manifest: 'build-client-manifest.json',
+    ssrManifest: state.serverSSRManifestName,
     outDir: path.relative(state.directory, state.clientOutputDirectory),
     rollupOptions: {
       ...state.viteConfig.build.rollupOptions,
@@ -45,6 +46,7 @@ export const serverConfig = (state: State): ViteInlineConfig => ({
     ...state.viteConfig.build,
     watch: state.command === 'build' ? undefined : {},
     target: state.target,
+    manifest: 'build-server-manifest.json',
     minify: false,
     terserOptions: undefined,
     rollupOptions: {
@@ -64,21 +66,21 @@ export const serverConfig = (state: State): ViteInlineConfig => ({
   }
 })
 
-export const copyManifestTemplate = async (state: State) => {
-  const manifestPath = path.join(
+export const writeMetadata = async (state: State) => {
+  const ssrManifestPath = path.join(
     state.clientOutputDirectory,
-    'ssr-manifest.json'
+    state.serverSSRManifestName
   )
 
-  if (await fse.pathExists(manifestPath)) {
-    const manifest = (await fse.readJSON(manifestPath)) as Record<
+  if (await fse.pathExists(ssrManifestPath)) {
+    const ssrManifest = (await fse.readJSON(ssrManifestPath)) as Record<
       string,
       string[] | undefined
     >
 
     await fse.writeJson(
-      state.serverManifestPath,
-      mapValues(manifest, (value) =>
+      state.serverSSRManifestPath,
+      mapValues(ssrManifest, (value) =>
         value === undefined
           ? undefined
           : uniq(value).filter((value) =>
@@ -86,6 +88,8 @@ export const copyManifestTemplate = async (state: State) => {
             )
       )
     )
+
+    await fse.remove(ssrManifestPath)
   }
 
   const templatePath = path.join(state.clientOutputDirectory, 'index.html')
@@ -110,7 +114,7 @@ export const build = async (
 
   step(`Server Build`)
 
-  await copyManifestTemplate(state)
+  await writeMetadata(state)
 
   const server = await state.vite.build(serverConfig(state))
 

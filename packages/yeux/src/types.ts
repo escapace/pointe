@@ -37,7 +37,8 @@ export interface State {
   serverEntryCompiledPath: string
   serverEntryPath: string
   // serverIndexPath: string
-  serverManifestPath: string
+  serverSSRManifestName: string
+  serverSSRManifestPath: string
   serverTemplatePath: string
   // sourceMapSupportVersion: string
   target: string
