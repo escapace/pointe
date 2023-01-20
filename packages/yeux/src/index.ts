@@ -134,7 +134,12 @@ const createState = async (
   const clientOutputDirectory = path.join(outputDirectory, 'client')
   const serverOutputDirectory = path.join(outputDirectory, 'server')
 
-  const serverManifestPath = path.join(serverOutputDirectory, 'manifest.json')
+  const serverSSRManifestName = 'build-ssr-manifest.json'
+
+  const serverSSRManifestPath = path.join(
+    serverOutputDirectory,
+    serverSSRManifestName
+  )
 
   const serverEntryCompiledPath = path.join(
     serverOutputDirectory,
@@ -183,7 +188,8 @@ const createState = async (
     serverPort: port,
     serverEntryCompiledPath,
     serverEntryPath,
-    serverManifestPath,
+    serverSSRManifestName,
+    serverSSRManifestPath,
     serverTemplatePath,
     // sourceMapSupportVersion,
     target: `node${targetVersion}`,

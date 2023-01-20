@@ -4,7 +4,7 @@ import type { RollupWatcher, RollupWatcherEvent } from 'rollup'
 import { State } from '../types'
 import { info, step } from '../utilities/log'
 import { prefixChildProcess } from '../utilities/prefix-child-process'
-import { build, copyManifestTemplate } from './build'
+import { build, writeMetadata } from './build'
 
 const enum TypeState {
   None,
@@ -93,7 +93,7 @@ export const preview = async (state: State) => {
         await exitHandler(instance)
       }
 
-      await copyManifestTemplate(state)
+      await writeMetadata(state)
 
       instance = execa(
         'node',

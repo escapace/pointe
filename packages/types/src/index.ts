@@ -10,7 +10,7 @@ export interface App {
 export interface AppOptions {
   mode: string
   template: string
-  manifest?: Record<string, string[] | undefined>
+  ssrManifest?: Record<string, string[] | undefined>
 }
 
 export type CreateApp = (options: AppOptions) => Promise<App>
