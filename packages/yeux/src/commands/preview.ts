@@ -1,4 +1,5 @@
 import { execa, ExecaChildProcess } from 'execa'
+import { isNumber } from 'lodash-es'
 import path from 'path'
 import type { RollupWatcher, RollupWatcherEvent } from 'rollup'
 import { State } from '../types'
@@ -16,13 +17,11 @@ interface Store {
   state: TypeState
 }
 
-const kill = async (
-  child: ExecaChildProcess<unknown>,
-  signal: NodeJS.Signals
-) => {
-  return await new Promise<{ code: number | null } | { error: unknown }>(
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+const kill = (child: ExecaChildProcess<unknown>, signal: NodeJS.Signals) => {
+  return new Promise<{ code: number | null } | { error: unknown }>(
     (resolve) => {
-      if (child.killed) {
+      if (child.killed || isNumber(child.exitCode)) {
         resolve({ code: child.exitCode })
       } else {
         child.kill(signal)
@@ -50,20 +49,29 @@ const exitHandler = async (child: ExecaChildProcess<string>) => {
     ['SIGKILL', 3000]
   ]
 
-  await signals.reduce(
-    async (acc, [signal, timeout]) =>
-      await acc.then(
-        async () =>
-          await new Promise((resolve) => {
-            if (child.killed) {
-              return resolve()
+  return await signals.reduce(
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    (acc, [signal, timeout]) =>
+      acc.then(
+        // eslint-disable-next-line @typescript-eslint/promise-function-async
+        () =>
+          new Promise((resolve) => {
+            let alreadyDone = false
+
+            const done = () => {
+              if (!alreadyDone) {
+                alreadyDone = true
+                resolve()
+              }
             }
 
-            if (signal === 'SIGKILL') {
-              kill(child, signal).finally(() => resolve())
+            if (child.killed || isNumber(child.exitCode)) {
+              done()
+            } else if (signal === 'SIGKILL') {
+              void kill(child, signal).finally(done)
             } else {
-              void kill(child, signal)
-              setTimeout(resolve, timeout)
+              void kill(child, signal).finally(done)
+              setTimeout(done, timeout)
             }
           })
       ),

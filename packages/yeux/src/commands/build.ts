@@ -99,6 +99,15 @@ export const writeMetadata = async (state: State) => {
   }
 }
 
+const waitForInitialBuild = async (watcher: RollupWatcher) =>
+  await new Promise((resolve) => {
+    watcher.on('event', ({ code }) => {
+      if (code === 'END' || code === 'ERROR') {
+        resolve(undefined)
+      }
+    })
+  })
+
 export const build = async (
   state: State
 ): Promise<{
@@ -112,11 +121,19 @@ export const build = async (
 
   const client = await state.vite.build(clientConfig(state))
 
+  if (state.command === 'preview') {
+    await waitForInitialBuild(client as RollupWatcher)
+  }
+
   step(`Server Build`)
 
   await writeMetadata(state)
 
   const server = await state.vite.build(serverConfig(state))
+
+  if (state.command === 'preview') {
+    await waitForInitialBuild(server as RollupWatcher)
+  }
 
   step(`Dependencies`)
 
