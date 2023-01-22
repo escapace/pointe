@@ -14,7 +14,7 @@
     "@typescript-eslint/parser": "5.48.2",
     "arg": "5.0.2",
     "changelogithub": "0.12.7",
-    "esbuild": "0.17.0",
+    "esbuild": "0.17.3",
     "eslint": "8.32.0",
     "eslint-config-escapace": "3.16.0",
     "eslint-config-prettier": "8.6.0",

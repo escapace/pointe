@@ -12,11 +12,12 @@ export const clientConfig = (state: State): ViteInlineConfig => ({
   build: {
     ...state.viteConfig.build,
     watch: state.command === 'build' ? undefined : {},
-    minify: 'esbuild',
-    sourcemap: 'hidden',
-    terserOptions: undefined,
     manifest: 'build-client-manifest.json',
     ssrManifest: state.serverSSRManifestName,
+    terserOptions:
+      state.viteConfig.build.minify === 'terser'
+        ? state.viteConfig.build.terserOptions
+        : undefined,
     outDir: path.relative(state.directory, state.clientOutputDirectory),
     rollupOptions: {
       ...state.viteConfig.build.rollupOptions,
@@ -59,7 +60,6 @@ export const serverConfig = (state: State): ViteInlineConfig => ({
         format: 'esm'
       }
     },
-    sourcemap: true,
     ssr: path.relative(state.directory, state.serverEntryPath),
     outDir: path.relative(state.directory, state.serverOutputDirectory),
     emptyOutDir: false
