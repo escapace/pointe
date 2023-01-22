@@ -40,6 +40,8 @@ export interface State {
   serverSSRManifestName: string
   serverSSRManifestPath: string
   serverTemplatePath: string
+  clientManifestName: string
+  clientManifestPath: string
   // sourceMapSupportVersion: string
   target: string
   templatePath: string
