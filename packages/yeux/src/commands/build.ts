@@ -12,7 +12,7 @@ export const clientConfig = (state: State): ViteInlineConfig => ({
   build: {
     ...state.viteConfig.build,
     watch: state.command === 'build' ? undefined : {},
-    manifest: 'build-client-manifest.json',
+    manifest: state.clientManifestName,
     ssrManifest: state.serverSSRManifestName,
     terserOptions:
       state.viteConfig.build.minify === 'terser'
@@ -96,6 +96,17 @@ export const writeMetadata = async (state: State) => {
 
   if (await fse.pathExists(templatePath)) {
     await fse.move(templatePath, state.serverTemplatePath, { overwrite: true })
+  }
+
+  const clientManifestPath = path.join(
+    state.clientOutputDirectory,
+    state.clientManifestName
+  )
+
+  if (await fse.pathExists(clientManifestPath)) {
+    await fse.move(clientManifestPath, state.clientManifestPath, {
+      overwrite: true
+    })
   }
 }
 
