@@ -130,6 +130,12 @@ const createState = async (
     throw new Error(`${path.relative(directory, templatePath)}: No such file.`)
   }
 
+  if (Array.isArray(viteConfig.build.rollupOptions.output)) {
+    throw new Error(
+      'build.rollupOptions.output is an array, not supported by yeux.'
+    )
+  }
+
   const outputDirectory = path.resolve(directory, viteConfig.build.outDir)
   const clientOutputDirectory = path.join(outputDirectory, 'client')
   const serverOutputDirectory = path.join(outputDirectory, 'server')
