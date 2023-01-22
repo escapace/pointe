@@ -58,7 +58,8 @@ export async function dev(state: State) {
 
       const { fetch } = await createApp({
         template,
-        mode: state.nodeEnv
+        mode: state.nodeEnv,
+        moduleGraph: server.moduleGraph
       })
 
       const body =
