@@ -1,4 +1,4 @@
-import type { ModuleGraph } from 'vite'
+import type { Manifest, ModuleGraph } from 'vite'
 
 export type Fetch = (
   input: RequestInfo | URL,
@@ -9,11 +9,22 @@ export interface App {
   fetch: Fetch
 }
 
-export interface AppOptions {
-  mode: string
+export interface OptionsDevelopment {
+  mode: 'development'
   template: string
-  ssrManifest?: Record<string, string[] | undefined>
-  moduleGraph?: ModuleGraph
+  moduleGraph: ModuleGraph
 }
 
-export type CreateApp = (options: AppOptions) => Promise<App>
+export interface OptionsProduction {
+  mode: 'staging' | 'production'
+  template: string
+  manifest: {
+    client: Manifest
+    server: Manifest
+    ssr: Record<string, string[] | undefined>
+  }
+}
+
+export type OptionsStaging = OptionsProduction
+export type Options = OptionsDevelopment | OptionsProduction | OptionsStaging
+export type CreateApp = (options: Options) => Promise<App>

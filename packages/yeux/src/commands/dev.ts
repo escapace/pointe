@@ -58,7 +58,7 @@ export async function dev(state: State) {
 
       const { fetch } = await createApp({
         template,
-        mode: state.nodeEnv,
+        mode: state.nodeEnv as 'development',
         moduleGraph: server.moduleGraph
       })
 
