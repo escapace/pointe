@@ -23,9 +23,18 @@ export const clientConfig = (state: State): ViteInlineConfig => ({
       ...state.viteConfig.build.rollupOptions,
       output: {
         ...state.viteConfig.build.rollupOptions.output,
-        entryFileNames: '[name]-[hash].js',
-        assetFileNames: '[name]-[hash].[ext]',
-        chunkFileNames: '[name]-[hash].js'
+        entryFileNames: path.join(
+          state.viteConfig.build.assetsDir,
+          '[name]-[hash].js'
+        ),
+        assetFileNames: path.join(
+          state.viteConfig.build.assetsDir,
+          '[name]-[hash].[ext]'
+        ),
+        chunkFileNames: path.join(
+          state.viteConfig.build.assetsDir,
+          '[name]-[hash].js'
+        )
       }
     }
   }
