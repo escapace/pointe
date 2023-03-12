@@ -1,9 +1,10 @@
+import { OptionsProduction } from '@yeuxjs/types'
 import fse from 'fs-extra'
 import { mapValues, uniq } from 'lodash-es'
 import path from 'path'
 import type { RollupOutput, RollupWatcher } from 'rollup'
+import type { Manifest } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
-import { install } from '../utilities/install'
 import { step } from '../utilities/log'
 
 export const clientConfig = (state: State): ViteInlineConfig => ({
@@ -50,13 +51,14 @@ export const serverConfig = (state: State): ViteInlineConfig => ({
   // },
   // ssr: {
   //   target: 'webworker',
+  //   format: 'esm',
   //   noExternal: [/^((?!(node:)).)*$/]
   // },
   build: {
     ...state.viteConfig.build,
     watch: state.command === 'build' ? undefined : {},
     target: state.target,
-    manifest: 'build-server-manifest.json',
+    manifest: state.serverManifestName,
     minify: false,
     terserOptions: undefined,
     rollupOptions: {
@@ -75,47 +77,70 @@ export const serverConfig = (state: State): ViteInlineConfig => ({
   }
 })
 
-export const writeMetadata = async (state: State) => {
-  const ssrManifestPath = path.join(
-    state.clientOutputDirectory,
-    state.serverSSRManifestName
-  )
+export const patchOptions = async (state: State) => {
+  const templatePath = path.join(state.clientOutputDirectory, 'index.html')
 
-  if (await fse.pathExists(ssrManifestPath)) {
-    const ssrManifest = (await fse.readJSON(ssrManifestPath)) as Record<
-      string,
-      string[] | undefined
-    >
+  const options: Partial<Omit<OptionsProduction, 'manifest'>> & {
+    manifest: Partial<OptionsProduction['manifest']>
+  } = {
+    ...state.optionsProduction,
+    manifest: { ...state.optionsProduction?.manifest },
+    mode: state.nodeEnv as 'staging' | 'production'
+  }
 
-    await fse.writeJson(
-      state.serverSSRManifestPath,
-      mapValues(ssrManifest, (value) =>
+  if (await fse.exists(state.clientManifestPath)) {
+    options.manifest.client = (await fse.readJson(
+      state.clientManifestPath
+    )) as Manifest
+  }
+
+  if (await fse.exists(state.serverManifestPath)) {
+    options.manifest.server = (await fse.readJson(
+      state.serverManifestPath
+    )) as Manifest
+  }
+
+  if (await fse.exists(state.serverSSRManifestPath)) {
+    options.manifest.ssr = mapValues(
+      (await fse.readJSON(state.serverSSRManifestPath)) as Record<
+        string,
+        string[] | undefined
+      >,
+      (value) =>
         value === undefined
           ? undefined
           : uniq(value).filter((value) =>
               fse.existsSync(path.join(state.clientOutputDirectory, value))
             )
+    )
+  }
+
+  if (await fse.exists(templatePath)) {
+    options.template = await fse.readFile(templatePath, 'utf8')
+  }
+
+  await fse.remove(state.clientManifestPath)
+  await fse.remove(state.serverManifestPath)
+  await fse.remove(state.serverSSRManifestPath)
+  await fse.remove(templatePath)
+
+  state.optionsProduction = options as OptionsProduction
+
+  const entry = state.serverEntryCompiledPath
+
+  if (state.optionsProduction !== undefined && (await fse.exists(entry))) {
+    const content = await fse.readFile(entry, 'utf8')
+
+    // TODO: codemod
+    await fse.writeFile(
+      entry,
+      content.replaceAll(
+        /YEUX_OPTIONS|\/\* YEUX-REPLACE-START \*\/[^]+\/\* YEUX-REPLACE-END \*\//gm,
+        `/* YEUX-REPLACE-START */${JSON.stringify(
+          state.optionsProduction
+        )}/* YEUX-REPLACE-END */`
       )
     )
-
-    await fse.remove(ssrManifestPath)
-  }
-
-  const templatePath = path.join(state.clientOutputDirectory, 'index.html')
-
-  if (await fse.pathExists(templatePath)) {
-    await fse.move(templatePath, state.serverTemplatePath, { overwrite: true })
-  }
-
-  const clientManifestPath = path.join(
-    state.clientOutputDirectory,
-    state.clientManifestName
-  )
-
-  if (await fse.pathExists(clientManifestPath)) {
-    await fse.move(clientManifestPath, state.clientManifestPath, {
-      overwrite: true
-    })
   }
 }
 
@@ -147,17 +172,13 @@ export const build = async (
 
   step(`Server Build`)
 
-  await writeMetadata(state)
-
   const server = await state.vite.build(serverConfig(state))
 
   if (state.command === 'preview') {
     await waitForInitialBuild(server as RollupWatcher)
   }
 
-  step(`Dependencies`)
-
-  await install(state)
+  await patchOptions(state)
 
   return {
     client,

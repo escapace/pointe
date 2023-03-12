@@ -142,14 +142,21 @@ const createState = async (
 
   const clientManifestName = 'build-client-manifest.json'
   const clientManifestPath = path.join(
-    serverOutputDirectory,
+    clientOutputDirectory,
     clientManifestName
   )
 
   const serverSSRManifestName = 'build-ssr-manifest.json'
   const serverSSRManifestPath = path.join(
-    serverOutputDirectory,
+    clientOutputDirectory,
     serverSSRManifestName
+  )
+
+  const serverManifestName = 'build-server-manifest.json'
+
+  const serverManifestPath = path.join(
+    serverOutputDirectory,
+    serverManifestName
   )
 
   const serverEntryCompiledPath = path.join(
@@ -157,7 +164,6 @@ const createState = async (
     'entry-server.mjs'
   )
 
-  const serverTemplatePath = path.join(serverOutputDirectory, 'index.html')
   // const serverCreateInstanceCompiledPath = path.join(
   //   serverOutputDirectory,
   //   'create-instance.mjs'
@@ -183,6 +189,8 @@ const createState = async (
     maskDirectory,
     maskFile,
     nodeEnv,
+    serverManifestName,
+    serverManifestPath,
     outputDirectory,
     packageJson,
     packageJSONPath,
@@ -201,7 +209,6 @@ const createState = async (
     serverEntryPath,
     serverSSRManifestName,
     serverSSRManifestPath,
-    serverTemplatePath,
     clientManifestName,
     clientManifestPath,
     // sourceMapSupportVersion,

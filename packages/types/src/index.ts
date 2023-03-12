@@ -28,3 +28,7 @@ export interface OptionsProduction {
 export type OptionsStaging = OptionsProduction
 export type Options = OptionsDevelopment | OptionsProduction | OptionsStaging
 export type CreateApp = (options: Options) => Promise<App>
+
+declare global {
+  const YEUX_OPTIONS: Options
+}

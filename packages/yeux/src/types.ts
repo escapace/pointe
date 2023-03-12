@@ -7,6 +7,7 @@ import type {
   ResolvedConfig as ViteConfig,
   ViteDevServer
 } from 'vite'
+import { OptionsProduction } from '@yeuxjs/types'
 
 export type { ViteConfig, ViteDevServer, ViteInlineConfig }
 
@@ -36,10 +37,12 @@ export interface State {
   serverPort: number
   serverEntryCompiledPath: string
   serverEntryPath: string
+  optionsProduction?: OptionsProduction
   // serverIndexPath: string
   serverSSRManifestName: string
   serverSSRManifestPath: string
-  serverTemplatePath: string
+  serverManifestName: string
+  serverManifestPath: string
   clientManifestName: string
   clientManifestPath: string
   // sourceMapSupportVersion: string

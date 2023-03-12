@@ -5,7 +5,7 @@ import type { RollupWatcher, RollupWatcherEvent } from 'rollup'
 import { State } from '../types'
 import { info, step } from '../utilities/log'
 import { prefixChildProcess } from '../utilities/prefix-child-process'
-import { build, writeMetadata } from './build'
+import { build, patchOptions } from './build'
 
 const enum TypeState {
   None,
@@ -18,7 +18,7 @@ interface Store {
 }
 
 // eslint-disable-next-line @typescript-eslint/promise-function-async
-const kill = (child: ExecaChildProcess<unknown>, signal: NodeJS.Signals) => {
+const kill = (child: ExecaChildProcess, signal: NodeJS.Signals) => {
   return new Promise<{ code: number | null } | { error: unknown }>(
     (resolve) => {
       if (child.killed || isNumber(child.exitCode)) {
@@ -101,8 +101,6 @@ export const preview = async (state: State) => {
         await exitHandler(instance)
       }
 
-      await writeMetadata(state)
-
       instance = execa(
         'node',
         [
@@ -137,6 +135,7 @@ export const preview = async (state: State) => {
 
   const eventListener = async (event: RollupWatcherEvent) => {
     if (event.code === 'END') {
+      await patchOptions(state)
       await restart()
     }
   }
@@ -148,8 +147,8 @@ export const preview = async (state: State) => {
       process.once(event, () => {
         store.state = TypeState.None
 
-        client.off('event', eventListener)
         server.off('event', eventListener)
+        client.off('event', eventListener)
         void client.close()
         void server.close()
 
