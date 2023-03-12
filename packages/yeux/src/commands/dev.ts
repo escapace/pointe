@@ -16,6 +16,9 @@ export async function dev(state: State) {
     mode: 'development',
     logLevel: 'info',
     appType: 'custom',
+    define: {
+      YEUX_OPTIONS: JSON.stringify({ mode: 'development' })
+    },
     server: {
       middlewareMode: true,
       strictPort: true,
@@ -52,11 +55,19 @@ export async function dev(state: State) {
 
       template = await server.transformIndexHtml(url, template)
 
-      const { createApp } = (await server.ssrLoadModule(
+      const {
+        createYeuxApp: createAppOne,
+        createApp: createAppTwo,
+        default: createAppThree
+      } = (await server.ssrLoadModule(
         path.relative(state.directory, state.serverEntryPath)
-      )) as { createApp: CreateApp }
+      )) as {
+        createYeuxApp: CreateApp
+        createApp: CreateApp
+        default: CreateApp
+      }
 
-      const { fetch } = await createApp({
+      const { fetch } = await (createAppOne ?? createAppTwo ?? createAppThree)({
         template,
         mode: state.nodeEnv as 'development',
         moduleGraph: server.moduleGraph
