@@ -171,8 +171,8 @@ importers:
         version: 3.21.4
     devDependencies:
       '@pnpm/types':
-        specifier: 8.10.0
-        version: 8.10.0
+        specifier: 9.0.0
+        version: 9.0.0
       '@types/body-parser':
         specifier: 1.19.2
         version: 1.19.2
@@ -768,15 +768,9 @@ packages:
       normalize-package-data: 5.0.0
     dev: false
 
-  /@pnpm/types@8.10.0:
-    resolution: {integrity: sha512-A4pcNNvFJdkMXArEjTCOIYNL2VxD4uBynWZ6cBIELXb5qJ0tUzwKsaSz4J953I0rQFqnsFpUYqaWIquI10W1sw==}
-    engines: {node: '>=14.6'}
-    dev: true
-
   /@pnpm/types@9.0.0:
     resolution: {integrity: sha512-+nNqpNvqb1u3WW/cHDo7tGjqJBWWe4GAHEdELrz4QMQwGAtG/1GF6NMc0cewdwgU2k67CI3JHGu4quZJnMEUJg==}
     engines: {node: '>=16.14'}
-    dev: false
 
   /@tsconfig/node10@1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
