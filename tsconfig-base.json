@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
