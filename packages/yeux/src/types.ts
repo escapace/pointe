@@ -30,7 +30,6 @@ export interface State {
   // serverAPIEntryPath: string
   // serverCreateInstanceCompiledPath: string
   // serverCreateInstancePath: string
-  serverHMRPort: number
   serverHMRPrefix: string
   serverHost: string
   serverOutputDirectory: string

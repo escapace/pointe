@@ -199,7 +199,6 @@ const createState = async (
     // serverAPIEntryPath,
     // serverCreateInstanceCompiledPath,
     // serverCreateInstancePath,
-    serverHMRPort: 24678,
     serverHMRPrefix: '/hmr',
     serverHost: host,
     // serverIndexPath,
