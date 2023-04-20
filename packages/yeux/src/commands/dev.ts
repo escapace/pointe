@@ -11,6 +11,8 @@ export async function dev(state: State) {
   const app = express()
   app.disable('x-powered-by')
 
+  const asd = app.listen(state.serverPort, state.serverHost)
+
   const server = await state.vite.createServer({
     root: state.directory,
     mode: 'development',
@@ -23,9 +25,10 @@ export async function dev(state: State) {
       middlewareMode: true,
       strictPort: true,
       hmr: {
-        clientPort: state.serverHMRPort,
-        path: state.serverHMRPrefix,
-        port: state.serverHMRPort
+        server: asd
+        // clientPort: state.serverHMRPort,
+        // path: state.serverHMRPrefix,
+        // port: state.serverHMRPort
       }
     }
   })
@@ -112,6 +115,4 @@ export async function dev(state: State) {
       next(e)
     }
   })
-
-  app.listen(state.serverPort, state.serverHost)
 }
