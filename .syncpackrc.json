@@ -1,4 +1,5 @@
 {
+  "workspace": false,
   "customTypes": {
     "engines": {
       "path": "engines",
