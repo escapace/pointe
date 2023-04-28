@@ -2,6 +2,7 @@ import { CreateApp } from '@yeuxjs/types'
 import bodyParser from 'body-parser'
 import express from 'express'
 import { readFile } from 'fs/promises'
+import { assign, omit } from 'lodash-es'
 import path from 'path'
 import { isNativeError } from 'util/types'
 import { State } from '../types'
@@ -11,27 +12,43 @@ export async function dev(state: State) {
   const app = express()
   app.disable('x-powered-by')
 
-  const asd = app.listen(state.serverPort, state.serverHost)
+  const instance = app.listen(state.serverPort, state.serverHost)
 
-  const server = await state.vite.createServer({
-    root: state.directory,
-    mode: 'development',
-    logLevel: 'info',
-    appType: 'custom',
-    define: {
-      YEUX_OPTIONS: JSON.stringify({ mode: 'development' })
-    },
-    server: {
-      middlewareMode: true,
-      strictPort: true,
-      hmr: {
-        server: asd
-        // clientPort: state.serverHMRPort,
-        // path: state.serverHMRPrefix,
-        // port: state.serverHMRPort
-      }
-    }
-  })
+  const current = state.resolveConfig()
+
+  const server = await state.vite.createServer(
+    omit(
+      assign({}, current, {
+        ssr: {
+          target: 'node' as const
+        },
+        root: state.directory,
+        mode: 'development',
+        logLevel: 'info' as const,
+        appType: 'custom' as const,
+        define: {
+          ...state.viteConfig.define,
+          YEUX_OPTIONS: JSON.stringify({ mode: 'development' })
+        },
+        build: {
+          ...state.viteConfig.build,
+          minify: false,
+          terserOptions: undefined
+        },
+        server: {
+          middlewareMode: true,
+          strictPort: true,
+          hmr: {
+            server: instance
+            // clientPort: state.serverHMRPort,
+            // path: state.serverHMRPrefix,
+            // port: state.serverHMRPort
+          }
+        }
+      }),
+      ['plugins', 'assetsInclude']
+    )
+  )
 
   app.use(server.middlewares)
 

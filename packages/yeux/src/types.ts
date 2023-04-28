@@ -1,19 +1,19 @@
 import type { PackageManifest } from '@pnpm/types'
-
-import * as ViteDefault from 'vite'
-
-import type {
-  InlineConfig as ViteInlineConfig,
-  ResolvedConfig as ViteConfig,
-  ViteDevServer
-} from 'vite'
 import { OptionsProduction } from '@yeuxjs/types'
+import type * as ViteDefault from 'vite'
+import type {
+  ResolvedConfig as ViteConfig,
+  ViteDevServer,
+  InlineConfig as ViteInlineConfig,
+  resolveConfig
+} from 'vite'
 
 export type { ViteConfig, ViteDevServer, ViteInlineConfig }
 
 export type Vite = typeof ViteDefault
 
 export interface State {
+  resolveConfig: () => ReturnType<typeof resolveConfig>
   basedir: string
   clientOutputDirectory: string
   color: boolean
@@ -45,7 +45,8 @@ export interface State {
   clientManifestName: string
   clientManifestPath: string
   // sourceMapSupportVersion: string
-  target: string
+  serverRuntime: 'node' | 'webworker'
+  serverTarget: string
   templatePath: string
   tsconfigPath: string
   umask: number

@@ -88,13 +88,13 @@ const createState = async (
 
   const nodeMinVersion = semver.minVersion(NODE_SEMVER)?.version as string
 
-  const targetVersion = semver.minVersion(
+  const nodeVersion = semver.minVersion(
     isString(packageJson.engines?.node)
       ? semver.validRange(packageJson.engines?.node) ?? NODE_SEMVER
       : NODE_SEMVER
   )?.version as string
 
-  if (!semver.satisfies(targetVersion, NODE_SEMVER)) {
+  if (!semver.satisfies(nodeVersion, NODE_SEMVER)) {
     throw new Error(`Minumum target version is ${nodeMinVersion}.`)
   }
 
@@ -108,11 +108,14 @@ const createState = async (
     } as const
   )[command]
 
-  const viteConfig: ViteConfig = await vite.resolveConfig(
-    { configFile: configPath, root: directory },
-    'build',
-    nodeEnv
-  )
+  const resolveConfig = async (): ReturnType<typeof vite.resolveConfig> =>
+    await vite.resolveConfig(
+      { configFile: configPath, root: directory },
+      'build',
+      nodeEnv
+    )
+
+  const viteConfig: ViteConfig = await resolveConfig()
 
   if (!(await fse.pathExists(clientEntryPath))) {
     throw new Error(
@@ -134,6 +137,10 @@ const createState = async (
     throw new Error(
       'build.rollupOptions.output is an array, not supported by yeux.'
     )
+  }
+
+  if (viteConfig.ssr.noExternal === true) {
+    throw new Error('setting ssr.noExternal to true, is not supported by yeux.')
   }
 
   const outputDirectory = path.resolve(directory, viteConfig.build.outDir)
@@ -180,8 +187,23 @@ const createState = async (
   const maskFile = 0o666 & ~umask
   const maskDirectory = 0o777 & ~umask
 
+  const serverRuntime: 'node' | 'webworker' =
+    command === 'build' ? viteConfig.ssr.target : 'node'
+
+  const serverTarget =
+    serverRuntime === 'node' ? `node${nodeVersion}` : 'esnext'
+
   return {
+    // serverAPIEntryCompiledPath,
+    // serverAPIEntryEnable: await fse.pathExists(serverAPIEntryPath),
+    // serverAPIEntryPath,
+    // serverCreateInstanceCompiledPath,
+    // serverCreateInstancePath,
+    // serverIndexPath,
+    // sourceMapSupportVersion,
     basedir,
+    clientManifestName,
+    clientManifestPath,
     clientOutputDirectory,
     color: !(supportsColor.stdout === false),
     command,
@@ -189,29 +211,22 @@ const createState = async (
     maskDirectory,
     maskFile,
     nodeEnv,
-    serverManifestName,
-    serverManifestPath,
     outputDirectory,
-    packageJson,
     packageJSONPath,
-    // serverAPIEntryCompiledPath,
-    // serverAPIEntryEnable: await fse.pathExists(serverAPIEntryPath),
-    // serverAPIEntryPath,
-    // serverCreateInstanceCompiledPath,
-    // serverCreateInstancePath,
-    serverHMRPrefix: '/hmr',
-    serverHost: host,
-    // serverIndexPath,
-    serverOutputDirectory,
-    serverPort: port,
+    packageJson,
+    resolveConfig,
     serverEntryCompiledPath,
     serverEntryPath,
+    serverHMRPrefix: '/hmr',
+    serverHost: host,
+    serverManifestName,
+    serverManifestPath,
+    serverOutputDirectory,
+    serverPort: port,
+    serverRuntime,
     serverSSRManifestName,
     serverSSRManifestPath,
-    clientManifestName,
-    clientManifestPath,
-    // sourceMapSupportVersion,
-    target: `node${targetVersion}`,
+    serverTarget,
     templatePath,
     tsconfigPath,
     umask,
