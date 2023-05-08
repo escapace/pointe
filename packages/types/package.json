@@ -5,7 +5,7 @@
   "author": "escapace <opensource@escapace.com>",
   "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
-    "@types/node": "18.16.1",
+    "@types/node": "18.16.3",
     "@typescript-eslint/eslint-plugin": "5.59.1",
     "@typescript-eslint/parser": "5.59.1",
     "eslint": "8.39.0",
