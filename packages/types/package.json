@@ -5,18 +5,18 @@
   "author": "escapace <opensource@escapace.com>",
   "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
-    "@types/node": "18.16.3",
-    "@typescript-eslint/eslint-plugin": "5.59.1",
-    "@typescript-eslint/parser": "5.59.1",
-    "eslint": "8.39.0",
+    "@types/node": "18.16.13",
+    "@typescript-eslint/eslint-plugin": "5.59.6",
+    "@typescript-eslint/parser": "5.59.6",
+    "eslint": "8.41.0",
     "eslint-config-escapace": "3.17.0",
     "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-editorconfig": "4.0.2",
+    "eslint-plugin-editorconfig": "4.0.3",
     "eslint-plugin-no-null": "1.0.2",
     "prettier": "2.8.8",
     "prettier-config-escapace": "1.0.5",
     "typescript": "5.0.4",
-    "vite": "4.3.3"
+    "vite": "4.3.8"
   },
   "engines": {
     "node": ">=16.14.0"
