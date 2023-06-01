@@ -42,6 +42,7 @@
     "build": "pnpm run -r --filter './packages/*' build",
     "lint": "ls-lint && pnpm run -r --filter './packages/*' lint",
     "prepare": "is-ci || husky install",
+    "test": "echo 'not available'",
     "typecheck": "pnpm run -r --filter './packages/*' typecheck",
     "update": "pnpm -w -r --filter './packages/*' --filter '.' exec ncu -u && pnpm exec syncpack fix-mismatches && pnpm exec syncpack set-semver-ranges"
   }
