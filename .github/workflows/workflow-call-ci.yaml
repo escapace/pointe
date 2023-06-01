@@ -67,8 +67,8 @@ jobs:
       - name: pnpm pack
         if: inputs.version != ''
         run: |
-          pnpm -r --filter './packages/*' exec bash -c "jq -r '.version=\"${{ inputs.version }}\"' package.json > package-updated.json"
-          pnpm -r --filter './packages/*' exec mv  package-updated.json package.json
+          pnpm --filter './packages/*' exec bash -c "jq -r '.version=\"${{ inputs.version }}\"' package.json > package-updated.json"
+          pnpm --filter './packages/*' exec mv  package-updated.json package.json
           pnpm --filter './packages/*' exec pnpm pack --pack-destination ../../lib
       - name: upload
         if: inputs.version != ''
