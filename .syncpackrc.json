@@ -1,5 +1,14 @@
 {
-  "workspace": false,
+  "dependencyTypes": [
+    "dev",
+    "overrides",
+    "peer",
+    "pnpmOverrides",
+    "prod",
+    "resolutions",
+    "workspace",
+    "engines"
+  ],
   "customTypes": {
     "engines": {
       "path": "engines",
@@ -26,5 +35,5 @@
       "range": "^"
     }
   ],
-  "source": ["package.json"]
+  "source": ["package.json", "packages/*/package.json"]
 }
