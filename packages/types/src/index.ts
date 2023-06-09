@@ -11,12 +11,14 @@ export interface App {
 
 export interface OptionsDevelopment {
   mode: 'development'
+  command: 'dev'
   template: string
   moduleGraph: ModuleGraph
 }
 
 export interface OptionsProduction {
   mode: 'staging' | 'production'
+  command: 'build' | 'preview'
   template: string
   manifest: {
     client: Manifest
