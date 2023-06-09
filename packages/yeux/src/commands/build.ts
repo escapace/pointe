@@ -139,7 +139,8 @@ export const patchOptions = async (state: State) => {
   } = {
     ...state.optionsProduction,
     manifest: { ...state.optionsProduction?.manifest },
-    mode: state.nodeEnv as 'staging' | 'production'
+    mode: state.nodeEnv as 'staging' | 'production',
+    command: state.command as 'build' | 'preview'
   }
 
   if (await fse.exists(state.clientManifestPath)) {

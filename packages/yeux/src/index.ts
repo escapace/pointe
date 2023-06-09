@@ -102,7 +102,7 @@ const createState = async (
 
   const nodeEnv = (
     {
-      build: 'production',
+      build: process.env.NODE_ENV === 'staging' ? 'staging' : 'production',
       preview: 'staging',
       dev: 'development'
     } as const

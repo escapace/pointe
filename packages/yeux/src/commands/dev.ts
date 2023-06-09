@@ -88,6 +88,7 @@ export async function dev(state: State) {
       }
 
       const { fetch } = await (createAppOne ?? createAppTwo ?? createAppThree)({
+        command: 'dev',
         template,
         mode: state.nodeEnv as 'development',
         moduleGraph: server.moduleGraph
