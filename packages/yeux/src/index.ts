@@ -6,6 +6,7 @@ import path from 'path'
 import semver from 'semver'
 import supportsColor from 'supports-color'
 import { fileURLToPath } from 'url'
+import type { InlineConfig } from 'vite'
 import { z } from 'zod'
 import { NODE_SEMVER } from './constants'
 import { State, Vite, ViteConfig } from './types'
@@ -108,9 +109,11 @@ const createState = async (
     } as const
   )[command]
 
-  const resolveConfig = async (): ReturnType<typeof vite.resolveConfig> =>
+  const resolveConfig = async (
+    inlineConfig?: InlineConfig
+  ): ReturnType<typeof vite.resolveConfig> =>
     await vite.resolveConfig(
-      { configFile: configPath, root: directory },
+      { configFile: configPath, root: directory, ...inlineConfig },
       'build',
       nodeEnv
     )

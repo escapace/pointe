@@ -13,7 +13,7 @@ export type { ViteConfig, ViteDevServer, ViteInlineConfig }
 export type Vite = typeof ViteDefault
 
 export interface State {
-  resolveConfig: () => ReturnType<typeof resolveConfig>
+  resolveConfig: (inlineConfig?: ViteInlineConfig) => ReturnType<typeof resolveConfig>
   basedir: string
   clientOutputDirectory: string
   color: boolean
