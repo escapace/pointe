@@ -55,7 +55,8 @@
   },
   "exports": {
     ".": {
-      "import": "./lib/esm/index.mjs"
+      "import": "./lib/esm/index.mjs",
+      "types": "./lib/types/index.d.ts"
     }
   },
   "homepage": "https://github.com/escapace/yeux",
