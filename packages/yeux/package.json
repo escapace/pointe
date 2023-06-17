@@ -8,7 +8,6 @@
   },
   "bugs": "https://github.com/escapace/yeux/issues",
   "dependencies": {
-    "@escapace/sequentialize": "^2.1.3",
     "@pnpm/read-package-json": "^8.0.2",
     "@rollup/pluginutils": "^5.0.2",
     "@yeuxjs/types": "workspace:*",

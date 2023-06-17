@@ -107,6 +107,7 @@ export const preview = async (state: State) => {
       instance = execa(
         'node',
         [
+          '--enable-source-maps',
           path.relative(
             state.serverOutputDirectory,
             state.serverEntryCompiledPath

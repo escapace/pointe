@@ -122,9 +122,6 @@ importers:
 
   packages/yeux:
     dependencies:
-      '@escapace/sequentialize':
-        specifier: ^2.1.3
-        version: 2.1.3
       '@pnpm/read-package-json':
         specifier: ^8.0.2
         version: 8.0.2
@@ -2051,11 +2048,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /@escapace/sequentialize@2.1.3:
-    resolution: {integrity: sha512-Iw4nmMM7zdwqC3Nq50y+vdGlXzqxtO1iMPMfmqeJM595hiN8/2z8P1x437c5E1oTbfskRciN2/i7OCiASLAmqg==, tarball: https://npm.pkg.github.com/download/@escapace/sequentialize/2.1.3/236c909d22781ff67fcd281bf9d055a204a0d9c6}
-    engines: {node: '>= 18.2.0', pnpm: '>= 8.6.0'}
-    dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.43.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
