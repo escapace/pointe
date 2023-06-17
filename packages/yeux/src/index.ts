@@ -11,6 +11,7 @@ import type { InlineConfig } from 'vite'
 import type { injectManifest as InjectManifest } from 'workbox-build'
 import { z } from 'zod'
 import { NODE_SEMVER } from './constants'
+import type { InlineConfig as YeuxInlineConfig } from './types'
 import { State, Vite, ViteConfig } from './types'
 import { resolve } from './utilities/resolve'
 
@@ -298,4 +299,13 @@ export const yeux = async (options: z.input<typeof Options>) => {
   }
 }
 
-export type { InlineConfig as YeuxInlineConfig } from './types'
+declare module 'vite' {
+  interface UserConfig {
+    /**
+     * Options for Yeux
+     */
+    yeux?: YeuxInlineConfig
+  }
+}
+
+export type { YeuxInlineConfig }
