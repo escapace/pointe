@@ -4,15 +4,11 @@ import builtinModules from 'builtin-modules'
 import fse from 'fs-extra'
 import { assign, mapValues, omit, uniq } from 'lodash-es'
 import path from 'path'
-import type {
-  InputOption,
-  OutputOptions,
-  RollupOutput,
-  RollupWatcher
-} from 'rollup'
+import type { OutputOptions } from 'rollup'
 import type { Manifest, SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
 import { step } from '../utilities/log'
+import { rollupInputOptions } from '../utilities/rollup-input-options'
 
 const mapRollupOutputOptions = (
   options: OutputOptions | OutputOptions[] | undefined,
@@ -28,15 +24,6 @@ const mapRollupOutputOptions = (
     return values
   }
 }
-
-const rollupInputOptions = (input: InputOption | undefined, state: State) =>
-  (input === undefined
-    ? { main: path.join(state.directory, 'index.html') }
-    : typeof input === 'string'
-    ? { main: input }
-    : input) as {
-    [entryAlias: string]: string
-  }
 
 export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
   const current = await state.resolveConfig()
@@ -54,7 +41,6 @@ export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
       root: state.directory,
       mode: state.nodeEnv,
       build: assign({}, current.build, {
-        watch: state.command === 'build' ? undefined : {},
         manifest: state.clientManifestName,
         ssrManifest: state.serverSSRManifestName,
         terserOptions:
@@ -129,7 +115,6 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
       publicDir: false as const,
       ssr: assign({}, current.ssr, ssr),
       build: assign({}, current.build, {
-        watch: state.command === 'build' ? undefined : {},
         target: state.serverTarget,
         manifest: state.serverManifestName,
         minify: false,
@@ -160,8 +145,6 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
 }
 
 export const patchOptions = async (state: State) => {
-  const templatePath = path.join(state.clientOutputDirectory, 'index.html')
-
   const options: Partial<Omit<OptionsProduction, 'manifest'>> & {
     manifest: Partial<OptionsProduction['manifest']>
   } = {
@@ -171,64 +154,82 @@ export const patchOptions = async (state: State) => {
     command: state.command as 'build' | 'preview'
   }
 
-  if (await fse.exists(state.clientManifestPath)) {
-    options.manifest.client = (await fse.readJson(
-      state.clientManifestPath
-    )) as Manifest
-  }
+  // if (await fse.exists(state.clientManifestPath)) {
+  options.manifest.client = (await fse.readJson(
+    state.clientManifestPath
+  )) as Manifest
+  // }
 
-  if (await fse.exists(state.serverManifestPath)) {
-    options.manifest.server = (await fse.readJson(
-      state.serverManifestPath
-    )) as Manifest
-  }
+  // if (await fse.exists(state.serverManifestPath)) {
+  options.manifest.server = (await fse.readJson(
+    state.serverManifestPath
+  )) as Manifest
+  // }
 
-  if (await fse.exists(state.serverSSRManifestPath)) {
-    options.manifest.ssr = mapValues(
-      (await fse.readJSON(state.serverSSRManifestPath)) as Record<
-        string,
-        string[] | undefined
-      >,
-      (value) =>
-        value === undefined
-          ? undefined
-          : uniq(value).filter((value) =>
-              fse.existsSync(path.join(state.clientOutputDirectory, value))
-            )
-    )
-  }
+  // if (await fse.exists(state.serverSSRManifestPath)) {
+  options.manifest.ssr = mapValues(
+    (await fse.readJSON(state.serverSSRManifestPath)) as Record<
+      string,
+      string[] | undefined
+    >,
+    (value) =>
+      value === undefined
+        ? undefined
+        : uniq(value).filter((value) =>
+            fse.existsSync(path.join(state.clientOutputDirectory, value))
+          )
+  )
+  // }
 
-  if (await fse.exists(templatePath)) {
-    options.template = await fse.readFile(templatePath, 'utf8')
-  }
+  // if (await fse.exists(templatePath)) {
+  options.template = await fse.readFile(state.clientTemplatePath, 'utf8')
+  // }
 
-  await fse.remove(state.clientManifestPath)
-  await fse.remove(state.serverManifestPath)
-  await fse.remove(state.serverSSRManifestPath)
-  await fse.remove(templatePath)
+  // await fse.remove(state.clientManifestPath)
+  // await fse.remove(state.serverManifestPath)
+  // await fse.remove(state.serverSSRManifestPath)
+  // await fse.remove(state.clientTemplatePath)
 
   state.optionsProduction = options as OptionsProduction
 
   const entry = state.serverEntryCompiledPath
 
-  if (state.optionsProduction !== undefined && (await fse.exists(entry))) {
-    const content = await fse.readFile(entry, 'utf8')
+  // if (state.optionsProduction !== undefined) {
+  const content = await fse.readFile(entry, 'utf8')
 
-    // TODO: codemod
-    await fse.writeFile(
-      entry,
-      content.replaceAll(
-        /YEUX_OPTIONS|\/\* YEUX-REPLACE-START \*\/[^]+\/\* YEUX-REPLACE-END \*\//gm,
-        `/* YEUX-REPLACE-START */${JSON.stringify(
-          state.optionsProduction
-        )}/* YEUX-REPLACE-END */`
-      )
+  // TODO: codemod
+  await fse.writeFile(
+    entry,
+    content.replaceAll(
+      /YEUX_OPTIONS|\/\* YEUX-REPLACE-START \*\/[^]+\/\* YEUX-REPLACE-END \*\//gm,
+      `/* YEUX-REPLACE-START */${JSON.stringify(
+        state.optionsProduction
+      )}/* YEUX-REPLACE-END */`
     )
-  }
+  )
+}
 
+export const patchOptionsClean = async (state: State) => {
+  await fse.remove(state.clientManifestPath)
+  await fse.remove(state.serverManifestPath)
+  await fse.remove(state.serverSSRManifestPath)
+  await fse.remove(state.clientTemplatePath)
+}
+
+export const injectManifest = async (state: State) => {
   if (state.serviceWorkerEntryExists) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await state.injectManifest!({
+      ...state.viteConfig.yeux?.injectManifest,
+      globIgnores: uniq([
+        ...(state.viteConfig.yeux?.injectManifest.globIgnores ?? []),
+        ...[
+          state.clientManifestPath,
+          state.serverManifestPath,
+          state.serverSSRManifestPath,
+          state.clientTemplatePath
+        ].map((value) => path.relative(state.clientOutputDirectory, value))
+      ]),
       swSrc: path.relative(
         process.cwd(),
         path.join(state.clientOutputDirectory, 'service-worker.js')
@@ -237,12 +238,7 @@ export const patchOptions = async (state: State) => {
       swDest: path.relative(
         process.cwd(),
         path.join(state.clientOutputDirectory, 'service-worker.js')
-      ),
-      // globPatterns: ['**/*.{js,css,html}'],
-      globIgnores: [],
-      globFollow: true,
-      globStrict: true,
-      ...state.viteConfig.yeux?.injectManifest
+      )
       // TODO: Assets that match this will be assumed to be uniquely versioned via
       // their URL, and exempted from the normal HTTP cache-busting that's done
       // when populating the precache. While not required, it's recommended that
@@ -254,44 +250,19 @@ export const patchOptions = async (state: State) => {
   }
 }
 
-const waitForInitialBuild = async (watcher: RollupWatcher) =>
-  await new Promise((resolve) => {
-    watcher.on('event', ({ code }) => {
-      if (code === 'END' || code === 'ERROR') {
-        resolve(undefined)
-      }
-    })
-  })
-
-export const build = async (
-  state: State
-): Promise<{
-  client: RollupOutput | RollupOutput[] | RollupWatcher | undefined
-  server: RollupOutput | RollupOutput[] | RollupWatcher | undefined
-}> => {
+export const build = async (state: State): Promise<void> => {
   await fse.emptyDir(state.clientOutputDirectory)
   await fse.emptyDir(state.serverOutputDirectory)
 
   step(`Client Build`)
 
-  const client = await state.vite.build(await clientConfig(state))
-
-  if (state.command === 'preview') {
-    await waitForInitialBuild(client as RollupWatcher)
-  }
+  await state.vite.build(await clientConfig(state))
 
   step(`Server Build`)
 
-  const server = await state.vite.build(await serverConfig(state))
-
-  if (state.command === 'preview') {
-    await waitForInitialBuild(server as RollupWatcher)
-  }
+  await state.vite.build(await serverConfig(state))
 
   await patchOptions(state)
-
-  return {
-    client,
-    server
-  }
+  await patchOptionsClean(state)
+  await injectManifest(state)
 }

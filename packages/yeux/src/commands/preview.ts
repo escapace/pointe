@@ -1,21 +1,27 @@
+import { watch } from 'chokidar'
 import { execa, ExecaChildProcess } from 'execa'
 import { isNumber } from 'lodash-es'
 import path from 'path'
-import type { RollupWatcher, RollupWatcherEvent } from 'rollup'
 import { State } from '../types'
 import { info, step } from '../utilities/log'
 import { prefixChildProcess } from '../utilities/prefix-child-process'
-import { build, patchOptions } from './build'
+import { build } from './build'
 
 const enum TypeState {
-  None,
-  Active,
-  Block
+  Blocked,
+  NotBusy,
+  Busy
 }
 
 interface Store {
   state: TypeState
 }
+
+// async function delay(interval = 10) {
+//   return await new Promise((resolve) =>
+//     setTimeout(() => resolve(undefined), interval)
+//   )
+// }
 
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 const kill = (child: ExecaChildProcess, signal: NodeJS.Signals) => {
@@ -80,22 +86,19 @@ const exitHandler = async (child: ExecaChildProcess<string>) => {
 }
 
 export const preview = async (state: State) => {
-  const store: Store = { state: TypeState.None }
+  const storeProcess: Store = { state: TypeState.NotBusy }
 
-  const result = await build(state)
-
-  const client = result.client as RollupWatcher
-  const server = result.server as RollupWatcher
+  await build(state)
 
   step('Preview')
 
   let instance: ExecaChildProcess<string> | undefined
 
-  store.state = TypeState.Active
+  storeProcess.state = TypeState.NotBusy
 
   const restart = async () => {
-    if (store.state === TypeState.Active) {
-      store.state = TypeState.Block
+    if (storeProcess.state === TypeState.NotBusy) {
+      storeProcess.state = TypeState.Busy
 
       if (instance !== undefined) {
         await exitHandler(instance)
@@ -123,7 +126,9 @@ export const preview = async (state: State) => {
 
       prefixChildProcess(instance)
 
-      store.state = TypeState.Active
+      if (storeProcess.state === TypeState.Busy) {
+        storeProcess.state = TypeState.NotBusy
+      }
 
       if (instance.pid !== undefined) {
         info(`Process ${instance.pid} running`)
@@ -133,24 +138,39 @@ export const preview = async (state: State) => {
 
   await restart()
 
-  const eventListener = async (event: RollupWatcherEvent) => {
-    if (event.code === 'END') {
-      await patchOptions(state)
-      await restart()
-    }
-  }
+  const watcher = watch(state.watchPaths, {
+    // ignored: /(^|[\/\\])\../, // ignore dotfiles
+    persistent: true,
+    followSymlinks: true,
+    cwd: state.directory
+  })
 
-  server.on('event', eventListener)
-  client.on('event', eventListener)
+  const storeWatcher: Store = { state: TypeState.NotBusy }
+
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  watcher.on('change', async () => {
+    if (storeWatcher.state === TypeState.NotBusy) {
+      storeWatcher.state = TypeState.Busy
+
+      try {
+        await build(state)
+        await restart()
+      } catch (e) {
+        console.log(e)
+      }
+
+      if (storeWatcher.state === TypeState.Busy) {
+        storeWatcher.state = TypeState.NotBusy
+      }
+    }
+  })
   ;['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException'].forEach(
     (event) =>
-      process.once(event, () => {
-        store.state = TypeState.None
-
-        server.off('event', eventListener)
-        client.off('event', eventListener)
-        void client.close()
-        void server.close()
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      process.once(event, async () => {
+        storeWatcher.state = TypeState.Blocked
+        storeProcess.state = TypeState.Blocked
+        await watcher.close()
 
         if (instance !== undefined) {
           void exitHandler(instance)

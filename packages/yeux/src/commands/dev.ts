@@ -64,6 +64,28 @@ export async function dev(state: State) {
     })
   )
 
+  const SELF_DESTROYING_SERVICE_WORKER = `self.addEventListener('install', function(e) {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', function(e) {
+  self.registration.unregister()
+    .then(function() {
+      return self.clients.matchAll();
+    })
+    .then(function(clients) {
+      clients.forEach(client => client.navigate(client.url))
+    });
+});`
+
+  if (state.serviceWorkerEntryExists) {
+    app.get('/service-worker.js', (_, response) => {
+      return response
+        .type('text/javascript')
+        .send(SELF_DESTROYING_SERVICE_WORKER)
+    })
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   app.use('*', async (incoming, outgoing, next) => {
     const url = `${incoming.protocol}://${incoming.get('host') ?? 'localhost'}${
