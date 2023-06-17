@@ -7,13 +7,22 @@ import type {
   InlineConfig as ViteInlineConfig,
   resolveConfig
 } from 'vite'
+import type {
+  injectManifest as InjectManifest,
+  InjectManifestOptions
+} from 'workbox-build'
 
 export type { ViteConfig, ViteDevServer, ViteInlineConfig }
 
 export type Vite = typeof ViteDefault
 
 export interface State {
-  resolveConfig: (inlineConfig?: ViteInlineConfig) => ReturnType<typeof resolveConfig>
+  injectManifest?: typeof InjectManifest
+  resolveConfig: (
+    inlineConfig?: ViteInlineConfig
+  ) => ReturnType<typeof resolveConfig>
+  serviceWorkerEntryExists: boolean
+  serviceWorkerEntryPath: string
   basedir: string
   clientOutputDirectory: string
   color: boolean
@@ -52,4 +61,8 @@ export interface State {
   umask: number
   vite: Vite
   viteConfig: ViteConfig
+}
+
+export interface InlineConfig {
+  injectManifest: InjectManifestOptions
 }
