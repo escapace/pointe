@@ -1,16 +1,29 @@
 import { safeReadPackageJson as readPackageJson } from '@pnpm/read-package-json'
+import assert from 'assert'
 import fse from 'fs-extra'
 import { stat } from 'fs/promises'
-import { find, isString } from 'lodash-es'
+import { find, isFunction, isPlainObject, isString, noop } from 'lodash-es'
 import path from 'path'
 import semver from 'semver'
 import supportsColor from 'supports-color'
 import { fileURLToPath } from 'url'
 import type { InlineConfig } from 'vite'
+import type { injectManifest as InjectManifest } from 'workbox-build'
 import { z } from 'zod'
 import { NODE_SEMVER } from './constants'
 import { State, Vite, ViteConfig } from './types'
 import { resolve } from './utilities/resolve'
+
+const importWorkbox = async (directory: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const injectManifest = (
+    await import(await resolve('workbox-build', directory))
+  ).injectManifest as typeof InjectManifest
+
+  assert(isFunction(injectManifest))
+
+  return injectManifest
+}
 
 const Options = z
   .object({
@@ -48,6 +61,10 @@ const createState = async (
 
   const serverEntryPath = path.join(directory, 'src/entry-server.ts')
   const clientEntryPath = path.join(directory, 'src/entry-browser.ts')
+  const serviceWorkerEntryPath = path.join(
+    directory,
+    'src/entry-service-worker.ts'
+  )
 
   const configPath =
     _configPath === undefined
@@ -142,6 +159,19 @@ const createState = async (
     )
   }
 
+  if (typeof viteConfig.build.rollupOptions.input === 'string') {
+    noop()
+  } else if (Array.isArray(viteConfig.build.rollupOptions.input)) {
+    throw new Error(
+      'build.rollupOptions.input is an array, not supported by yeux.'
+    )
+  } else if (
+    isPlainObject(viteConfig.build.rollupOptions.input) &&
+    viteConfig.build.rollupOptions.input?.main === 'undefined'
+  ) {
+    throw new Error('build.rollupOptions.input.main is not defined.')
+  }
+
   if (viteConfig.ssr.noExternal === true) {
     throw new Error('setting ssr.noExternal to true, is not supported by yeux.')
   }
@@ -196,7 +226,14 @@ const createState = async (
   const serverTarget =
     serverRuntime === 'node' ? `node${nodeVersion}` : 'esnext'
 
+  const serviceWorkerEntryExists = await fse.pathExists(serviceWorkerEntryPath)
+
   return {
+    injectManifest: serviceWorkerEntryExists
+      ? await importWorkbox(directory)
+      : undefined,
+    serviceWorkerEntryExists,
+    serviceWorkerEntryPath,
     // serverAPIEntryCompiledPath,
     // serverAPIEntryEnable: await fse.pathExists(serverAPIEntryPath),
     // serverAPIEntryPath,
@@ -260,3 +297,5 @@ export const yeux = async (options: z.input<typeof Options>) => {
     await dev(state)
   }
 }
+
+export type { InlineConfig as YeuxInlineConfig } from './types'

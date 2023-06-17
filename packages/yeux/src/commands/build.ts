@@ -4,7 +4,12 @@ import builtinModules from 'builtin-modules'
 import fse from 'fs-extra'
 import { assign, mapValues, omit, uniq } from 'lodash-es'
 import path from 'path'
-import type { OutputOptions, RollupOutput, RollupWatcher } from 'rollup'
+import type {
+  InputOption,
+  OutputOptions,
+  RollupOutput,
+  RollupWatcher
+} from 'rollup'
 import type { Manifest, SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
 import { step } from '../utilities/log'
@@ -24,8 +29,25 @@ const mapRollupOutputOptions = (
   }
 }
 
+const rollupInputOptions = (input: InputOption | undefined, state: State) =>
+  (input === undefined
+    ? { main: path.join(state.directory, 'index.html') }
+    : typeof input === 'string'
+    ? { main: input }
+    : input) as {
+    [entryAlias: string]: string
+  }
+
 export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
   const current = await state.resolveConfig()
+
+  const input = assign(
+    {},
+    rollupInputOptions(current.build.rollupOptions.input, state),
+    state.serviceWorkerEntryExists
+      ? { 'service-worker': state.serviceWorkerEntryPath }
+      : undefined
+  )
 
   return omit(
     assign({}, current, {
@@ -41,14 +63,18 @@ export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
             : undefined,
         outDir: path.relative(state.directory, state.clientOutputDirectory),
         rollupOptions: assign({}, current.build.rollupOptions, {
+          input,
           output: mapRollupOutputOptions(
             current.build.rollupOptions.output,
             (options) =>
-              assign({}, options, {
-                entryFileNames: path.join(
-                  current.build.assetsDir,
-                  '[name]-[hash].js'
-                ),
+              assign<OutputOptions, OutputOptions, OutputOptions>({}, options, {
+                entryFileNames: (value) => {
+                  if (value.name === 'service-worker') {
+                    return '[name].js'
+                  }
+
+                  return path.join(current.build.assetsDir, '[name]-[hash].js')
+                },
                 assetFileNames: path.join(
                   current.build.assetsDir,
                   '[name]-[hash].[ext]'
@@ -198,6 +224,33 @@ export const patchOptions = async (state: State) => {
         )}/* YEUX-REPLACE-END */`
       )
     )
+  }
+
+  if (state.serviceWorkerEntryExists) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await state.injectManifest!({
+      swSrc: path.relative(
+        process.cwd(),
+        path.join(state.clientOutputDirectory, 'service-worker.js')
+      ),
+      globDirectory: path.relative(process.cwd(), state.clientOutputDirectory),
+      swDest: path.relative(
+        process.cwd(),
+        path.join(state.clientOutputDirectory, 'service-worker.js')
+      ),
+      // globPatterns: ['**/*.{js,css,html}'],
+      globIgnores: [],
+      globFollow: true,
+      globStrict: true,
+      ...state.viteConfig.yeux?.injectManifest
+      // TODO: Assets that match this will be assumed to be uniquely versioned via
+      // their URL, and exempted from the normal HTTP cache-busting that's done
+      // when populating the precache. While not required, it's recommended that
+      // if your existing build process already inserts a [hash] value into each
+      // filename, you provide a RegExp that will detect that, as it will reduce
+      // the bandwidth consumed when precaching.
+      // dontCacheBustURLsMatching:
+    })
   }
 }
 
