@@ -39,6 +39,7 @@ export interface State {
   // serverAPIEntryPath: string
   // serverCreateInstanceCompiledPath: string
   // serverCreateInstancePath: string
+  watchPaths: string[]
   serverHMRPrefix: string
   serverHost: string
   serverOutputDirectory: string
@@ -53,6 +54,7 @@ export interface State {
   serverManifestPath: string
   clientManifestName: string
   clientManifestPath: string
+  clientTemplatePath: string
   // sourceMapSupportVersion: string
   serverRuntime: 'node' | 'webworker'
   serverTarget: string
@@ -64,5 +66,5 @@ export interface State {
 }
 
 export interface InlineConfig {
-  injectManifest: InjectManifestOptions
+  injectManifest: Omit<InjectManifestOptions, 'swSrc' | 'globDirectory' | 'swDest'>
 }

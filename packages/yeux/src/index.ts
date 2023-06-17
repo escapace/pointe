@@ -14,6 +14,7 @@ import { NODE_SEMVER } from './constants'
 import type { InlineConfig as YeuxInlineConfig } from './types'
 import { State, Vite, ViteConfig } from './types'
 import { resolve } from './utilities/resolve'
+import { rollupInputOptions } from './utilities/rollup-input-options'
 
 const importWorkbox = async (directory: string) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -58,13 +59,13 @@ const createState = async (
     '../../'
   )
 
-  const templatePath = path.join(directory, 'index.html')
+  const sourceDirectory = path.join(directory, 'src')
 
-  const serverEntryPath = path.join(directory, 'src/entry-server.ts')
-  const clientEntryPath = path.join(directory, 'src/entry-browser.ts')
+  const serverEntryPath = path.join(sourceDirectory, 'entry-server.ts')
+  const clientEntryPath = path.join(sourceDirectory, 'entry-browser.ts')
   const serviceWorkerEntryPath = path.join(
-    directory,
-    'src/entry-service-worker.ts'
+    sourceDirectory,
+    'entry-service-worker.ts'
   )
 
   const configPath =
@@ -84,6 +85,8 @@ const createState = async (
 
   const packageJSONPath = path.join(directory, 'package.json')
   const tsconfigPath = path.join(directory, 'tsconfig.json')
+
+
 
   const conditions = [
     await fse.pathExists(directory),
@@ -150,10 +153,6 @@ const createState = async (
     )
   }
 
-  if (!(await fse.pathExists(templatePath))) {
-    throw new Error(`${path.relative(directory, templatePath)}: No such file.`)
-  }
-
   if (Array.isArray(viteConfig.build.rollupOptions.output)) {
     throw new Error(
       'build.rollupOptions.output is an array, not supported by yeux.'
@@ -177,9 +176,21 @@ const createState = async (
     throw new Error('setting ssr.noExternal to true, is not supported by yeux.')
   }
 
+  const templatePath = path.resolve(
+    directory,
+    rollupInputOptions(viteConfig.build.rollupOptions.input, { directory }).main
+  )
+
+  if (!(await fse.pathExists(templatePath))) {
+    throw new Error(`${path.relative(directory, templatePath)}: No such file.`)
+  }
+
+
   const outputDirectory = path.resolve(directory, viteConfig.build.outDir)
   const clientOutputDirectory = path.join(outputDirectory, 'client')
   const serverOutputDirectory = path.join(outputDirectory, 'server')
+
+  const clientTemplatePath = path.join(clientOutputDirectory, path.basename(templatePath))
 
   const clientManifestName = 'build-client-manifest.json'
   const clientManifestPath = path.join(
@@ -229,7 +240,17 @@ const createState = async (
 
   const serviceWorkerEntryExists = await fse.pathExists(serviceWorkerEntryPath)
 
+  const watchPaths = [
+    sourceDirectory,
+    tsconfigPath,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    path.join(directory, configPath!),
+    packageJSONPath,
+    path.resolve(directory, viteConfig.publicDir)
+  ].filter(path => fse.pathExistsSync(path))
+
   return {
+    watchPaths,
     injectManifest: serviceWorkerEntryExists
       ? await importWorkbox(directory)
       : undefined,
@@ -246,6 +267,7 @@ const createState = async (
     clientManifestName,
     clientManifestPath,
     clientOutputDirectory,
+    clientTemplatePath,
     color: !(supportsColor.stdout === false),
     command,
     directory,
