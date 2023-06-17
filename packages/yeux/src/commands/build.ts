@@ -67,7 +67,9 @@ export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
 }
 
 export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
-  const current = await state.resolveConfig()
+  const current = await state.resolveConfig({
+    build: { ssr: path.relative(state.directory, state.serverEntryPath) }
+  })
 
   const noExternal =
     state.serverRuntime === 'node' ? undefined : current.ssr.noExternal
