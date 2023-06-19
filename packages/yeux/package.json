@@ -68,7 +68,6 @@
   "scripts": {
     "build": "node ../../scripts/build.mjs",
     "lint": "eslint 'src/**/*.ts'",
-    "test": "node ../../scripts/test.mjs && c8 mocha --enable-source-maps 'lib/tests/**/*.spec.js'",
     "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,

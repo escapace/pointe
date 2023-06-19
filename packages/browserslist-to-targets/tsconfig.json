@@ -2,15 +2,13 @@
   "compilerOptions": {
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "baseUrl": ".",
-    "composite": true,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": false,
     "isolatedModules": true,
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "lib": ["esnext"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
@@ -20,14 +18,10 @@
     "pretty": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "sourceMap": true,
     "strict": true,
     "target": "esnext",
     "typeRoots": ["node_modules/@types"],
-    "useDefineForClassFields": true,
-    "paths": {
-      "@yeuxjs/types": ["./packages/types/src"],
-      "yeux": ["./packages/yeux/src"]
-    }
-  }
+    "useDefineForClassFields": true
+  },
+  "include": ["src"]
 }

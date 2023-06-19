@@ -1,10 +1,27 @@
 {
-  "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "composite": true,
-    "declarationDir": "lib/types",
-    "outDir": "lib/tsc",
-    "rootDir": "src"
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": false,
+    "isolatedModules": true,
+    "lib": ["esnext", "dom"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext",
+    "typeRoots": ["node_modules/@types"],
+    "useDefineForClassFields": true
   },
   "include": ["src"]
 }
