@@ -17,6 +17,7 @@ export const rootPackageJSON = await fse.readJSON(
 )
 export const name = packageJSON.name
 export const external = [
+  'esbuild',
   ...Object.keys(packageJSON.dependencies ?? {}),
   ...Object.keys(packageJSON.peerDependencies ?? {})
 ]

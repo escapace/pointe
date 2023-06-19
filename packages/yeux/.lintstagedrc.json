@@ -1,5 +1,6 @@
 {
   "*.json": ["prettier --write"],
-  "packages/*/src/**/*.ts": ["eslint --fix", "prettier --write"],
-  "scripts/*.{mjs,cjs}": ["eslint --fix", "prettier --write"]
+  "*.md": ["prettier --write"],
+  "*.{yml,yaml}": ["prettier --write"],
+  "src/**/*.{js,mjs,cjs,ts,mts,cts}": ["eslint --fix", "prettier --write"]
 }

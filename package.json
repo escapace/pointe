@@ -27,12 +27,12 @@
     "prettier": "2.8.8",
     "prettier-config-escapace": "1.0.6",
     "semver": "7.5.2",
-    "syncpack": "10.5.1",
+    "syncpack": "10.6.1",
     "typescript": "5.1.3"
   },
   "engines": {
-    "node": ">= 18.2.0",
-    "pnpm": ">= 8.6.0"
+    "node": ">=18.2.0",
+    "pnpm": ">=8.6.1"
   },
   "homepage": "https://github.com/escapace/yeux",
   "license": "MPL-2.0",
@@ -42,8 +42,8 @@
     "build": "pnpm run -r --filter './packages/*' build",
     "lint": "ls-lint && pnpm run -r --filter './packages/*' lint",
     "prepare": "is-ci || husky install",
-    "test": "echo 'not available'",
+    "test": "pnpm run -r --filter './packages/*' test",
     "typecheck": "pnpm run -r --filter './packages/*' typecheck",
-    "update": "pnpm -w -r --filter './packages/*' --filter '.' exec ncu -u && pnpm exec syncpack fix-mismatches && pnpm exec syncpack set-semver-ranges"
+    "update": "pnpm -w -r --filter './packages/*' --filter '.' exec ncu -u --dep prod,dev,peer && pnpm exec syncpack fix-mismatches && pnpm exec syncpack set-semver-ranges"
   }
 }

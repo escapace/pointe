@@ -3,54 +3,51 @@ import { execa } from 'execa'
 import fse from 'fs-extra'
 import { mkdir } from 'fs/promises'
 import path from 'path'
+import { cwd, external, name, target, version } from './constants.mjs'
 import process from 'process'
-import { cwd, external, name, version } from './constants.mjs'
-
-const options = {
-  esm: {
-    outdir: path.join(cwd, 'lib/esm'),
-    tsconfig: name === 'yeux' ? undefined : path.join(cwd, 'tsconfig.json'),
-    splitting: name === 'yeux',
-    entryPoints:
-      name === 'yeux'
-        ? ['lib/tsc/index.js', 'lib/tsc/cli.js']
-        : ['src/index.ts']
-  }
-}
 
 process.umask(0o022)
 process.chdir(cwd)
 
-await fse.remove(path.join(cwd, 'lib'))
+const outdir = path.join(cwd, 'lib/esm')
 
-await execa(path.join(cwd, 'node_modules', '.bin', 'tsc'), ['-b'], {
-  all: true,
-  cwd
-}).catch((reason) => {
+await fse.remove(outdir)
+await mkdir(outdir, { recursive: true })
+
+const tsconfig =
+  /* name === 'yeux' ? path.join(cwd, 'tsconfig.json') : */ path.join(
+    cwd,
+    'tsconfig-build.json'
+  )
+
+await build({
+  bundle: true,
+  entryPoints:
+    name === 'yeux' ? ['src/index.ts', 'src/cli.ts'] : ['src/index.ts'],
+  external: ['esbuild', ...external],
+  splitting: true,
+  format: 'esm',
+  logLevel: 'info',
+  define: {
+    VERSION: JSON.stringify(version)
+  },
+  outExtension: { '.js': '.mjs' },
+  outbase: path.join(cwd, 'src'),
+  outdir,
+  platform: 'node',
+  sourcemap: true,
+  minifySyntax: true,
+  target,
+  tsconfig
+})
+
+await fse.remove(path.join(cwd, 'lib/types'))
+
+await execa(
+  path.join(cwd, 'node_modules', '.bin', 'tsc'),
+  ['-p', tsconfig, '--emitDeclarationOnly', '--declarationDir', 'lib/types'],
+  { all: true, cwd }
+).catch((reason) => {
   console.error(reason.all)
   process.exit(reason.exitCode)
 })
-
-await Promise.all(
-  Object.keys(options).map(async (format) => {
-    const { outdir } = options[format]
-
-    await fse.remove(outdir)
-    await mkdir(outdir, { recursive: true })
-
-    await build({
-      bundle: true,
-      external,
-      format,
-      define: {
-        VERSION: JSON.stringify(version)
-      },
-      logLevel: 'info',
-      outExtension: { '.js': `.${format === 'esm' ? 'mjs' : 'cjs'}` },
-      splitting: options.splitting,
-      platform: 'node',
-      sourcemap: true,
-      ...options[format]
-    })
-  })
-)
