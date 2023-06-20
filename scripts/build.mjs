@@ -23,7 +23,11 @@ const tsconfig =
 await build({
   bundle: true,
   entryPoints:
-    name === 'yeux' ? ['src/index.ts', 'src/cli.ts'] : ['src/index.ts'],
+    name === 'yeux'
+      ? ['src/index.ts', 'src/cli.ts']
+      : name === '@yeuxjs/plugin-lightningcss'
+      ? ['src/index.ts', 'src/vite.ts', 'src/rollup.ts', 'src/esbuild.ts']
+      : ['src/index.ts'],
   external: ['esbuild', ...external],
   splitting: true,
   format: 'esm',
