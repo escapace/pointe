@@ -98,18 +98,25 @@ self.addEventListener('activate', function(e) {
       template = await server.transformIndexHtml(url, template)
 
       const {
-        createYeuxApp: createAppOne,
-        createApp: createAppTwo,
-        default: createAppThree
+        createApp: createAppA,
+        createServer: createAppB,
+        createYeuxApp: createAppC,
+        default: createAppD
       } = (await server.ssrLoadModule(
         path.relative(state.directory, state.serverEntryPath)
       )) as {
-        createYeuxApp: CreateApp
         createApp: CreateApp
+        createServer: CreateApp
+        createYeuxApp: CreateApp
         default: CreateApp
       }
 
-      const { fetch } = await (createAppOne ?? createAppTwo ?? createAppThree)({
+      const { fetch } = await (
+        createAppA ??
+        createAppB ??
+        createAppC ??
+        createAppD
+      )({
         command: 'dev',
         template,
         mode: state.nodeEnv as 'development',
