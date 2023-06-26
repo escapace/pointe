@@ -4,6 +4,7 @@
     "project": "./tsconfig.json"
   },
   "extends": ["escapace"],
+  "root": true,
   "env": {
     "node": true
   }

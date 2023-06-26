@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 // import { memoize } from 'lodash'
 import { resolvePath } from 'mlly'
 import { pathToFileURL } from 'url'

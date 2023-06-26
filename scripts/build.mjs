@@ -27,6 +27,8 @@ await build({
       ? ['src/index.ts', 'src/cli.ts']
       : name === '@yeuxjs/plugin-lightningcss'
       ? ['src/index.ts', 'src/vite.ts', 'src/rollup.ts', 'src/esbuild.ts']
+      : name === '@yeuxjs/plugin-ajv'
+      ? ['src/index.ts', 'src/vite.ts', 'src/rollup.ts', 'src/esbuild.ts']
       : ['src/index.ts'],
   external: ['esbuild', ...external],
   splitting: true,
