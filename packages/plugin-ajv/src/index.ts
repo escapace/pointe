@@ -11,7 +11,14 @@ import type {
 import standaloneCode from 'ajv/dist/standalone/index.js'
 import { build } from 'esbuild'
 import { stat } from 'fs/promises'
-import { assign, isEmpty, isPlainObject, map } from 'lodash-es'
+import {
+  assign,
+  isEmpty,
+  isPlainObject,
+  map,
+  mapKeys,
+  mapValues
+} from 'lodash-es'
 import MagicString from 'magic-string'
 import path from 'path'
 import { createUnplugin } from 'unplugin'
@@ -64,8 +71,31 @@ export const ajv = createUnplugin((options: Options) => {
       ? new AjvClass[options.type]()
       : new AjvClass[options.type](opts)
 
+  const configuration: {
+    define: Record<string, string>
+  } = { define: {} }
+
   return {
     name: 'ajv',
+    enforce: 'pre',
+    vite: {
+      configResolved(value) {
+        const define = mapValues({ ...value.define }, (value) =>
+          JSON.stringify(value)
+        )
+
+        const env = { ...value.env, SSR: typeof value.build.ssr === 'string' }
+
+        configuration.define = {
+          ...define,
+          ...mapKeys(
+            mapValues(env, (value) => JSON.stringify(value)),
+            (_, value) => `import.meta.env.${value}`
+          ),
+          'import.meta.env': JSON.stringify(env)
+        }
+      }
+    },
     transformInclude: options.include,
     async transform(code, file) {
       const magic = new MagicString(code)
@@ -83,12 +113,14 @@ export const ajv = createUnplugin((options: Options) => {
         platform: 'node',
         sourcemap: false,
         target: [`node${process.version.slice(1)}`],
-        write: false
+        write: false,
+        define: configuration.define
       })
 
       const source = new TextDecoder('utf-8').decode(outputFiles[0].contents)
 
       const context = createContext({
+        process: { env: {} },
         console
       })
 
