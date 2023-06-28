@@ -24,7 +24,7 @@
     "semver": "^7.5.3",
     "source-map-support": "^0.5.21",
     "split2": "^4.2.0",
-    "supports-color": "^9.3.1",
+    "supports-color": "^9.4.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "@types/fs-extra": "11.0.1",
     "@types/lodash-es": "4.17.7",
     "@types/mocha": "10.0.1",
-    "@types/node": "20.3.1",
+    "@types/node": "20.3.2",
     "@types/semver": "7.5.0",
     "@types/source-map-support": "0.5.6",
     "@types/split2": "4.2.0",
@@ -49,8 +49,8 @@
     "eslint-plugin-no-null": "1.0.2",
     "prettier": "2.8.8",
     "prettier-config-escapace": "1.0.6",
-    "rollup": "3.25.2",
-    "typescript": "5.1.3",
+    "rollup": "3.25.3",
+    "typescript": "5.1.5",
     "vite": "4.3.9",
     "workbox-build": "7.0.0"
   },

@@ -5,7 +5,7 @@
   "author": "escapace <opensource@escapace.com>",
   "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
-    "@types/node": "20.3.1",
+    "@types/node": "20.3.2",
     "@typescript-eslint/eslint-plugin": "5.60.1",
     "@typescript-eslint/parser": "5.60.1",
     "eslint": "8.43.0",
@@ -15,7 +15,7 @@
     "eslint-plugin-no-null": "1.0.2",
     "prettier": "2.8.8",
     "prettier-config-escapace": "1.0.6",
-    "typescript": "5.1.3"
+    "typescript": "5.1.5"
   },
   "files": [
     "lib/types"
