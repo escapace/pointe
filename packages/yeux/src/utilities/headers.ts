@@ -1,6 +1,8 @@
-export interface NodeHeaders {
-  [header: string]: string | number | string[] | undefined
-}
+import type { OutgoingHttpHeaders } from 'http'
+
+// export interface NodeHeaders {
+//   [header: string]: string | number | string[] | undefined
+// }
 
 // https://github.com/vercel/next.js/blob/canary/packages/next/src/server/web/utils.ts
 
@@ -80,30 +82,38 @@ export function splitCookiesString(cookiesString: string) {
   return cookiesStrings
 }
 
-export function fromNodeHeaders(object: NodeHeaders): Headers {
+export function fromNodeHeaders(nodeHeaders: OutgoingHttpHeaders): Headers {
   const headers = new Headers()
-  for (const [key, value] of Object.entries(object)) {
+  for (const [key, value] of Object.entries(nodeHeaders)) {
     const values = Array.isArray(value) ? value : [value]
-    for (const v of values) {
-      if (v !== undefined) {
-        headers.append(key, `${v}`)
+    for (let v of values) {
+      if (typeof v === 'undefined') continue
+      if (typeof v === 'number') {
+        v = v.toString()
       }
+
+      headers.append(key, v)
     }
   }
-
   return headers
 }
 
-export function toNodeHeaders(headers?: Headers): NodeHeaders {
-  const result: NodeHeaders = {}
-  if (headers != null) {
+export function toNodeHeaders(headers: Headers): OutgoingHttpHeaders {
+  const nodeHeaders: OutgoingHttpHeaders = {}
+  const cookies: string[] = []
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  if (headers) {
     for (const [key, value] of headers.entries()) {
-      result[key] = value
       if (key.toLowerCase() === 'set-cookie') {
-        result[key] = splitCookiesString(value)
+        // We may have gotten a comma joined string of cookies, or multiple
+        // set-cookie headers. We need to merge them into one header array
+        // to represent all the cookies.
+        cookies.push(...splitCookiesString(value))
+        nodeHeaders[key] = cookies.length === 1 ? cookies[0] : cookies
+      } else {
+        nodeHeaders[key] = value
       }
     }
   }
-
-  return result
+  return nodeHeaders
 }
