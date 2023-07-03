@@ -86,8 +86,6 @@ const createState = async (
   const packageJSONPath = path.join(directory, 'package.json')
   const tsconfigPath = path.join(directory, 'tsconfig.json')
 
-
-
   const conditions = [
     await fse.pathExists(directory),
     await fse.pathExists(path.join(directory, 'node_modules', '.bin', 'vite')),
@@ -185,12 +183,14 @@ const createState = async (
     throw new Error(`${path.relative(directory, templatePath)}: No such file.`)
   }
 
-
   const outputDirectory = path.resolve(directory, viteConfig.build.outDir)
   const clientOutputDirectory = path.join(outputDirectory, 'client')
   const serverOutputDirectory = path.join(outputDirectory, 'server')
 
-  const clientTemplatePath = path.join(clientOutputDirectory, path.basename(templatePath))
+  const clientTemplatePath = path.join(
+    clientOutputDirectory,
+    path.basename(templatePath)
+  )
 
   const clientManifestName = 'build-client-manifest.json'
   const clientManifestPath = path.join(
@@ -228,7 +228,7 @@ const createState = async (
 
   // const serverIndexPath = path.join(serverOutputDirectory, 'index.mjs')
 
-  const umask = 0o027
+  const umask = 0o022 // 0o027
   const maskFile = 0o666 & ~umask
   const maskDirectory = 0o777 & ~umask
 
@@ -247,7 +247,7 @@ const createState = async (
     path.join(directory, configPath!),
     packageJSONPath,
     path.resolve(directory, viteConfig.publicDir)
-  ].filter(path => fse.pathExistsSync(path))
+  ].filter((path) => fse.pathExistsSync(path))
 
   return {
     watchPaths,

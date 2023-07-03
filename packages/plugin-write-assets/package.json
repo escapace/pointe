@@ -1,0 +1,47 @@
+{
+  "name": "@yeuxjs/write-assets",
+  "description": "",
+  "version": "0.0.0",
+  "author": "escapace <opensource@escapace.com>",
+  "bugs": "https://github.com/escapace/yeux/issues",
+  "devDependencies": {
+    "@types/lodash-es": "4.17.7",
+    "@types/node": "20.3.2",
+    "@typescript-eslint/eslint-plugin": "5.60.1",
+    "@typescript-eslint/parser": "5.60.1",
+    "esbuild": "0.18.10",
+    "eslint": "8.43.0",
+    "eslint-config-escapace": "3.17.1",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-editorconfig": "4.0.3",
+    "eslint-plugin-no-null": "1.0.2",
+    "lint-staged": "13.2.3",
+    "prettier": "2.8.8",
+    "prettier-config-escapace": "1.0.6",
+    "typescript": "5.1.5",
+    "vite": "4.3.9"
+  },
+  "exports": {
+    ".": {
+      "import": "./lib/esm/index.mjs",
+      "types": "./lib/types/index.d.ts"
+    }
+  },
+  "files": [
+    "lib/esm",
+    "lib/types"
+  ],
+  "homepage": "https://github.com/escapace/yeux",
+  "license": "MPL-2.0",
+  "module": "lib/esm/index.mjs",
+  "private": false,
+  "repository": "https://github.com/escapace/yeux.git",
+  "scripts": {
+    "build": "node ../../scripts/build.mjs",
+    "lint": "eslint 'src/**/*.{js,mjs,cjs,ts,mts,cts}'",
+    "typecheck": "tsc --noEmit"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "lib/types/index.d.ts"
+}

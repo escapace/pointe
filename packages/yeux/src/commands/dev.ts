@@ -1,22 +1,25 @@
 import { CreateApp } from '@yeuxjs/types'
 import bodyParser from 'body-parser'
 import express from 'express'
+import { fromNodeHeaders, toNodeHeaders } from 'fastify-fetch'
+import fse from 'fs-extra'
 import { readFile } from 'fs/promises'
 import { assign, omit } from 'lodash-es'
 import path from 'path'
 import { isNativeError } from 'util/types'
 import { State } from '../types'
-import { fromNodeHeaders, toNodeHeaders } from '../utilities/headers'
 
 export async function dev(state: State) {
-  const app = express()
-  app.disable('x-powered-by')
+  await fse.emptyDir(state.clientOutputDirectory)
 
-  const instance = app.listen(state.serverPort, state.serverHost)
+  const server = express()
+  server.disable('x-powered-by')
+
+  const instance = server.listen(state.serverPort, state.serverHost)
 
   const current = state.resolveConfig()
 
-  const server = await state.vite.createServer(
+  const viteDevServier = await state.vite.createServer(
     omit(
       assign({}, current, {
         ssr: {
@@ -50,9 +53,9 @@ export async function dev(state: State) {
     )
   )
 
-  app.use(server.middlewares)
+  server.use(viteDevServier.middlewares)
 
-  app.use(
+  server.use(
     bodyParser.raw({
       inflate: false,
       type: [
@@ -79,7 +82,7 @@ self.addEventListener('activate', function(e) {
 });`
 
   if (state.serviceWorkerEntryExists) {
-    app.get('/service-worker.js', (_, response) => {
+    server.get('/service-worker.js', (_, response) => {
       return response
         .type('text/javascript')
         .send(SELF_DESTROYING_SERVICE_WORKER)
@@ -87,7 +90,7 @@ self.addEventListener('activate', function(e) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  app.use('*', async (incoming, outgoing, next) => {
+  server.use('*', async (incoming, outgoing, next) => {
     const url = `${incoming.protocol}://${incoming.get('host') ?? 'localhost'}${
       incoming.originalUrl
     }`
@@ -95,14 +98,14 @@ self.addEventListener('activate', function(e) {
     try {
       let template = await readFile(state.templatePath, 'utf-8')
 
-      template = await server.transformIndexHtml(url, template)
+      template = await viteDevServier.transformIndexHtml(url, template)
 
       const {
         createApp: createAppA,
         createServer: createAppB,
         createYeuxApp: createAppC,
         default: createAppD
-      } = (await server.ssrLoadModule(
+      } = (await viteDevServier.ssrLoadModule(
         path.relative(state.directory, state.serverEntryPath)
       )) as {
         createApp: CreateApp
@@ -120,7 +123,7 @@ self.addEventListener('activate', function(e) {
         command: 'dev',
         template,
         mode: state.nodeEnv as 'development',
-        moduleGraph: server.moduleGraph
+        moduleGraph: viteDevServier.moduleGraph
       })
 
       const body =
@@ -131,6 +134,7 @@ self.addEventListener('activate', function(e) {
       const response = await fetch(url, {
         method: incoming.method,
         body,
+        // @ts-expect-error undici/fetch compat
         headers: fromNodeHeaders(incoming.headers),
         cache: 'no-cache',
         credentials: 'include',
@@ -140,6 +144,7 @@ self.addEventListener('activate', function(e) {
       })
 
       for (const [key, value] of Object.entries(
+        // @ts-expect-error undici/fetch compat
         toNodeHeaders(response.headers)
       )) {
         if (value === undefined) {
@@ -156,7 +161,7 @@ self.addEventListener('activate', function(e) {
         .end(Buffer.from(await response.arrayBuffer()))
     } catch (e) {
       if (isNativeError(e)) {
-        server.ssrFixStacktrace(e)
+        viteDevServier.ssrFixStacktrace(e)
       }
 
       next(e)
