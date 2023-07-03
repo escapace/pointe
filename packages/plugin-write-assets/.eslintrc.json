@@ -1,0 +1,8 @@
+{
+  "parserOptions": {
+    "warnOnUnsupportedTypeScriptVersion": false,
+    "project": "./tsconfig.json"
+  },
+  "root": true,
+  "extends": ["escapace"]
+}
