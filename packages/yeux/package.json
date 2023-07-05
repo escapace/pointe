@@ -10,8 +10,8 @@
   "dependencies": {
     "@pnpm/read-package-json": "^8.0.2",
     "@rollup/pluginutils": "^5.0.2",
-    "@yeuxjs/types": "^0.0.0",
-    "@yeuxjs/write-assets": "^0.0.0",
+    "@yeuxjs/types": "workspace:*",
+    "@yeuxjs/write-assets": "workspace:*",
     "arg": "^5.0.2",
     "body-parser": "^1.20.2",
     "builtin-modules": "^3.3.0",
