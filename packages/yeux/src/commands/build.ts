@@ -4,9 +4,10 @@ import builtinModules from 'builtin-modules'
 import fse from 'fs-extra'
 import { assign, mapValues, omit, uniq } from 'lodash-es'
 import path from 'path'
-import type { OutputOptions } from 'rollup'
+import type { OutputOptions, PreRenderedAsset } from 'rollup'
 import type { Manifest, SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
+import { createAssetFileNames } from '../utilities/create-asset-file-names'
 import { step } from '../utilities/log'
 import { rollupInputOptions } from '../utilities/rollup-input-options'
 
@@ -27,6 +28,7 @@ const mapRollupOutputOptions = (
 
 export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
   const current = await state.resolveConfig()
+  const assetFileNames = createAssetFileNames(current.build.assetsDir)
 
   const input = assign(
     {},
@@ -61,10 +63,9 @@ export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
 
                   return path.join(current.build.assetsDir, '[name]-[hash].js')
                 },
-                assetFileNames: path.join(
-                  current.build.assetsDir,
-                  '[name]-[hash].[ext]'
-                ),
+                assetFileNames:
+                  options.assetFileNames ??
+                  ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
                 chunkFileNames: path.join(
                   current.build.assetsDir,
                   '[name]-[hash].js'
@@ -82,6 +83,7 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
   const current = await state.resolveConfig({
     build: { ssr: path.relative(state.directory, state.serverEntryPath) }
   })
+  const assetFileNames = createAssetFileNames(current.build.assetsDir)
 
   const noExternal =
     state.serverRuntime === 'node' ? undefined : current.ssr.noExternal
@@ -130,7 +132,9 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
                     : undefined,
                 entryFileNames: '[name].mjs',
                 chunkFileNames: '[name]-[hash].mjs',
-                assetFileNames: '[name]-[hash].[ext]',
+                assetFileNames:
+                  options.assetFileNames ??
+                  ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
                 format: 'esm'
               })
           )

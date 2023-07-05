@@ -3,53 +3,12 @@ import path from 'node:path'
 import { ResolvedConfig, type Plugin } from 'vite'
 
 interface Options {
-  publicDir?: boolean
-  include?: (filename: string) => boolean
+  include: (filename: string) => boolean
   outDir?: string
+  publicDir?: boolean
 }
 
-export const KNOWN_ASSET_TYPES = [
-  // images
-  'apng',
-  'png',
-  'jpg',
-  'jpeg',
-  'jfif',
-  'pjpeg',
-  'pjp',
-  'gif',
-  'svg',
-  'ico',
-  'webp',
-  'avif',
-  'bmp',
-  'tiff',
-
-  // media
-  'mp4',
-  'webm',
-  'ogg',
-  'mp3',
-  'wav',
-  'flac',
-  'aac',
-  'opus',
-  'heic',
-
-  // fonts
-  'woff2',
-  'woff',
-  'eot',
-  'ttf',
-  'otf'
-
-  // // other
-  // 'webmanifest',
-  // 'pdf',
-  // 'txt',
-]
-
-export const writeAssets = (options?: Options): Plugin => {
+export const writeAssets = (options: Options): Plugin => {
   let config: ResolvedConfig
   let opts: Required<Options>
 
@@ -60,10 +19,8 @@ export const writeAssets = (options?: Options): Plugin => {
     configResolved(value) {
       config = value
       opts = {
-        publicDir: true,
         outDir: config.build.outDir,
-        include: (filename) =>
-          KNOWN_ASSET_TYPES.some((type) => filename.endsWith(type)),
+        publicDir: true,
         ...options
       }
     },
