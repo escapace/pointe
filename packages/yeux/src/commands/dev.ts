@@ -1,4 +1,5 @@
 import { CreateApp } from '@yeuxjs/types'
+import { writeAssets } from '@yeuxjs/write-assets'
 import bodyParser from 'body-parser'
 import express from 'express'
 import { fromNodeHeaders, toNodeHeaders } from 'fastify-fetch'
@@ -8,6 +9,11 @@ import { assign, omit } from 'lodash-es'
 import path from 'path'
 import { isNativeError } from 'util/types'
 import { State } from '../types'
+import {
+  extensionFont,
+  extensionImage,
+  hasExtension
+} from '../utilities/create-asset-file-names'
 
 export async function dev(state: State) {
   await fse.emptyDir(state.clientOutputDirectory)
@@ -16,8 +22,7 @@ export async function dev(state: State) {
   server.disable('x-powered-by')
 
   const instance = server.listen(state.serverPort, state.serverHost)
-
-  const current = state.resolveConfig()
+  const current = await state.resolveConfig()
 
   const viteDevServier = await state.vite.createServer(
     omit(
@@ -38,6 +43,14 @@ export async function dev(state: State) {
           minify: false,
           terserOptions: undefined
         },
+        plugins: [
+          writeAssets({
+            outDir: state.clientOutputDirectory,
+            publicDir: true,
+            include: (file) =>
+              hasExtension(file, [...extensionImage, ...extensionFont])
+          })
+        ],
         server: {
           middlewareMode: true,
           strictPort: true,
@@ -49,7 +62,7 @@ export async function dev(state: State) {
           }
         }
       }),
-      ['plugins', 'assetsInclude']
+      ['assetsInclude']
     )
   )
 
