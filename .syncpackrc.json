@@ -15,6 +15,13 @@
       "strategy": "versionsByName"
     }
   },
+  "versionGroups": [
+    {
+      "packages": ["**"],
+      "dependencies": ["@yeuxjs/**"],
+      "isIgnored": true
+    }
+  ],
   "semverGroups": [
     {
       "dependencies": ["**"],

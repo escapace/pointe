@@ -360,10 +360,10 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(rollup@3.26.0)
       '@yeuxjs/types':
-        specifier: ^0.0.0
+        specifier: workspace:*
         version: link:../types
       '@yeuxjs/write-assets':
-        specifier: ^0.0.0
+        specifier: workspace:*
         version: link:../plugin-write-assets
       arg:
         specifier: ^5.0.2
