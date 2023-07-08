@@ -116,8 +116,8 @@ export const preview = async (state: State) => {
         {
           cleanup: true,
           env: {
-            HOST: state.serverHost,
-            PORT: `${state.serverPort}`,
+            SERVER_HOST: state.serverHost,
+            SERVER_PORT: `${state.serverPort}`,
             NODE_ENV: `${state.nodeEnv}`,
             [state.color ? 'FORCE_COLOR' : 'NO_COLOR']: 'true'
           },
