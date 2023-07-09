@@ -3,6 +3,7 @@ import path from 'node:path'
 export const extensionImage = [
   '3dv',
   'PI1',
+  'apng',
   'PI2',
   'PI3',
   'ai',
@@ -47,7 +48,6 @@ export const extensionImage = [
   'heic',
   'heif',
   'icns',
-  'ico',
   'ico',
   'iff',
   'iff',
@@ -132,6 +132,38 @@ export const extensionImage = [
 
 export const extensionFont = ['eot', 'otf', 'ttc', 'ttf', 'woff', 'woff2']
 
+export const extensionJavaScript = [
+  '.mjs',
+  '.js',
+  '.mts',
+  '.ts',
+  '.jsx',
+  '.tsx',
+  '.json'
+]
+
+export const extensionCSS = [
+  'css',
+  'less',
+  'sass',
+  'scss',
+  'styl',
+  'stylus',
+  'pcss',
+  'postcss'
+]
+
+export const extensionMedia = [
+  'mp4',
+  'webm',
+  'ogg',
+  'mp3',
+  'wav',
+  'flac',
+  'aac',
+  'opus'
+]
+
 const assetFileNameReturn = (assetsDir: string, type?: string) => {
   if (type === undefined) {
     return path.join(assetsDir, '[name]-[hash].[ext]')
@@ -152,12 +184,24 @@ export const createAssetFileNames =
     }
 
     if (hasExtension(filename, extensionImage)) {
-      return assetFileNameReturn(assetsDir, 'images')
+      return assetFileNameReturn(assetsDir, 'image')
     }
 
     if (hasExtension(filename, extensionFont)) {
-      return assetFileNameReturn(assetsDir, 'fonts')
+      return assetFileNameReturn(assetsDir, 'font')
     }
 
-    return assetFileNameReturn(assetsDir)
+    if (hasExtension(filename, extensionJavaScript)) {
+      return assetFileNameReturn(assetsDir, 'js')
+    }
+
+    if (hasExtension(filename, extensionCSS)) {
+      return assetFileNameReturn(assetsDir, 'css')
+    }
+
+    if (hasExtension(filename, extensionMedia)) {
+      return assetFileNameReturn(assetsDir, 'media')
+    }
+
+    return assetFileNameReturn(assetsDir, 'application')
   }
