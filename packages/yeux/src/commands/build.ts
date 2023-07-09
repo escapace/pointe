@@ -61,14 +61,17 @@ export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
                     return '[name].js'
                   }
 
-                  return path.join(current.build.assetsDir, '[name]-[hash].js')
+                  return path.join(
+                    current.build.assetsDir,
+                    'js/[name]-[hash].js'
+                  )
                 },
                 assetFileNames:
                   options.assetFileNames ??
                   ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
                 chunkFileNames: path.join(
                   current.build.assetsDir,
-                  '[name]-[hash].js'
+                  'js/[name]-[hash].js'
                 )
               })
           )
