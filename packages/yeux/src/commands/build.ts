@@ -2,8 +2,9 @@ import { createFilter } from '@rollup/pluginutils'
 import { OptionsProduction } from '@yeuxjs/types'
 import builtinModules from 'builtin-modules'
 import fse from 'fs-extra'
-import { assign, mapValues, omit, uniq } from 'lodash-es'
+import { assign, flatten, mapValues, omit, uniq } from 'lodash-es'
 import path from 'path'
+import { getPackageEntryPoints } from 'pkg-entry-points'
 import type { OutputOptions, PreRenderedAsset } from 'rollup'
 import type { Manifest, SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
@@ -100,12 +101,30 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
           resolve: false
         })
 
-  const external = [
+  const entryPoints = async (ids: string[]) =>
+    flatten(
+      await Promise.all(
+        ids.map(async (id) => [
+          id,
+          ...Object.keys(
+            await getPackageEntryPoints(
+              path.join(state.directory, 'node_modules', id)
+            )
+          ).map((value) => path.join(id, value))
+        ])
+      )
+    )
+
+  const dependencies = Object.keys(state.packageJson.dependencies ?? {})
+
+  const external = uniq([
     ...(current.ssr.external ?? []),
-    ...Object.keys(state.packageJson.dependencies ?? {}),
+    ...dependencies,
+    ...(await entryPoints(dependencies)),
     ...builtinModules,
-    ...builtinModules.map((value) => `node:${value}`)
-  ].filter((value) => isExternal(value))
+    ...builtinModules.map((value) => `node:${value}`),
+    'node:assert/strict'
+  ]).filter((value) => isExternal(value))
 
   const ssr: SSROptions = {
     target: state.serverRuntime,
@@ -124,15 +143,16 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
         manifest: state.serverManifestName,
         minify: false,
         terserOptions: undefined,
-        rollupOptions: assign({}, current.build.rollupOptions, {
+        rollupOptions: assign(current.build.rollupOptions, {
           output: mapRollupOutputOptions(
             current.build.rollupOptions.output,
             (options) =>
               assign({}, options, {
-                manualChunks:
-                  state.serverRuntime === 'node'
-                    ? options.manualChunks
-                    : undefined,
+                manualChunks: (id: string) =>
+                  external.includes(id) ? undefined : 'entry-server.mjs',
+                // state.serverRuntime === 'node'
+                //   ? options.manualChunks
+                //   : undefined,
                 entryFileNames: '[name].mjs',
                 chunkFileNames: '[name]-[hash].mjs',
                 assetFileNames:
