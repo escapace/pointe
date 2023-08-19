@@ -184,19 +184,19 @@ export const createAssetFileNames =
     }
 
     if (hasExtension(filename, extensionImage)) {
-      return assetFileNameReturn(assetsDir, 'image')
+      return assetFileNameReturn(assetsDir, 'images')
     }
 
     if (hasExtension(filename, extensionFont)) {
-      return assetFileNameReturn(assetsDir, 'font')
+      return assetFileNameReturn(assetsDir, 'fonts')
     }
 
     if (hasExtension(filename, extensionJavaScript)) {
-      return assetFileNameReturn(assetsDir, 'js')
+      return assetFileNameReturn(assetsDir, 'scripts')
     }
 
     if (hasExtension(filename, extensionCSS)) {
-      return assetFileNameReturn(assetsDir, 'css')
+      return assetFileNameReturn(assetsDir, 'styles')
     }
 
     if (hasExtension(filename, extensionMedia)) {
