@@ -17,7 +17,7 @@
     "esbuild": "0.18.11",
     "eslint": "8.44.0",
     "eslint-config-escapace": "3.17.2",
-    "eslint-config-prettier": "8.8.0",
+    "eslint-config-prettier": "9.0.0",
     "eslint-plugin-editorconfig": "4.0.3",
     "eslint-plugin-no-null": "1.0.2",
     "lint-staged": "13.2.3",
