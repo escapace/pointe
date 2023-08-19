@@ -14,6 +14,7 @@ export class PrefixStream extends Transform {
     this._prefix = prefix
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   _transform(chunk: Buffer, _: string, done: Function) {
     done(null, `${this._prefix}${chunk.toString()}${EOL}`)
   }
