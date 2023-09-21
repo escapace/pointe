@@ -12,7 +12,7 @@ export const minify = (value: string, targets: Targets) => {
     minify: true
   })
 
-  return code.toString('utf8')
+  return code.toString()
 }
 
 describe('./src/index.spec.ts', () => {
