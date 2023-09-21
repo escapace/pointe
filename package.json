@@ -31,8 +31,8 @@
     "typescript": "5.2.2"
   },
   "engines": {
-    "node": ">=18.2.0",
-    "pnpm": ">=8.6.5"
+    "node": ">=18.18.0",
+    "pnpm": ">=8.7.6"
   },
   "homepage": "https://github.com/escapace/yeux",
   "license": "MPL-2.0",
