@@ -157,7 +157,6 @@ self.addEventListener('activate', function(e) {
       })
 
       for (const [key, value] of Object.entries(
-        // @ts-expect-error undici/fetch compat
         toNodeHeaders(response.headers)
       )) {
         if (value === undefined) {

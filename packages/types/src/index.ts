@@ -28,6 +28,7 @@ export interface OptionsProduction {
 }
 
 export type OptionsStaging = OptionsProduction
+// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 export type Options = OptionsDevelopment | OptionsProduction | OptionsStaging
 export type CreateApp = (options: Options) => Promise<App>
 
