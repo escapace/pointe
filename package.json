@@ -2,8 +2,13 @@
   "name": "yeux-monorepo",
   "description": "",
   "version": "0.0.0",
-  "author": "escapace <opensource@escapace.com>",
-  "bugs": "https://github.com/escapace/yeux/issues",
+  "author": {
+    "name": "escapace",
+    "email": "opensource@escapace.com"
+  },
+  "bugs": {
+    "url": "https://github.com/escapace/yeux/issues"
+  },
   "devDependencies": {
     "@commitlint/cli": "17.7.1",
     "@commitlint/config-conventional": "17.7.0",
@@ -37,7 +42,10 @@
   "homepage": "https://github.com/escapace/yeux",
   "license": "MPL-2.0",
   "private": true,
-  "repository": "https://github.com/escapace/yeux.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/escapace/yeux.git"
+  },
   "scripts": {
     "build": "pnpm run -r --filter './packages/*' build",
     "lint": "ls-lint && pnpm run -r --filter './packages/*' lint",
