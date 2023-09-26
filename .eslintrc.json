@@ -1,11 +1,9 @@
 {
-  "parserOptions": {
-    "warnOnUnsupportedTypeScriptVersion": false,
-    "project": "./tsconfig.json"
-  },
+  "env": { "node": true },
   "extends": ["escapace"],
-  "root": true,
-  "env": {
-    "node": true
-  }
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "warnOnUnsupportedTypeScriptVersion": false
+  },
+  "root": true
 }
