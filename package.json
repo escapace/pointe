@@ -6,9 +6,7 @@
     "name": "escapace",
     "email": "opensource@escapace.com"
   },
-  "bugs": {
-    "url": "https://github.com/escapace/yeux/issues"
-  },
+  "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
     "@commitlint/cli": "17.7.1",
     "@commitlint/config-conventional": "17.7.0",
@@ -42,10 +40,7 @@
   "homepage": "https://github.com/escapace/yeux",
   "license": "MPL-2.0",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/escapace/yeux.git"
-  },
+  "repository": "escapace/yeux",
   "scripts": {
     "build": "pnpm run -r --filter './packages/*' build",
     "lint": "ls-lint && pnpm run -r --filter './packages/*' lint",

@@ -26,7 +26,7 @@
     "vite": ">=4.4.9"
   },
   "private": false,
-  "repository": "https://github.com/escapace/yeux.git",
+  "repository": "escapace/yeux",
   "scripts": {
     "build": "rm -rf lib && tsc --emitDeclarationOnly --declarationDir lib/types",
     "lint": "eslint 'src/**/*.ts?(x)'",

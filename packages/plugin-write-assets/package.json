@@ -35,7 +35,7 @@
   "license": "MPL-2.0",
   "module": "lib/esm/index.mjs",
   "private": false,
-  "repository": "https://github.com/escapace/yeux.git",
+  "repository": "escapace/yeux",
   "scripts": {
     "build": "node ../../scripts/build.mjs",
     "lint": "eslint 'src/**/*.{js,mjs,cjs,ts,mts,cts}'",

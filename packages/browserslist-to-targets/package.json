@@ -46,7 +46,7 @@
     "lightningcss": ">=1.22.0"
   },
   "private": false,
-  "repository": "https://github.com/escapace/yeux.git",
+  "repository": "escapace/yeux",
   "scripts": {
     "build": "node ../../scripts/build.mjs",
     "lint": "eslint 'src/**/*.{js,mjs,cjs,ts,mts,cts}'",
