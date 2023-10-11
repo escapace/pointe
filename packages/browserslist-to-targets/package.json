@@ -8,16 +8,16 @@
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
-    "@types/chai": "4.3.6",
+    "@types/chai": "4.3.7",
     "@types/lodash-es": "4.17.9",
     "@types/mocha": "10.0.2",
-    "@types/node": "20.8.2",
-    "@typescript-eslint/eslint-plugin": "6.7.4",
-    "@typescript-eslint/parser": "6.7.4",
+    "@types/node": "20.8.4",
+    "@typescript-eslint/eslint-plugin": "6.7.5",
+    "@typescript-eslint/parser": "6.7.5",
     "c8": "8.0.1",
     "chai": "4.3.10",
     "esbuild": "0.19.4",
-    "eslint": "8.50.0",
+    "eslint": "8.51.0",
     "eslint-config-escapace": "3.18.2",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-editorconfig": "4.0.3",
@@ -42,7 +42,7 @@
   "license": "MPL-2.0",
   "module": "lib/esm/index.mjs",
   "peerDependencies": {
-    "browserslist": ">=4.21.10",
+    "browserslist": ">=4.22.1",
     "lightningcss": ">=1.22.0"
   },
   "private": false,

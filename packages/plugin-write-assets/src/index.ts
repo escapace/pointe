@@ -25,6 +25,7 @@ export const writeAssets = (options: Options): Plugin => {
       }
     },
     async buildStart() {
+      // TODO: rimraf outDir
       const outDir = path.resolve(config.root, opts.outDir)
 
       if (opts.publicDir) {
