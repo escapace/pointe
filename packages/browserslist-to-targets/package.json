@@ -22,7 +22,7 @@
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-editorconfig": "4.0.3",
     "eslint-plugin-no-null": "1.0.2",
-    "lint-staged": "14.0.1",
+    "lint-staged": "15.0.2",
     "mocha": "10.2.0",
     "prettier": "3.0.3",
     "prettier-config-escapace": "1.0.6",
