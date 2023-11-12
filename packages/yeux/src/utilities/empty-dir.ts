@@ -13,10 +13,6 @@ export const emptyDir = async function emptyDir(
     return await fse.mkdirs(dir)
   }
 
-  const aasd = items.filter((value) => !exclude.includes(value))
-
-  console.log(aasd)
-
   return await Promise.all(
     items
       .filter((value) => !exclude.includes(value))
