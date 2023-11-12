@@ -3,7 +3,6 @@ import { writeAssets } from '@yeuxjs/write-assets'
 import bodyParser from 'body-parser'
 import express from 'express'
 import { fromNodeHeaders, toNodeHeaders } from 'fastify-fetch'
-import fse from 'fs-extra'
 import { readFile } from 'fs/promises'
 import { assign, omit } from 'lodash-es'
 import path from 'path'
@@ -14,9 +13,10 @@ import {
   extensionImage,
   hasExtension
 } from '../utilities/create-asset-file-names'
+import { emptyDir } from '../utilities/empty-dir'
 
 export async function dev(state: State) {
-  await fse.emptyDir(state.clientOutputDirectory)
+  await emptyDir(state.clientOutputDirectory)
 
   const server = express()
   server.disable('x-powered-by')
@@ -40,6 +40,7 @@ export async function dev(state: State) {
         },
         build: {
           ...state.viteConfig.build,
+          emptyOutDir: false,
           minify: false,
           terserOptions: undefined
         },

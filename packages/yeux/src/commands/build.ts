@@ -9,6 +9,7 @@ import type { OutputOptions, PreRenderedAsset } from 'rollup'
 import type { Manifest, SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
 import { createAssetFileNames } from '../utilities/create-asset-file-names'
+import { emptyDir } from '../utilities/empty-dir'
 import { step } from '../utilities/log'
 import { rollupInputOptions } from '../utilities/rollup-input-options'
 
@@ -51,6 +52,7 @@ export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
             ? current.build.terserOptions
             : undefined,
         outDir: path.relative(state.directory, state.clientOutputDirectory),
+        emptyOutDir: false,
         rollupOptions: assign({}, current.build.rollupOptions, {
           input,
           output: mapRollupOutputOptions(
@@ -278,8 +280,8 @@ export const injectManifest = async (state: State) => {
 }
 
 export const build = async (state: State): Promise<void> => {
-  await fse.emptyDir(state.clientOutputDirectory)
-  await fse.emptyDir(state.serverOutputDirectory)
+  await emptyDir(state.clientOutputDirectory)
+  await emptyDir(state.serverOutputDirectory)
 
   step(`Client Build`)
 

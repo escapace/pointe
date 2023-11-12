@@ -23,7 +23,7 @@
   "homepage": "https://github.com/escapace/yeux",
   "license": "MPL-2.0",
   "peerDependencies": {
-    "vite": ">=4.4.11"
+    "vite": ">=4.5.0"
   },
   "private": false,
   "repository": "escapace/yeux",
