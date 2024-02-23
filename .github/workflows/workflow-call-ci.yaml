@@ -72,7 +72,7 @@ jobs:
           pnpm --filter './packages/*' exec pnpm pack --pack-destination ../../lib
       - name: upload
         if: inputs.version != ''
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           retention-days: 3
           name: package
