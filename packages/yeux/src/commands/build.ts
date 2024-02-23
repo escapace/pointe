@@ -81,7 +81,8 @@ export const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
         })
       })
     }),
-    ['plugins', 'assetsInclude']
+    // TODO: dobule check worker
+    ['plugins', 'assetsInclude', 'worker']
   )
 }
 
@@ -98,10 +99,10 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
     noExternal === undefined
       ? () => true
       : noExternal === true
-      ? () => false
-      : createFilter(undefined, noExternal, {
-          resolve: false
-        })
+        ? () => false
+        : createFilter(undefined, noExternal, {
+            resolve: false
+          })
 
   const entryPoints = async (ids: string[]) =>
     flatten(
@@ -120,7 +121,7 @@ export const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
   const dependencies = Object.keys(state.packageJson.dependencies ?? {})
 
   const external = uniq([
-    ...(current.ssr.external ?? []),
+    ...(Array.isArray(current.ssr.external) ? current.ssr.external : []),
     ...dependencies,
     ...(await entryPoints(dependencies)),
     ...builtinModules,

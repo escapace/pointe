@@ -63,7 +63,8 @@ export async function dev(state: State) {
           }
         }
       }),
-      ['assetsInclude']
+      // TODO: dobule check worker
+      ['assetsInclude', 'worker']
     )
   )
 
