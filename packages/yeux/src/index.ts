@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { safeReadPackageJson as readPackageJson } from '@pnpm/read-package-json'
 import assert from 'assert'
 import fse from 'fs-extra'
@@ -17,7 +18,6 @@ import { resolve } from './utilities/resolve'
 import { rollupInputOptions } from './utilities/rollup-input-options'
 
 const importWorkbox = async (directory: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const injectManifest = (
     await import(await resolve('workbox-build', directory))
   ).injectManifest as typeof InjectManifest
