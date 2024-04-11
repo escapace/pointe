@@ -8,7 +8,5 @@ export const rollupInputOptions = (
   (input === undefined
     ? { main: path.join(state.directory, 'index.html') }
     : typeof input === 'string'
-    ? { main: input }
-    : input) as {
-    [entryAlias: string]: string
-  }
+      ? { main: input }
+      : input) as Record<string, string>

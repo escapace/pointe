@@ -106,13 +106,17 @@ const createState = async (
     throw new Error(`package.json: unable to read`)
   }
 
-  const nodeMinVersion = semver.minVersion(NODE_SEMVER)?.version as string
+  const nodeMinVersion = semver.minVersion(NODE_SEMVER)?.version
+
+  assert.ok(typeof nodeMinVersion === 'string')
 
   const nodeVersion = semver.minVersion(
     isString(packageJson.engines?.node)
       ? semver.validRange(packageJson.engines?.node) ?? NODE_SEMVER
       : NODE_SEMVER
-  )?.version as string
+  )?.version
+
+  assert.ok(typeof nodeVersion === 'string')
 
   if (!semver.satisfies(nodeVersion, NODE_SEMVER)) {
     throw new Error(`Minumum target version is ${nodeMinVersion}.`)

@@ -1,9 +1,0 @@
-{
-  "env": { "node": true },
-  "extends": ["escapace"],
-  "parserOptions": {
-    "project": "./tsconfig.json",
-    "warnOnUnsupportedTypeScriptVersion": false
-  },
-  "root": true
-}
