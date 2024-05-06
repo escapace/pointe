@@ -66,8 +66,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       prettier-config-escapace:
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.2.0
+        version: 1.2.0
       semver:
         specifier: 7.6.0
         version: 7.6.0
@@ -124,8 +124,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       prettier-config-escapace:
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.2.0
+        version: 1.2.0
       typescript:
         specifier: 5.4.3
         version: 5.4.3
@@ -161,8 +161,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       prettier-config-escapace:
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.2.0
+        version: 1.2.0
       typescript:
         specifier: 5.4.3
         version: 5.4.3
@@ -192,8 +192,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       prettier-config-escapace:
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.2.0
+        version: 1.2.0
       typescript:
         specifier: 5.4.3
         version: 5.4.3
@@ -219,8 +219,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       prettier-config-escapace:
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.2.0
+        version: 1.2.0
       typescript:
         specifier: 5.4.3
         version: 5.4.3
@@ -241,8 +241,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       prettier-config-escapace:
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.2.0
+        version: 1.2.0
       typescript:
         specifier: 5.4.3
         version: 5.4.3
@@ -353,8 +353,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       prettier-config-escapace:
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.2.0
+        version: 1.2.0
       rollup:
         specifier: 4.13.0
         version: 4.13.0
@@ -3022,8 +3022,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier-config-escapace@1.0.6:
-    resolution: {integrity: sha512-CJXSmX9YhbybZO3aUvSPfFZ/q+hpaZ0SNyTSOXBNmPfj3ibAmdTSS9G/kDLx8lEUsl0PPMSGyJFm6XNxe7mpWw==}
+  prettier-config-escapace@1.2.0:
+    resolution: {integrity: sha512-zcMZ1HQWZwaaSadnxOyR1oOHCvMnMZbop7UOtGISEqXbmY2l4Bdgr4HRU2j+OqSI6gTiX5wsZk/yIF0lvVg5rg==}
 
   prettier@3.2.5:
     resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
@@ -6607,7 +6607,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-config-escapace@1.0.6: {}
+  prettier-config-escapace@1.2.0: {}
 
   prettier@3.2.5: {}
 

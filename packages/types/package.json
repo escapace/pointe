@@ -7,7 +7,7 @@
   "devDependencies": {
     "@types/node": "20.11.30",
     "prettier": "3.2.5",
-    "prettier-config-escapace": "1.0.6",
+    "prettier-config-escapace": "1.2.0",
     "typescript": "5.4.3"
   },
   "files": [
