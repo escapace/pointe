@@ -148,6 +148,9 @@ importers:
       typescript:
         specifier: 5.6.3
         version: 5.6.3
+      vite:
+        specifier: 5.4.10
+        version: 5.4.10(@types/node@22.9.0)(lightningcss@1.24.1)(terser@5.30.4)
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(lightningcss@1.24.1)(supports-color@9.4.0)(terser@5.30.4)
@@ -194,6 +197,9 @@ importers:
       typescript:
         specifier: 5.6.3
         version: 5.6.3
+      vite:
+        specifier: 5.4.10
+        version: 5.4.10(@types/node@22.9.0)(lightningcss@1.24.1)(terser@5.30.4)
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(lightningcss@1.24.1)(supports-color@9.4.0)(terser@5.30.4)

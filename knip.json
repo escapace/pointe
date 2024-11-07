@@ -28,7 +28,8 @@
     "@microsoft/api-extractor",
     "eslint-config-escapace",
     "prettier",
-    "syncpack"
+    "syncpack",
+    "vite"
   ],
   "ignoreExportsUsedInFile": {
     "interface": true,
