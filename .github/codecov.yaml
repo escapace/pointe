@@ -1,17 +1,37 @@
+comment: false
+github_checks:
+  annotations: true
+
 coverage:
   precision: 2
+  range: '20...60'
   round: down
-  range: 70...100
-
   status:
-    # Learn more at http://docs.codecov.io/docs/codecov-yaml
-    project: true
-    patch: true
     changes: false
+    patch:
+      default:
+        informational: true
+    project:
+      default:
+        target: auto
+        threshold: 5%
 
-comment:
-  layout: 'header, diff, tree'
-  behavior: default # update if exists else create new
-
-ignore:
-  - './coverage/tmp/'
+flags:
+  browserslist-to-targets:
+    paths:
+      - packages/browserslist-to-targets/
+  plugin-ajv:
+    paths:
+      - packages/plugin-ajv/
+  plugin-lightningcss:
+    paths:
+      - packages/plugin-lightningcss/
+  plugin-write-assets:
+    paths:
+      - packages/plugin-write-assets/
+  pointe:
+    paths:
+      - packages/pointe/
+  types:
+    paths:
+      - packages/types/

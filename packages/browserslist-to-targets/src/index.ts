@@ -40,10 +40,7 @@ export type LightningcssTargets = keyof LightningcssTargetsOption
 
 // https://github.com/parcel-bundler/lightningcss/blob/master/node/browserslistToTargets.js
 // https://github.com/parcel-bundler/lightningcss/blob/master/node/targets.d.ts
-const BROWSER_MAPPING_LIGHTNINGCSS: Record<
-  BrowserlistTargets,
-  LightningcssTargets | undefined
-> = {
+const BROWSER_MAPPING_LIGHTNINGCSS: Record<BrowserlistTargets, LightningcssTargets | undefined> = {
   and_chr: 'chrome',
   and_ff: 'firefox',
   and_qq: undefined,
@@ -51,21 +48,18 @@ const BROWSER_MAPPING_LIGHTNINGCSS: Record<
   android: 'android',
   chrome: 'chrome',
   edge: 'edge',
-  ie: 'ie',
   firefox: 'firefox',
+  ie: 'ie',
   ios_saf: 'ios_saf',
   kaios: undefined,
   op_mini: undefined,
   opera: 'opera',
   safari: 'safari',
-  samsung: 'samsung'
+  samsung: 'samsung',
 }
 
 // https://esbuild.github.io/api/#target
-const BROWSER_MAPPING_ESBUILD: Record<
-  BrowserlistTargets,
-  EsbuildTargets | undefined
-> = {
+const BROWSER_MAPPING_ESBUILD: Record<BrowserlistTargets, EsbuildTargets | undefined> = {
   and_chr: 'chrome',
   and_ff: 'firefox',
   and_qq: undefined,
@@ -80,7 +74,7 @@ const BROWSER_MAPPING_ESBUILD: Record<
   op_mini: undefined,
   opera: 'opera',
   safari: 'safari',
-  samsung: undefined
+  samsung: undefined,
 }
 
 function parseVersion(version: string): number | undefined {
@@ -97,12 +91,9 @@ function parseVersion(version: string): number | undefined {
 }
 
 function fromBrowserlist<
-  T extends typeof BROWSER_MAPPING_ESBUILD | typeof BROWSER_MAPPING_LIGHTNINGCSS
+  T extends typeof BROWSER_MAPPING_ESBUILD | typeof BROWSER_MAPPING_LIGHTNINGCSS,
 >(browserslist: string[], mapping: T) {
-  type MappingValue = Exclude<
-    T extends Record<keyof T, infer X> ? X : undefined,
-    undefined
-  >
+  type MappingValue = Exclude<T extends Record<keyof T, infer X> ? X : undefined, undefined>
 
   const targets = {} as unknown as Record<MappingValue, number | undefined>
 
@@ -131,68 +122,61 @@ function fromBrowserlist<
   return targets
 }
 
+const semver = (version: number): number[] => [
+  (version >> 16) & 0xff,
+  (version >> 8) & 0xff,
+  version & 0xff,
+]
+
 export const browserslistToTargets = (
-  options: Options
+  options: Options,
 ): {
   browserslist: string[]
-  lightningcss: Record<LightningcssTargets, number | undefined>
   esbuild: string[]
+  lightningcss: Record<LightningcssTargets, number | undefined>
 } => {
   const browserslistOptions = omit(options ?? {}, ['queries'])
 
   const browsers = browserslist(
     options.queries,
-    isEmpty(browserslistOptions) ? undefined : browserslistOptions
+    isEmpty(browserslistOptions) ? undefined : browserslistOptions,
   )
 
-  const lightningcssTargets = fromBrowserlist(
-    browsers,
-    BROWSER_MAPPING_LIGHTNINGCSS
-  )
+  const lightningcssTargets = fromBrowserlist(browsers, BROWSER_MAPPING_LIGHTNINGCSS)
 
   // A function that receives a single 24-bit number, the number represents a
   // semantic version with one semver component (major, minor, patch) per byte.
   // For example, the number 852480 would represent version 13.2.0. The function
   // returns the major minor and patch components of the semantic version.
 
-  const semver = (version: number): number[] => [
-    (version >> 16) & 0xff,
-    (version >> 8) & 0xff,
-    version & 0xff
-  ]
+  const esbuildTargets = map(fromBrowserlist(browsers, BROWSER_MAPPING_ESBUILD), (value, key) => {
+    const version = typeof value === 'number' ? semver(value) : undefined
+    const browser = BROWSER_MAPPING_ESBUILD[key as keyof typeof BROWSER_MAPPING_ESBUILD]
 
-  const esbuildTargets = map(
-    fromBrowserlist(browsers, BROWSER_MAPPING_ESBUILD),
-    (value, key) => {
-      const version = typeof value === 'number' ? semver(value) : undefined
-      const browser =
-        BROWSER_MAPPING_ESBUILD[key as keyof typeof BROWSER_MAPPING_ESBUILD]
-
-      if (version !== undefined && browser !== undefined) {
-        if (version[2] === 0) {
-          version.pop()
-        }
-
-        if (version[1] === 0) {
-          version.pop()
-        }
-
-        if (version[0] === 0) {
-          version.pop()
-        }
-
-        if (version.length !== 0) {
-          return `${browser}${version.join('.')}`
-        }
+    if (version !== undefined && browser !== undefined) {
+      if (version[2] === 0) {
+        version.pop()
       }
 
-      return undefined
+      if (version[1] === 0) {
+        version.pop()
+      }
+
+      if (version[0] === 0) {
+        version.pop()
+      }
+
+      if (version.length !== 0) {
+        return `${browser}${version.join('.')}`
+      }
     }
-  ).filter((value): value is string => value !== undefined)
+
+    return undefined
+  }).filter((value): value is string => value !== undefined)
 
   return {
     browserslist: browsers,
+    esbuild: esbuildTargets,
     lightningcss: lightningcssTargets,
-    esbuild: esbuildTargets
   }
 }

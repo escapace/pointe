@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { ResolvedConfig, type Plugin } from 'vite'
+import type { ResolvedConfig, Plugin } from 'vite'
 
 interface Options {
   include: (filename: string) => boolean
@@ -10,48 +10,48 @@ interface Options {
 
 export const writeAssets = (options: Options): Plugin => {
   let config: ResolvedConfig
-  let opts: Required<Options>
+  let options_: Required<Options>
 
   return {
-    name: '@yeuxjs/write-assets',
     apply: 'serve',
-    enforce: 'post',
-    configResolved(value) {
-      config = value
-      opts = {
-        outDir: config.build.outDir,
-        publicDir: true,
-        ...options
-      }
-    },
     async buildStart() {
       // TODO: rimraf outDir
-      const outDir = path.resolve(config.root, opts.outDir)
+      const outDirectory = path.resolve(config.root, options_.outDir)
 
-      if (opts.publicDir) {
-        await fs.cp(path.resolve(config.root, config.publicDir), outDir, {
-          recursive: true
+      if (options_.publicDir) {
+        await fs.cp(path.resolve(config.root, config.publicDir), outDirectory, {
+          recursive: true,
         })
       }
     },
+    configResolved(value) {
+      config = value
+      options_ = {
+        outDir: config.build.outDir,
+        publicDir: true,
+        ...options,
+      }
+    },
+    enforce: 'post',
+    name: '@pointe/write-assets',
     async transform(_, id) {
       const [filename] = id.split(`?`, 2)
 
-      if (opts.include(filename)) {
+      if (options_.include(filename)) {
         const sourcePath = path.resolve(config.root, filename)
 
         const stat = await fs.stat(sourcePath)
 
         if (stat.isFile()) {
           const destinationPath = path.join(
-            path.resolve(config.root, opts.outDir),
-            path.relative(config.root, sourcePath)
+            path.resolve(config.root, options_.outDir),
+            path.relative(config.root, sourcePath),
           )
 
           await fs.mkdir(path.dirname(destinationPath), { recursive: true })
           await fs.cp(sourcePath, destinationPath)
         }
       }
-    }
+    },
   }
 }

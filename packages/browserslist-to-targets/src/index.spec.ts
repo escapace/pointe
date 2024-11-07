@@ -1,15 +1,15 @@
-import { assert } from 'chai'
 import { build } from 'esbuild'
-import { Targets, transform } from 'lightningcss'
+import { type Targets, transform } from 'lightningcss'
 import { forEach } from 'lodash-es'
+import { assert, describe, it } from 'vitest'
 import { browserslistToTargets } from '.'
 
 export const minify = (value: string, targets: Targets) => {
   const { code } = transform({
-    targets,
-    filename: 'style.css',
     code: Buffer.from(value),
-    minify: true
+    filename: 'style.css',
+    minify: true,
+    targets,
   })
 
   return code.toString()
@@ -17,8 +17,8 @@ export const minify = (value: string, targets: Targets) => {
 
 describe('./src/index.spec.ts', () => {
   it('type checks', () => {
-    const { browserslist, lightningcss, esbuild } = browserslistToTargets({
-      queries: '> 0.00001%'
+    const { browserslist, esbuild, lightningcss } = browserslistToTargets({
+      queries: '> 0.00001%',
     })
 
     assert.isArray(esbuild)
@@ -32,7 +32,7 @@ describe('./src/index.spec.ts', () => {
 
   it('lightningcss', () => {
     const targets = browserslistToTargets({
-      queries: '>= 0.25%'
+      queries: '>= 0.25%',
     })
 
     const string = minify(
@@ -41,7 +41,7 @@ describe('./src/index.spec.ts', () => {
   background: image-set(url(logo.png) 2x, url(logo.png) 1x);
 }
 `,
-      targets.lightningcss
+      targets.lightningcss,
     )
 
     assert.isString(string)
@@ -49,10 +49,11 @@ describe('./src/index.spec.ts', () => {
 
   it('esbuild', async () => {
     const targets = browserslistToTargets({
-      queries: '>= 0.25%'
+      queries: '>= 0.25%',
     })
 
     const result = await build({
+      format: 'esm',
       stdin: {
         contents: `
 export function parseVersion(version: string): number | undefined {
@@ -68,13 +69,12 @@ export function parseVersion(version: string): number | undefined {
   return (major << 16) | (minor << 8) | patch
 }
 `,
+        loader: 'ts',
         resolveDir: './src',
         sourcefile: 'imaginary-file.ts',
-        loader: 'ts'
       },
       target: targets.esbuild,
-      format: 'esm',
-      write: false
+      write: false,
     })
 
     assert.isString(result.outputFiles[0].text)

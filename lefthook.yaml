@@ -1,0 +1,62 @@
+assert_lefthook_installed: true
+colors: false
+source_dir: scripts/
+
+output:
+  - summary
+  - failure
+  - execution
+
+commit-msg:
+  commands:
+    'lint commit message':
+      run: pnpm exec commitlint --edit {1}
+
+pre-commit:
+  skip:
+    - merge
+    - rebase
+
+  commands:
+    knip:
+      glob: '{package.json,**/package.json,pnpm-lock.yaml}'
+      priority: 1
+      run: pnpm exec knip --no-config-hints
+
+    ls-lint:
+      priority: 1
+      run: pnpm run ls-lint
+
+    syncpack:
+      glob: '{package.json,**/package.json,pnpm-lock.yaml}'
+      priority: 2
+      run: pnpm run syncpack
+      stage_fixed: true
+
+    pnpm-install:
+      glob: '{package.json,**/package.json,pnpm-lock.yaml}'
+      priority: 3
+      run: pnpm install
+      stage_fixed: true
+
+    eslint:
+      exclude: '(^|/)(pnpm-lock\.yaml)$'
+      glob: '*.{js,mjs,cjs,ts,mts,cts,yml,yaml,json,toml}'
+      priority: 4
+      run: pnpm exec eslint --no-warn-ignored --fix {staged_files}
+      stage_fixed: true
+
+    prettier:
+      exclude: '(^|/)(pnpm-lock\.yaml)$'
+      glob: '*.{js,mjs,cjs,ts,mts,cts,yml,yaml,json,md}'
+      priority: 5
+      run: bash -c 'for file in packages/*/.prettierignore; do echo "--ignore-path" "$file"; done;' | xargs pnpm exec prettier --ignore-path '.prettierignore' --write {staged_files}
+      stage_fixed: true
+
+    typecheck:
+      priority: 6
+      run: pnpm run typecheck
+
+    test:
+      priority: 7
+      run: pnpm run test
