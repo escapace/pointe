@@ -1,28 +1,56 @@
 {
-  "name": "@yeuxjs/types",
+  "name": "@pointe/types",
   "description": "",
   "version": "0.0.0",
-  "author": "escapace <opensource@escapace.com>",
-  "bugs": "https://github.com/escapace/yeux/issues",
+  "author": {
+    "name": "escapace",
+    "email": "opensource@escapace.com"
+  },
+  "bugs": "https://github.com/escapace/pointe/issues",
   "devDependencies": {
-    "@types/node": "20.11.30",
-    "prettier": "3.2.5",
-    "prettier-config-escapace": "1.2.0",
-    "typescript": "5.4.3"
+    "@ls-lint/ls-lint": "2.2.3",
+    "@vitest/coverage-v8": "2.1.4",
+    "eslint": "9.14.0",
+    "eslint-config-escapace": "5.2.3",
+    "esroll": "0.2.0",
+    "prettier": "3.3.3",
+    "prettier-config-escapace": "1.2.1",
+    "syncpack": "13.0.0",
+    "tsx": "4.19.2",
+    "typescript": "5.6.3",
+    "vitest": "2.1.4"
+  },
+  "engines": {
+    "pnpm": ">=9.11.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "import": "./lib/neutral/index.js"
+    }
   },
   "files": [
+    "lib/neutral",
     "lib/types"
   ],
-  "homepage": "https://github.com/escapace/yeux",
+  "homepage": "https://github.com/escapace/pointe/tree/trunk/packages/types#readme",
   "license": "MPL-2.0",
+  "module": "lib/neutral/index.js",
   "peerDependencies": {
-    "vite": ">=5.2.2"
+    "vite": ">=5.4.10"
   },
   "private": false,
-  "repository": "escapace/yeux",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": "escapace/pointe",
   "scripts": {
-    "build": "rm -rf lib && tsc --emitDeclarationOnly --declarationDir lib/types",
-    "lint": "eslint 'src/**/*.ts?(x)'",
+    "build": "tsx scripts/build.ts",
+    "format": "syncpack format --source package.json && eslint --no-warn-ignored --fix && prettier -uw .",
+    "lint": "ls-lint --config .ls-lint.yaml && eslint",
+    "ls-lint": "ls-lint --config .ls-lint.yaml",
+    "test": "vitest --no-watch --coverage",
     "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,

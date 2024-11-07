@@ -1,1 +1,1 @@
-## @yeuxjs/types
+## @pointe/types

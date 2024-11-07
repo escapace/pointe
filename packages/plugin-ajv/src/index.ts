@@ -3,26 +3,15 @@ import Ajv2019 from 'ajv/dist/2019.js'
 import Ajv2020 from 'ajv/dist/2020.js'
 import { getEsmExportName } from 'ajv/dist/compile/codegen/code.js'
 import type AjvCore from 'ajv/dist/core'
-import type {
-  AnySchema,
-  Options as IAjvOptions,
-  SchemaObject
-} from 'ajv/dist/core'
+import type { AnySchema, Options as IAjvOptions, SchemaObject } from 'ajv/dist/core'
 import standaloneCode from 'ajv/dist/standalone/index.js'
 import { build } from 'esbuild'
-import { stat } from 'fs/promises'
-import {
-  assign,
-  isEmpty,
-  isPlainObject,
-  map,
-  mapKeys,
-  mapValues
-} from 'lodash-es'
+import { assign, isEmpty, isPlainObject, map, mapKeys, mapValues } from 'lodash-es'
 import MagicString from 'magic-string'
-import path from 'path'
+import { stat } from 'node:fs/promises'
+import path from 'node:path'
+import { createContext, SourceTextModule } from 'node:vm'
 import { createUnplugin } from 'unplugin'
-import { SourceTextModule, createContext } from 'vm'
 
 const exists = async (path: string): Promise<boolean> => {
   try {
@@ -36,20 +25,20 @@ const exists = async (path: string): Promise<boolean> => {
 
 interface Schema {
   file: string
-  schemaExportName: string
   schema: SchemaObject
+  schemaExportName: string
 }
 
 interface SchemaExtended extends Schema {
   exportName: string
 }
 
-export type TypeSchema = 'draft7' | 'draft2019' | 'draft2020'
+export type TypeSchema = 'draft2019' | 'draft2020' | 'draft7'
 
 const AjvClass: { [S in TypeSchema]: typeof AjvCore } = {
-  draft7: Ajv7,
   draft2019: Ajv2019,
-  draft2020: Ajv2020
+  draft2020: Ajv2020,
+  draft7: Ajv7,
 }
 
 export interface AjvOptions extends Omit<IAjvOptions, 'schemas'> {
@@ -59,44 +48,23 @@ export interface AjvOptions extends Omit<IAjvOptions, 'schemas'> {
 }
 
 export interface Options {
-  type: TypeSchema
-  exportName?: (value: Schema) => string | undefined
   include: (id: string) => boolean | null | undefined
+  type: TypeSchema
   customOptions?: AjvOptions
+  exportName?: (value: Schema) => string | undefined
 }
 
 export const ajv = createUnplugin((options: Options) => {
-  const ajvFactory = (opts?: AjvOptions) =>
-    isEmpty(opts)
-      ? new AjvClass[options.type]()
-      : new AjvClass[options.type](opts)
+  const ajvFactory = (options_?: AjvOptions) =>
+    isEmpty(options_) ? new AjvClass[options.type]() : new AjvClass[options.type](options_)
 
   const configuration: {
     define: Record<string, string>
   } = { define: {} }
 
   return {
-    name: 'ajv',
     enforce: 'pre',
-    vite: {
-      configResolved(value) {
-        const define = mapValues({ ...value.define }, (value) =>
-          JSON.stringify(value)
-        )
-
-        const env = { ...value.env, SSR: typeof value.build.ssr === 'string' }
-
-        configuration.define = {
-          ...define,
-          ...mapKeys(
-            mapValues(env, (value) => JSON.stringify(value)),
-            (_, value) => `import.meta.env.${value}`
-          ),
-          'import.meta.env': JSON.stringify(env)
-        }
-      }
-    },
-    transformInclude: options.include,
+    name: 'ajv',
     async transform(code, file) {
       const magic = new MagicString(code)
 
@@ -106,6 +74,7 @@ export const ajv = createUnplugin((options: Options) => {
 
       const { outputFiles } = await build({
         bundle: true,
+        define: configuration.define,
         entryPoints: [file],
         format: 'esm',
         minify: false,
@@ -114,18 +83,17 @@ export const ajv = createUnplugin((options: Options) => {
         sourcemap: false,
         target: [`node${process.version.slice(1)}`],
         write: false,
-        define: configuration.define
       })
 
       const source = new TextDecoder('utf-8').decode(outputFiles[0].contents)
 
       const context = createContext({
+        console,
         process: { env: {} },
-        console
       })
 
       const module = new SourceTextModule(source, { context })
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // eslint-disable-next-line typescript/no-unsafe-return
       await module.link(async (spec) => await import(spec))
       await module.evaluate()
 
@@ -134,10 +102,7 @@ export const ajv = createUnplugin((options: Options) => {
       }
 
       const validateSchema = (schema: unknown): schema is SchemaObject => {
-        const value = ajvFactory(options.customOptions).validateSchema(
-          schema as AnySchema,
-          false
-        )
+        const value = ajvFactory(options.customOptions).validateSchema(schema as AnySchema, false)
 
         if (value === true) {
           return true
@@ -168,59 +133,52 @@ export const ajv = createUnplugin((options: Options) => {
         (schema, schemaExportName) => {
           if (validateSchema(schema)) {
             const result: Schema = {
-              schemaExportName,
               file,
-              schema
+              schema,
+              schemaExportName,
             }
 
             const exportName =
-              (options.exportName === undefined
-                ? undefined
-                : options.exportName(result)) ??
+              (options.exportName === undefined ? undefined : options.exportName(result)) ??
               schema.id ??
               schema.$id
 
             if (validateSchemaId(exportName)) {
               return {
                 ...result,
-                exportName
+                exportName,
               }
             } else {
               this.warn(
-                `Export name missing for a schema in ${path.relative(
-                  process.cwd(),
-                  file
-                )}.`
+                `Export name missing for a schema in ${path.relative(process.cwd(), file)}.`,
               )
             }
           }
 
           return undefined
-        }
+        },
       ).filter((value): value is SchemaExtended => value !== undefined)
 
       const schemas = Object.fromEntries(
         map(exports, (value): [string, SchemaObject] => [
           value.schema.$id ?? value.schema.$id ?? value.exportName,
-          value.schema
-        ])
+          value.schema,
+        ]),
       )
 
       const ajv = ajvFactory({
         ...options.customOptions,
-        schemas: assign(
-          {},
-          isPlainObject(options.customOptions?.schemas)
-            ? options.customOptions?.schemas
-            : {},
-          schemas
-        ),
         code: {
           ...options.customOptions?.code,
-          source: true,
           esm: true,
-          optimize: true
-        }
+          optimize: true,
+          source: true,
+        },
+        schemas: assign(
+          {},
+          isPlainObject(options.customOptions?.schemas) ? options.customOptions?.schemas : {},
+          schemas,
+        ),
       })
 
       const moduleCode = standaloneCode(
@@ -228,9 +186,9 @@ export const ajv = createUnplugin((options: Options) => {
         Object.fromEntries(
           map(exports, (value): [string, string] => [
             value.exportName,
-            value.schema.$id ?? value.schema.$id ?? value.exportName
-          ])
-        )
+            value.schema.$id ?? value.schema.$id ?? value.exportName,
+          ]),
+        ),
       )
 
       magic.append('\n')
@@ -238,8 +196,25 @@ export const ajv = createUnplugin((options: Options) => {
 
       return {
         code: magic.toString(),
-        map: magic.generateMap()
+        map: magic.generateMap(),
       }
-    }
+    },
+    transformInclude: options.include,
+    vite: {
+      configResolved(value) {
+        const define = mapValues({ ...value.define }, (value) => JSON.stringify(value))
+
+        const environment = { ...value.env, SSR: typeof value.build.ssr === 'string' }
+
+        configuration.define = {
+          ...define,
+          ...mapKeys(
+            mapValues(environment, (value) => JSON.stringify(value)),
+            (_, value) => `import.meta.env.${value}`,
+          ),
+          'import.meta.env': JSON.stringify(environment),
+        }
+      },
+    },
   }
 })

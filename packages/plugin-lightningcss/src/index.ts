@@ -3,25 +3,23 @@ import { transform } from 'lightningcss'
 import { createUnplugin } from 'unplugin'
 
 export const lightningcss = createUnplugin(
-  (options: Omit<TransformOptions<CustomAtRules>, 'code' | 'filename'>) => {
-    return {
-      name: 'lightningcss',
-      transformInclude(id) {
-        return id.endsWith('.css')
-      },
-      transform(source, id) {
-        const { code, map } = transform({
-          sourceMap: true,
-          ...options,
-          filename: id,
-          code: Buffer.from(source)
-        })
+  (options: Omit<TransformOptions<CustomAtRules>, 'code' | 'filename'>) => ({
+    name: 'lightningcss',
+    transform(source, id) {
+      const { code, map } = transform({
+        sourceMap: true,
+        ...options,
+        code: Buffer.from(source),
+        filename: id,
+      })
 
-        return {
-          code: code.toString(),
-          map: map?.toString()
-        }
+      return {
+        code: code.toString(),
+        map: map?.toString(),
       }
-    }
-  }
+    },
+    transformInclude(id) {
+      return id.endsWith('.css')
+    },
+  }),
 )

@@ -1,0 +1,14 @@
+{
+  "builds": {
+    "neutral": {
+      "define": {
+        "__PLATFORM__": "\"neutral\""
+      },
+      "entryPoints": ["src/index.ts"],
+      "mainFields": ["module", "main"],
+      "outdir": "lib/neutral",
+      "platform": "neutral",
+      "target": ["es2020"]
+    }
+  }
+}
