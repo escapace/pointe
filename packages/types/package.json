@@ -5,10 +5,10 @@
   "author": "escapace <opensource@escapace.com>",
   "bugs": "https://github.com/escapace/yeux/issues",
   "devDependencies": {
-    "@types/node": "20.11.30",
-    "prettier": "3.2.5",
+    "@types/node": "20.17.4",
+    "prettier": "3.3.3",
     "prettier-config-escapace": "1.2.0",
-    "typescript": "5.4.3"
+    "typescript": "5.6.3"
   },
   "files": [
     "lib/types"
