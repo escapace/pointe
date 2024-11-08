@@ -7,7 +7,7 @@
     "email": "opensource@escapace.com"
   },
   "bin": {
-    "pointe": "./lib/esm/cli.mjs"
+    "pointe": "./lib/node/cli.js"
   },
   "bugs": "https://github.com/escapace/pointe/issues",
   "dependencies": {
