@@ -124,15 +124,14 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
         rollupOptions: assign(current.build.rollupOptions, {
           output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
             assign({}, options, {
-              manualChunks: (id: string) =>
-                external.includes(id) ? undefined : 'entry-server.mjs',
+              manualChunks: (id: string) => (external.includes(id) ? undefined : 'entry-server.js'),
               // state.serverRuntime === 'node'
               //   ? options.manualChunks
               //   : undefined,
               assetFileNames:
                 options.assetFileNames ?? ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
-              chunkFileNames: '[name]-[hash].mjs',
-              entryFileNames: '[name].mjs',
+              chunkFileNames: '[name]-[hash].js',
+              entryFileNames: '[name].js',
               format: 'esm',
             }),
           ),

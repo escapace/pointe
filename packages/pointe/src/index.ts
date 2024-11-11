@@ -183,19 +183,19 @@ const createState = async (options: z.input<typeof Options>): Promise<State> => 
 
   const serverManifestPath = path.join(serverOutputDirectory, serverManifestName)
 
-  const serverEntryCompiledPath = path.join(serverOutputDirectory, 'entry-server.mjs')
+  const serverEntryCompiledPath = path.join(serverOutputDirectory, 'entry-server.js')
 
   // const serverCreateInstanceCompiledPath = path.join(
   //   serverOutputDirectory,
-  //   'create-instance.mjs'
+  //   'create-instance.js'
   // )
 
   // const serverAPIEntryCompiledPath = path.join(
   //   serverOutputDirectory,
-  //   'entry-api.mjs'
+  //   'entry-api.js'
   // )
 
-  // const serverIndexPath = path.join(serverOutputDirectory, 'index.mjs')
+  // const serverIndexPath = path.join(serverOutputDirectory, 'index.js')
 
   const umask = 0o022 // 0o027
   const maskFile = 0o666 & ~umask
