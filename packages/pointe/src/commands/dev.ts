@@ -10,6 +10,7 @@ import { isNativeError } from 'node:util/types'
 import type { State } from '../types'
 import { extensionFont, extensionImage, hasExtension } from '../utilities/create-asset-file-names'
 import { emptyDirectory } from '../utilities/empty-directory'
+import { pipeline } from 'node:stream/promises'
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export async function dev(state: State) {
@@ -143,8 +144,14 @@ self.addEventListener('activate', function(e) {
       }
 
       outgoing.statusMessage = response.statusText
+      outgoing.status(response.status)
 
-      outgoing.status(response.status).end(Buffer.from(await response.arrayBuffer()))
+      if (response.body === null) {
+        outgoing.end(Buffer.from(await response.arrayBuffer()))
+      } else {
+        // @ts-expect-error undici/fetch compat
+        await pipeline(response.body, outgoing)
+      }
     } catch (error) {
       if (isNativeError(error)) {
         viteDevelopmentServier.ssrFixStacktrace(error)
