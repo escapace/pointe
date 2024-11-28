@@ -2,11 +2,11 @@ import type { OptionsProduction } from '@pointe/types'
 import { createFilter } from '@rollup/pluginutils'
 import builtinModules from 'builtin-modules'
 import fse from 'fs-extra'
-import { assign, flatten, mapValues, omit, uniq } from 'lodash-es'
+import { assign, flatten, mapValues, uniq } from 'lodash-es'
 import path from 'node:path'
 import { getPackageEntryPoints } from 'pkg-entry-points'
-import type { OutputOptions, PreRenderedAsset } from 'rollup'
-import type { Manifest, SSROptions } from 'vite'
+import type { OutputOptions, PreRenderedAsset, RollupOptions } from 'rollup'
+import type { BuildEnvironmentOptions, Manifest, SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
 import { createAssetFileNames } from '../utilities/create-asset-file-names'
 import { emptyDirectory } from '../utilities/empty-directory'
@@ -34,38 +34,38 @@ const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
     state.serviceWorkerEntryExists ? { 'service-worker': state.serviceWorkerEntryPath } : undefined,
   )
 
-  return omit(
-    assign({}, current, {
-      build: assign({}, current.build, {
-        emptyOutDir: false,
-        manifest: state.clientManifestName,
-        outDir: path.relative(state.directory, state.clientOutputDirectory),
-        rollupOptions: assign({}, current.build.rollupOptions, {
-          input,
-          output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
-            assign<OutputOptions, OutputOptions, OutputOptions>({}, options, {
-              assetFileNames:
-                options.assetFileNames ?? ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
-              chunkFileNames: path.join(current.build.assetsDir, 'js/[name]-[hash].js'),
-              entryFileNames: (value) => {
-                if (value.name === 'service-worker') {
-                  return '[name].js'
-                }
+  return {
+    build: {
+      emptyOutDir: false,
+      manifest: state.clientManifestName,
+      // modulePreload: {
+      //   polyfill: true,
+      // },
+      outDir: path.relative(state.directory, state.clientOutputDirectory),
+      rollupOptions: assign({}, current.build.rollupOptions, {
+        input,
+        output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
+          assign<OutputOptions, OutputOptions, OutputOptions>({}, options, {
+            assetFileNames:
+              options.assetFileNames ?? ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
+            chunkFileNames: path.join(current.build.assetsDir, 'js/[name]-[hash].js'),
+            entryFileNames: (value) => {
+              if (value.name === 'service-worker') {
+                return '[name].js'
+              }
 
-                return path.join(current.build.assetsDir, 'js/[name]-[hash].js')
-              },
-            }),
-          ),
-        }),
-        ssrManifest: state.serverSSRManifestName,
-        terserOptions: current.build.minify === 'terser' ? current.build.terserOptions : undefined,
-      }),
-      mode: state.nodeEnv,
-      root: state.directory,
-    }),
-    // TODO: dobule check worker
-    ['plugins', 'assetsInclude', 'worker'],
-  )
+              return path.join(current.build.assetsDir, 'js/[name]-[hash].js')
+            },
+          } satisfies OutputOptions),
+        ),
+      } satisfies RollupOptions),
+      ssrManifest: state.serverSSRManifestName,
+      terserOptions: current.build.minify === 'terser' ? current.build.terserOptions : undefined,
+    } satisfies BuildEnvironmentOptions,
+    environments: undefined,
+    mode: state.nodeEnv,
+    root: state.directory,
+  } satisfies ViteInlineConfig
 }
 
 const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
@@ -114,39 +114,39 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
     target: state.serverRuntime,
   }
 
-  return omit(
-    assign({}, current, {
-      build: assign({}, current.build, {
-        emptyOutDir: false,
-        manifest: state.serverManifestName,
-        minify: false,
-        outDir: path.relative(state.directory, state.serverOutputDirectory),
-        rollupOptions: assign(current.build.rollupOptions, {
-          output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
-            assign({}, options, {
-              manualChunks: (id: string) => (external.includes(id) ? undefined : 'entry-server.js'),
-              // state.serverRuntime === 'node'
-              //   ? options.manualChunks
-              //   : undefined,
-              assetFileNames:
-                options.assetFileNames ?? ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
-              chunkFileNames: '[name]-[hash].js',
-              entryFileNames: '[name].js',
-              format: 'esm',
-            }),
-          ),
-        }),
-        ssr: path.relative(state.directory, state.serverEntryPath),
-        target: state.serverTarget,
-        terserOptions: undefined,
-      }),
-      mode: state.nodeEnv,
-      publicDir: false as const,
-      root: state.directory,
-      ssr: assign({}, current.ssr, ssr),
-    }),
-    ['plugins', 'assetsInclude'],
-  )
+  return {
+    build: {
+      emptyOutDir: false,
+      manifest: state.serverManifestName,
+      minify: false,
+      // modulePreload: {
+      //   polyfill: true,
+      // },
+      outDir: path.relative(state.directory, state.serverOutputDirectory),
+      rollupOptions: assign(current.build.rollupOptions, {
+        output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
+          assign({}, options, {
+            manualChunks: (id: string) => (external.includes(id) ? undefined : 'entry-server.js'),
+            // state.serverRuntime === 'node'
+            //   ? options.manualChunks
+            //   : undefined,
+            assetFileNames:
+              options.assetFileNames ?? ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
+            chunkFileNames: '[name]-[hash].js',
+            entryFileNames: '[name].js',
+            format: 'esm',
+          } satisfies OutputOptions),
+        ),
+      } satisfies RollupOptions),
+      ssr: path.relative(state.directory, state.serverEntryPath),
+      target: state.serverTarget,
+      terserOptions: undefined,
+    } satisfies BuildEnvironmentOptions,
+    mode: state.nodeEnv,
+    publicDir: false as const,
+    root: state.directory,
+    ssr: assign({}, current.ssr, ssr),
+  } satisfies ViteInlineConfig
 }
 
 const patchOptions = async (state: State) => {
@@ -159,15 +159,8 @@ const patchOptions = async (state: State) => {
     mode: state.nodeEnv as 'production' | 'staging',
   }
 
-  // if (await fse.exists(state.clientManifestPath)) {
   options.manifest.client = (await fse.readJson(state.clientManifestPath)) as Manifest
-  // }
-
-  // if (await fse.exists(state.serverManifestPath)) {
   options.manifest.server = (await fse.readJson(state.serverManifestPath)) as Manifest
-  // }
-
-  // if (await fse.exists(state.serverSSRManifestPath)) {
   options.manifest.ssr = mapValues(
     (await fse.readJSON(state.serverSSRManifestPath)) as Record<string, string[] | undefined>,
     (value) =>
@@ -177,30 +170,20 @@ const patchOptions = async (state: State) => {
             fse.existsSync(path.join(state.clientOutputDirectory, value)),
           ),
   )
-  // }
 
-  // if (await fse.exists(templatePath)) {
   options.template = await fse.readFile(state.clientTemplatePath, 'utf8')
-  // }
-
-  // await fse.remove(state.clientManifestPath)
-  // await fse.remove(state.serverManifestPath)
-  // await fse.remove(state.serverSSRManifestPath)
-  // await fse.remove(state.clientTemplatePath)
-
   state.optionsProduction = options as OptionsProduction
 
   const entry = state.serverEntryCompiledPath
 
-  // if (state.optionsProduction !== undefined) {
   const content = await fse.readFile(entry, 'utf8')
 
   // TODO: codemod
   await fse.writeFile(
     entry,
     content.replaceAll(
-      /YEUX_OPTIONS|\/\* YEUX-REPLACE-START \*\/[\s\S]+\/\* YEUX-REPLACE-END \*\//g,
-      `/* YEUX-REPLACE-START */${JSON.stringify(state.optionsProduction)}/* YEUX-REPLACE-END */`,
+      /POINTE_OPTIONS|\/\* POINTE-REPLACE-START \*\/[\s\S]+\/\* POINTE-REPLACE-END \*\//g,
+      `/* POINTE-REPLACE-START */${JSON.stringify(state.optionsProduction)}/* POINTE-REPLACE-END */`,
     ),
   )
 }
