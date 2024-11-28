@@ -1,10 +1,9 @@
 // eslint-disable-next-line unicorn/prevent-abbreviations
-import type { CreateApp } from '@pointe/types'
 import { writeAssets } from '@pointe/plugin-write-assets'
+import type { CreateApp } from '@pointe/types'
 import bodyParser from 'body-parser'
 import express from 'express'
 import { fromNodeHeaders, toNodeHeaders } from 'fastify-fetch'
-import { assign, omit } from 'lodash-es'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { isNativeError } from 'node:util/types'
@@ -20,50 +19,43 @@ export async function dev(state: State) {
   server.disable('x-powered-by')
 
   const instance = server.listen(state.serverPort, state.serverHost)
-  const current = await state.resolveConfig()
+  // const current = await state.resolveConfig()
 
-  const viteDevelopmentServier = await state.vite.createServer(
-    omit(
-      assign({}, current, {
-        appType: 'custom' as const,
-        build: {
-          ...state.viteConfig.build,
-          emptyOutDir: false,
-          minify: false,
-          terserOptions: undefined,
-        },
-        define: {
-          ...state.viteConfig.define,
-          YEUX_OPTIONS: JSON.stringify({ mode: 'development' }),
-        },
-        logLevel: 'info' as const,
-        mode: 'development',
-        plugins: [
-          writeAssets({
-            include: (file) => hasExtension(file, [...extensionImage, ...extensionFont]),
-            outDir: state.clientOutputDirectory,
-            publicDir: true,
-          }),
-        ],
-        root: state.directory,
-        server: {
-          hmr: {
-            server: instance,
-            // clientPort: state.serverHMRPort,
-            // path: state.serverHMRPrefix,
-            // port: state.serverHMRPort
-          },
-          middlewareMode: true,
-          strictPort: true,
-        },
-        ssr: {
-          target: 'node' as const,
-        },
+  // TODO: make it work with changes to vite.config.ts
+  const viteDevelopmentServier = await state.vite.createServer({
+    appType: 'custom' as const,
+    build: {
+      emptyOutDir: false,
+      minify: false,
+      terserOptions: undefined,
+    },
+    define: {
+      POINTE_OPTIONS: JSON.stringify({ mode: 'development' }),
+    },
+    logLevel: 'info' as const,
+    mode: 'development',
+    plugins: [
+      writeAssets({
+        include: (file) => hasExtension(file, [...extensionImage, ...extensionFont]),
+        outDir: state.clientOutputDirectory,
+        publicDir: true,
       }),
-      // TODO: dobule check worker
-      ['assetsInclude', 'worker'],
-    ),
-  )
+    ],
+    root: state.directory,
+    server: {
+      hmr: {
+        server: instance,
+        // clientPort: state.serverHMRPort,
+        // path: state.serverHMRPrefix,
+        // port: state.serverHMRPort
+      },
+      middlewareMode: true,
+      strictPort: true,
+    },
+    ssr: {
+      target: 'node' as const,
+    },
+  })
 
   server.use(viteDevelopmentServier.middlewares)
 
@@ -106,15 +98,15 @@ self.addEventListener('activate', function(e) {
 
       const {
         createApp: createAppA,
+        createPointeApp: createAppC,
         createServer: createAppB,
-        createYeuxApp: createAppC,
         default: createAppD,
       } = (await viteDevelopmentServier.ssrLoadModule(
         path.relative(state.directory, state.serverEntryPath),
       )) as {
         createApp: CreateApp
+        createPointeApp: CreateApp
         createServer: CreateApp
-        createYeuxApp: CreateApp
         default: CreateApp
       }
 

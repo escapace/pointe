@@ -24,10 +24,10 @@ export interface OptionsProduction {
   template: string
 }
 
-export type OptionsStaging = OptionsProduction
-export type Options = OptionsDevelopment | OptionsProduction
 export type CreateApp = (options: Options) => Promise<App>
+export type Options = OptionsDevelopment | OptionsProduction
+export type OptionsStaging = OptionsProduction
 
 declare global {
-  const YEUX_OPTIONS: Options
+  const POINTE_OPTIONS: Options
 }

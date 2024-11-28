@@ -11,7 +11,7 @@ import type { InlineConfig } from 'vite'
 import type { injectManifest as InjectManifest } from 'workbox-build'
 import { z } from 'zod'
 import { NODE_SEMVER } from './constants'
-import type { State, Vite, ViteConfig, InlineConfig as YeuxInlineConfig } from './types'
+import type { State, Vite, ViteConfig, InlineConfig as PointeInlineConfig } from './types'
 import { resolve } from './utilities/resolve'
 import { rollupInputOptions } from './utilities/rollup-input-options'
 
@@ -124,9 +124,11 @@ const createState = async (options: z.input<typeof Options>): Promise<State> => 
     inlineConfig?: InlineConfig,
   ): ReturnType<typeof vite.resolveConfig> =>
     await vite.resolveConfig(
-      { configFile: configPath, root: directory, ...inlineConfig },
+      { configFile: configPath, root: directory, ...inlineConfig } satisfies InlineConfig,
       'build',
       nodeEnvironment,
+      nodeEnvironment,
+      command === 'preview',
     )
 
   const viteConfig: ViteConfig = await resolveConfig()
@@ -289,10 +291,10 @@ export const pointe = async (options: z.input<typeof Options>) => {
 declare module 'vite' {
   interface UserConfig {
     /**
-     * Options for Yeux
+     * Options for Pointe
      */
-    pointe?: YeuxInlineConfig
+    pointe?: PointeInlineConfig
   }
 }
 
-export type { YeuxInlineConfig }
+export type { PointeInlineConfig }

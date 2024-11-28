@@ -7,7 +7,7 @@ const icon = '↬'
 export const step = (message: string) =>
   console.log(`${EOL}${color.dim(icon)} ${color.bold(color.underline(message))}${EOL}`)
 
-export const info = (message: string) => console.log(`${color.dim(icon)} ${message}`)
+// export const info = (message: string) => console.log(`${color.dim(icon)} ${message}`)
 
 // export const warn = (message: string) =>
 //   console.error(`${color.yellow(icon)} ${message}`)
