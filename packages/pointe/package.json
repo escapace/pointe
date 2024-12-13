@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@ls-lint/ls-lint": "2.2.3",
-    "@pnpm/types": "900.0.0",
+    "@pnpm/types": "1000.0.0",
     "@types/body-parser": "1.19.5",
     "@types/express": "5.0.0",
     "@types/fs-extra": "11.0.4",

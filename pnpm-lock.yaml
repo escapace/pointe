@@ -316,8 +316,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       '@pnpm/types':
-        specifier: 900.0.0
-        version: 900.0.0
+        specifier: 1000.0.0
+        version: 1000.0.0
       '@types/body-parser':
         specifier: 1.19.5
         version: 1.19.5
@@ -1662,6 +1662,10 @@ packages:
 
   '@pnpm/resolver-base@13.0.1':
     resolution: {integrity: sha512-WXWHDtVFAmwyBSOLYkYF1bJujDQyG6JYZGsVsy+/dTPiaT8pzebL7p4fchC/8wpZroH7lxJ1lInSKIg7T904/g==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/types@1000.0.0':
+    resolution: {integrity: sha512-txl+XYCa0tuZ+J55hp3M3g8PGmKbf371GDDWlKjDBEXmVRn484LBLx10lPfQAK8/BsMjr42CfpJpfaJrUipQVg==}
     engines: {node: '>=18.12'}
 
   '@pnpm/types@11.1.0':
@@ -6135,6 +6139,8 @@ snapshots:
   '@pnpm/resolver-base@13.0.1':
     dependencies:
       '@pnpm/types': 11.1.0
+
+  '@pnpm/types@1000.0.0': {}
 
   '@pnpm/types@11.1.0': {}
 
