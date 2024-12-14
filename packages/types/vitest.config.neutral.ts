@@ -16,7 +16,7 @@ export default mergeConfig(
     },
     test: {
       environment: 'node',
-      include: ['{src,tests}/**/+([a-zA-Z0-9-]).{test,spec}.?(c|m)[jt]s?(x)'],
+      include: ['{src,test}/**/+([a-zA-Z0-9-]).{test,spec}.?(c|m)[jt]s?(x)'],
       name: 'neutral',
       sequence: {
         hooks: 'list',
