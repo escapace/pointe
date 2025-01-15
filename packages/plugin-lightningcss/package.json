@@ -8,11 +8,11 @@
   },
   "bugs": "https://github.com/escapace/pointe/issues",
   "dependencies": {
-    "unplugin": "^1.16.0"
+    "unplugin": "^1.16.1"
   },
   "devDependencies": {
     "@ls-lint/ls-lint": "2.2.3",
-    "@types/node": "22.10.1",
+    "@types/node": "22.10.5",
     "@vitest/coverage-v8": "2.1.8",
     "eslint": "9.15.0",
     "eslint-config-escapace": "5.4.0",
