@@ -8,14 +8,14 @@
   },
   "bugs": "https://github.com/escapace/pointe/issues",
   "devDependencies": {
-    "@commitlint/cli": "19.6.0",
+    "@commitlint/cli": "19.6.1",
     "@commitlint/config-conventional": "19.6.0",
     "@escapace/pnpm-pack": "0.5.4",
     "@ls-lint/ls-lint": "2.2.3",
-    "eslint": "9.16.0",
+    "eslint": "9.19.0",
     "eslint-config-escapace": "5.4.1",
-    "knip": "5.39.2",
-    "lefthook": "1.9.0",
+    "knip": "5.43.6",
+    "lefthook": "1.10.10",
     "prettier": "3.4.2",
     "prettier-config-escapace": "1.2.1",
     "syncpack": "13.0.0"

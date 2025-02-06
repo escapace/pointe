@@ -14,15 +14,15 @@
     "@ls-lint/ls-lint": "2.2.3",
     "@types/lodash-es": "4.17.12",
     "@vitest/coverage-v8": "2.1.8",
-    "esbuild": "0.24.0",
-    "eslint": "9.16.0",
+    "esbuild": "0.24.2",
+    "eslint": "9.19.0",
     "eslint-config-escapace": "5.4.1",
     "esroll": "0.3.1",
     "prettier": "3.4.2",
     "prettier-config-escapace": "1.2.1",
     "syncpack": "13.0.0",
     "tsx": "4.19.2",
-    "typescript": "5.7.2",
+    "typescript": "5.7.3",
     "vitest": "2.1.9"
   },
   "engines": {
