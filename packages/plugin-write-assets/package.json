@@ -10,7 +10,7 @@
   "devDependencies": {
     "@ls-lint/ls-lint": "2.2.3",
     "@types/node": "22.10.1",
-    "@vitest/coverage-v8": "2.1.8",
+    "@vitest/coverage-v8": "3.0.4",
     "eslint": "9.15.0",
     "eslint-config-escapace": "5.4.0",
     "esroll": "0.3.0",
