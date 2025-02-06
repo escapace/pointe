@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/escapace/pointe/issues",
   "dependencies": {
-    "unplugin": "^1.16.0"
+    "unplugin": "^2.1.2"
   },
   "devDependencies": {
     "@ls-lint/ls-lint": "2.2.3",

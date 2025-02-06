@@ -11,7 +11,7 @@
     "esbuild": "^0.24.0",
     "lodash-es": "^4.17.21",
     "magic-string": "^0.30.14",
-    "unplugin": "^1.16.0"
+    "unplugin": "^2.1.2"
   },
   "devDependencies": {
     "@ls-lint/ls-lint": "2.2.3",
