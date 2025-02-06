@@ -249,8 +249,8 @@ importers:
   packages/pointe:
     dependencies:
       '@pnpm/read-package-json':
-        specifier: ^900.0.1
-        version: 900.0.1
+        specifier: ^1000.0.3
+        version: 1000.0.3
       '@pointe/plugin-write-assets':
         specifier: workspace:*
         version: link:../plugin-write-assets
@@ -1555,12 +1555,12 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@pnpm/constants@8.0.0':
-    resolution: {integrity: sha512-yQosGUvYPpAjb1jOFcdbwekRjZRVxN6C0hHzfRCZrMKbxGjt/E0g0RcFlEDNVZ95tm4oMMcr7nEPa7H7LX3emw==}
+  '@pnpm/constants@1001.1.0':
+    resolution: {integrity: sha512-xb9dfSGi1qfUKY3r4Zy9JdC9+ZeaDxwfE7HrrGIEsBVY1hvIn6ntbR7A97z3nk44yX7vwbINNf9sizTp0WEtEw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/constants@901.0.0':
-    resolution: {integrity: sha512-TZUfW1giZ9WuLZZVJHkE+uHFm0EWdJQ940DjPvCx2iACJankQ/rL6xODLpwPVB32ivCInHPCHeu73KQ4tO/3Dw==}
+  '@pnpm/constants@8.0.0':
+    resolution: {integrity: sha512-yQosGUvYPpAjb1jOFcdbwekRjZRVxN6C0hHzfRCZrMKbxGjt/E0g0RcFlEDNVZ95tm4oMMcr7nEPa7H7LX3emw==}
     engines: {node: '>=18.12'}
 
   '@pnpm/core-loggers@10.0.4':
@@ -1577,12 +1577,12 @@ packages:
     resolution: {integrity: sha512-d1gd9tXO4QRem2LMzvxVwt/6t7sNSK4DAJ6MQVLfXTqyIAvoAzRkSmFMNlqN1LQnNKIq7a/WXbJXDUObrYfkfA==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/error@6.0.1':
-    resolution: {integrity: sha512-7yjO0RgmWYb4OKgcWC33yD4Z2CxE7Tm7vXX1SmS7GDifDT/bgZZhHeS2xq/+W6y9yhwIrRSA+7AlQL1NM2wIvw==}
+  '@pnpm/error@1000.0.2':
+    resolution: {integrity: sha512-2SfE4FFL73rE1WVIoESbqlj4sLy5nWW4M/RVdHvCRJPjlQHa9MH7m7CVJM204lz6I+eHoB+E7rL3zmpJR5wYnQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/error@900.0.1':
-    resolution: {integrity: sha512-s0QUt1s07OIdvslw231Y2FdQ6FYKgyU55yuQkQI3reGqZ0brtG1TVKea6pjk7b3O3Wxjz4OuyzbPLH6Meoq3YA==}
+  '@pnpm/error@6.0.1':
+    resolution: {integrity: sha512-7yjO0RgmWYb4OKgcWC33yD4Z2CxE7Tm7vXX1SmS7GDifDT/bgZZhHeS2xq/+W6y9yhwIrRSA+7AlQL1NM2wIvw==}
     engines: {node: '>=18.12'}
 
   '@pnpm/fetch@8.0.4':
@@ -1652,8 +1652,8 @@ packages:
   '@pnpm/ramda@0.28.1':
     resolution: {integrity: sha512-zcAG+lvU0fMziNeGXpPyCyCJYp5ZVrPElEE4t14jAmViaihohocZ+dDkcRIyAomox8pQsuZnv1EyHR+pOhmUWw==}
 
-  '@pnpm/read-package-json@900.0.1':
-    resolution: {integrity: sha512-kzg/PMOLfVvM36s6UWwsTEfXljk+WdTyq04el+ZLxC4y6Rffco1ToQ1d1P2yECv6LlsMrWfiB9QXBDFRnPhGUQ==}
+  '@pnpm/read-package-json@1000.0.3':
+    resolution: {integrity: sha512-yEdYl5GJox8RQNovwa+rQcXUJ5xjTQ99gGNqu07uDRAMsAS9cPrMSuYx4IXa9oZ7/gqGnAZuzYTPTtKXbXHBeA==}
     engines: {node: '>=18.12'}
 
   '@pnpm/resolver-base@13.0.1':
@@ -1664,12 +1664,12 @@ packages:
     resolution: {integrity: sha512-txl+XYCa0tuZ+J55hp3M3g8PGmKbf371GDDWlKjDBEXmVRn484LBLx10lPfQAK8/BsMjr42CfpJpfaJrUipQVg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/types@11.1.0':
-    resolution: {integrity: sha512-wnlOhu7hjv9/qsf2cbK0YqpaV9c4LS69Utxd+r8hq/GWhyrOHcM1QOlfQb0Mzci0q4DDgB8VXT4dhBnEBL4c5g==}
+  '@pnpm/types@1000.1.1':
+    resolution: {integrity: sha512-5zrv7B+4mW/6iiYS/BrFZWbMqLHjKmaBrMcw+F8LcuMQ7p4SQX4ANoycpr1VIQpn4+xQ0ckyuadfxBttpzicbg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/types@900.0.0':
-    resolution: {integrity: sha512-GucC9h/EVbU03Kl7M/FqVes1s5RCQaGCW2f41lFA7VqqHWQElR6k1q33iF6f6fXDUSCdzB1IUxSq9ghP2J+8Pw==}
+  '@pnpm/types@11.1.0':
+    resolution: {integrity: sha512-wnlOhu7hjv9/qsf2cbK0YqpaV9c4LS69Utxd+r8hq/GWhyrOHcM1QOlfQb0Mzci0q4DDgB8VXT4dhBnEBL4c5g==}
     engines: {node: '>=18.12'}
 
   '@pnpm/util.lex-comparator@3.0.0':
@@ -6001,9 +6001,9 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@pnpm/constants@8.0.0': {}
+  '@pnpm/constants@1001.1.0': {}
 
-  '@pnpm/constants@901.0.0': {}
+  '@pnpm/constants@8.0.0': {}
 
   '@pnpm/core-loggers@10.0.4(@pnpm/logger@5.2.0)':
     dependencies:
@@ -6020,13 +6020,13 @@ snapshots:
       '@pnpm/types': 11.1.0
       semver: 7.6.3
 
+  '@pnpm/error@1000.0.2':
+    dependencies:
+      '@pnpm/constants': 1001.1.0
+
   '@pnpm/error@6.0.1':
     dependencies:
       '@pnpm/constants': 8.0.0
-
-  '@pnpm/error@900.0.1':
-    dependencies:
-      '@pnpm/constants': 901.0.0
 
   '@pnpm/fetch@8.0.4(@pnpm/logger@5.2.0)':
     dependencies:
@@ -6155,10 +6155,10 @@ snapshots:
 
   '@pnpm/ramda@0.28.1': {}
 
-  '@pnpm/read-package-json@900.0.1':
+  '@pnpm/read-package-json@1000.0.3':
     dependencies:
-      '@pnpm/error': 900.0.1
-      '@pnpm/types': 900.0.0
+      '@pnpm/error': 1000.0.2
+      '@pnpm/types': 1000.1.1
       load-json-file: 6.2.0
       normalize-package-data: 5.0.0
 
@@ -6168,9 +6168,9 @@ snapshots:
 
   '@pnpm/types@1000.0.0': {}
 
-  '@pnpm/types@11.1.0': {}
+  '@pnpm/types@1000.1.1': {}
 
-  '@pnpm/types@900.0.0': {}
+  '@pnpm/types@11.1.0': {}
 
   '@pnpm/util.lex-comparator@3.0.0': {}
 

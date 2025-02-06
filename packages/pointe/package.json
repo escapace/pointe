@@ -11,7 +11,7 @@
   },
   "bugs": "https://github.com/escapace/pointe/issues",
   "dependencies": {
-    "@pnpm/read-package-json": "^900.0.1",
+    "@pnpm/read-package-json": "^1000.0.3",
     "@pointe/plugin-write-assets": "workspace:*",
     "@pointe/types": "workspace:*",
     "@rollup/pluginutils": "^5.1.3",
