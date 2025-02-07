@@ -39,8 +39,9 @@
   "versionGroups": [
     {
       "dependencies": ["$LOCAL"],
-      "isIgnored": true,
-      "packages": ["**"]
+      "dependencyTypes": ["dev", "prod"],
+      "packages": ["**"],
+      "pinVersion": "workspace:*"
     }
   ]
 }

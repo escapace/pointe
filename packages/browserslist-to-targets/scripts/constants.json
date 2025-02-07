@@ -2,6 +2,7 @@
   "builds": {
     "neutral": {
       "define": {
+        "__ENVIRONMENT__": "\"production\"",
         "__PLATFORM__": "\"neutral\""
       },
       "entryPoints": ["src/index.ts"],

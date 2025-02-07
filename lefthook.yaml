@@ -43,7 +43,7 @@ pre-commit:
       exclude: '(^|/)(pnpm-lock\.yaml)$'
       glob: '*.{js,mjs,cjs,ts,mts,cts,yml,yaml,json,toml}'
       priority: 4
-      run: pnpm exec eslint --no-warn-ignored --fix {staged_files}
+      run: pnpm exec eslint --flag unstable_config_lookup_from_file --no-warn-ignored --fix {staged_files}
       stage_fixed: true
 
     prettier:

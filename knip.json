@@ -1,26 +1,26 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": [
+    "{scripts,perf}/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}",
     "**/*.{test,spec}.?(c|m)[jt]s?(x)",
     "**/test/**/*.?(c|m)[jt]s?(x)",
     "eslint.config.mjs",
     "src/**/example*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,vue}",
     "src/cli.ts!",
     "src/index.ts!",
-    "src/types.ts",
-    "{scripts,perf}/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"
+    "src/types.ts"
   ],
   "ignore": [
     "**/*.d.+([a-zA-Z0-9]).ts",
     "**/*.d.ts",
     "lib/**",
-    "packages/pointe/src/utilities/create-asset-file-names.ts",
     "packages/plugin-ajv/src/esbuild.ts",
     "packages/plugin-ajv/src/rollup.ts",
     "packages/plugin-ajv/src/vite.ts",
     "packages/plugin-lightningcss/src/esbuild.ts",
     "packages/plugin-lightningcss/src/rollup.ts",
-    "packages/plugin-lightningcss/src/vite.ts"
+    "packages/plugin-lightningcss/src/vite.ts",
+    "packages/pointe/src/utilities/create-asset-file-names.ts"
   ],
   "ignoreBinaries": ["ncu"],
   "ignoreDependencies": [
