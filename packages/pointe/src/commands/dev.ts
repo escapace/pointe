@@ -4,13 +4,14 @@ import type { CreateApp } from '@pointe/types'
 import bodyParser from 'body-parser'
 import express from 'express'
 import { fromNodeHeaders, toNodeHeaders } from 'fastify-fetch'
+import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { pipeline } from 'node:stream/promises'
 import { isNativeError } from 'node:util/types'
 import type { State } from '../types'
 import { extensionFont, extensionImage, hasExtension } from '../utilities/create-asset-file-names'
 import { emptyDirectory } from '../utilities/empty-directory'
-import { pipeline } from 'node:stream/promises'
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export async function dev(state: State) {
@@ -31,7 +32,10 @@ export async function dev(state: State) {
       terserOptions: undefined,
     },
     define: {
-      POINTE_OPTIONS: JSON.stringify({ mode: 'development' }),
+      POINTE_OPTIONS: JSON.stringify({
+        command: 'dev',
+        mode: 'development',
+      }),
     },
     logLevel: 'info' as const,
     mode: 'development',
@@ -97,21 +101,32 @@ self.addEventListener('activate', function(e) {
 
       template = await viteDevelopmentServier.transformIndexHtml(url, template)
 
-      const {
-        createApp: createAppA,
-        createPointeApp: createAppC,
-        createServer: createAppB,
-        default: createAppD,
-      } = (await viteDevelopmentServier.ssrLoadModule(
+      const loadedModule = await viteDevelopmentServier.ssrLoadModule(
         path.relative(state.directory, state.serverEntryPath),
-      )) as {
+      )
+
+      const {
+        createApp: createAppB,
+        createPointeApp: createAppC,
+        createServer: createAppA,
+        default: createAppD,
+      } = loadedModule as {
         createApp: CreateApp
         createPointeApp: CreateApp
         createServer: CreateApp
         default: CreateApp
       }
 
-      const { fetch } = await (createAppA ?? createAppB ?? createAppC ?? createAppD)({
+      const createApp = [createAppA, createAppB, createAppC, createAppD].find(
+        (value): value is CreateApp => typeof value === 'function',
+      )
+
+      assert(
+        typeof createApp === 'function',
+        `'${state.serverEntryPath}' must export one of createApp, createServer, or default.`,
+      )
+
+      const { fetch } = await createApp({
         command: 'dev',
         mode: state.nodeEnv as 'development',
         moduleGraph: viteDevelopmentServier.moduleGraph,
