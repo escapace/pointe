@@ -52,7 +52,7 @@ export interface State {
   serverSSRManifestPath: string
   // sourceMapSupportVersion: string
   serverRuntime: 'node' | 'webworker'
-  serverTarget: string
+  serverTarget: string[]
   templatePath: string
   tsconfigPath: string
   umask: number

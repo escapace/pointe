@@ -1,5 +1,4 @@
 import type { OptionsProduction } from '@pointe/types'
-import { createFilter } from '@rollup/pluginutils'
 import builtinModules from 'builtin-modules'
 import fse from 'fs-extra'
 import { assign, flatten, mapValues, uniq } from 'lodash-es'
@@ -74,16 +73,18 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
   })
   const assetFileNames = createAssetFileNames(current.build.assetsDir)
 
+  // prevent listed dependencies from being externalized for ssr, which they will get bundled in
+  // build.
   const noExternal = state.serverRuntime === 'node' ? undefined : current.ssr.noExternal
 
-  const isExternal =
-    noExternal === undefined
-      ? () => true
-      : noExternal === true
-        ? () => false
-        : createFilter(undefined, noExternal, {
-            resolve: false,
-          })
+  // const isExternal =
+  //   noExternal === undefined
+  //     ? () => true
+  //     : noExternal === true
+  //       ? () => false
+  //       : createFilter(undefined, noExternal, {
+  //           resolve: false,
+  //         })
 
   const entryPoints = async (ids: string[]) =>
     flatten(
@@ -101,12 +102,12 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
 
   const external = uniq([
     ...(Array.isArray(current.ssr.external) ? current.ssr.external : []),
-    ...dependencies,
-    ...(await entryPoints(dependencies)),
+    ...(state.serverRuntime === 'node' ? dependencies : []),
+    ...(state.serverRuntime === 'node' ? await entryPoints(dependencies) : []),
     ...builtinModules,
     ...builtinModules.map((value) => `node:${value}`),
     'node:assert/strict',
-  ]).filter((value) => isExternal(value))
+  ])
 
   const ssr: SSROptions = {
     external,
@@ -118,7 +119,7 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
     build: {
       emptyOutDir: false,
       manifest: state.serverManifestName,
-      minify: false,
+      // minify: false,
       // modulePreload: {
       //   polyfill: true,
       // },
@@ -126,7 +127,10 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
       rollupOptions: assign(current.build.rollupOptions, {
         output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
           assign({}, options, {
-            manualChunks: (id: string) => (external.includes(id) ? undefined : 'entry-server.js'),
+            manualChunks:
+              state.serverRuntime === 'node'
+                ? (id: string) => (external.includes(id) ? undefined : 'entry-server.js')
+                : undefined,
             // state.serverRuntime === 'node'
             //   ? options.manualChunks
             //   : undefined,

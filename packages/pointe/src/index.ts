@@ -156,9 +156,9 @@ const createState = async (options: z.input<typeof Options>): Promise<State> => 
     throw new Error('build.rollupOptions.input.main is not defined.')
   }
 
-  if (viteConfig.ssr.noExternal === true) {
-    throw new Error('setting ssr.noExternal to true, is not supported by pointe.')
-  }
+  // if (viteConfig.ssr.noExternal === true) {
+  //   throw new Error('setting ssr.noExternal to true, is not supported by pointe.')
+  // }
 
   const templatePath = path.resolve(
     directory,
@@ -205,7 +205,9 @@ const createState = async (options: z.input<typeof Options>): Promise<State> => 
 
   const serverRuntime: 'node' | 'webworker' = command === 'build' ? viteConfig.ssr.target : 'node'
 
-  const serverTarget = serverRuntime === 'node' ? `node${nodeVersion}` : 'esnext'
+  const configTarget = viteConfig?.build?.target === false ? undefined : viteConfig?.build?.target
+  const _serverTarget = serverRuntime === 'node' ? `node${nodeVersion}` : (configTarget ?? 'es2022')
+  const serverTarget = typeof _serverTarget === 'string' ? [_serverTarget] : _serverTarget
 
   const serviceWorkerEntryExists = await fse.pathExists(serviceWorkerEntryPath)
 
