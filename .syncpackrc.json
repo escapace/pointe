@@ -39,7 +39,7 @@
   "versionGroups": [
     {
       "dependencies": ["$LOCAL"],
-      "dependencyTypes": ["dev", "prod"],
+      "dependencyTypes": ["dev", "prod", "peer"],
       "packages": ["**"],
       "pinVersion": "workspace:*"
     }
