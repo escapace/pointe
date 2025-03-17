@@ -8,6 +8,7 @@ export interface App {
 
 export interface OptionsDevelopment {
   command: 'dev'
+  manifest: undefined
   mode: 'development'
   moduleGraph: ModuleGraph
   template: string
@@ -21,6 +22,7 @@ export interface OptionsProduction {
     ssr: Record<string, string[] | undefined>
   }
   mode: 'production' | 'staging'
+  moduleGraph: undefined
   template: string
 }
 

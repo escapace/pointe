@@ -128,6 +128,7 @@ self.addEventListener('activate', function(e) {
 
       const { fetch } = await createApp({
         command: 'dev',
+        manifest: undefined,
         mode: state.nodeEnv as 'development',
         moduleGraph: viteDevelopmentServier.moduleGraph,
         template,
