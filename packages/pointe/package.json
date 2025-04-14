@@ -15,7 +15,7 @@
     "@pointe/plugin-write-assets": "workspace:*",
     "@pointe/types": "workspace:*",
     "arg": "^5.0.2",
-    "body-parser": "^1.20.3",
+    "body-parser": "^2.2.0",
     "builtin-modules": "^5.0.0",
     "chalk": "^5.4.1",
     "chokidar": "^4.0.3",
