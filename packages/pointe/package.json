@@ -20,7 +20,7 @@
     "chalk": "^5.4.1",
     "chokidar": "^4.0.3",
     "execa": "^9.5.2",
-    "express": "^5.1.0",
+    "express": "^4.21.2",
     "fastify-fetch": "^5.1.0",
     "fs-extra": "^11.3.0",
     "lodash-es": "^4.17.21",
