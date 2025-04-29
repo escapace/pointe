@@ -159,6 +159,10 @@ export const ajv = createUnplugin((options: Options) => {
         },
       ).filter((value): value is SchemaExtended => value !== undefined)
 
+      if (exports.length === 0) {
+        throw new Error(`Unable to validate json schama.`)
+      }
+
       const schemas = Object.fromEntries(
         map(exports, (value): [string, SchemaObject] => [
           value.schema.$id ?? value.schema.$id ?? value.exportName,

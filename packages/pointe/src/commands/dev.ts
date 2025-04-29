@@ -91,7 +91,7 @@ self.addEventListener('activate', function(e) {
     })
   }
 
-  server.use('*', async (incoming, outgoing, next) => {
+  server.use(/.*/, async (incoming, outgoing, next) => {
     const url = `${incoming.protocol}://${incoming.get('host') ?? 'localhost'}${
       incoming.originalUrl
     }`

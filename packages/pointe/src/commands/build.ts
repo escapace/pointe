@@ -4,13 +4,20 @@ import fse from 'fs-extra'
 import { assign, flatten, mapValues, uniq } from 'lodash-es'
 import path from 'node:path'
 import { getPackageEntryPoints } from 'pkg-entry-points'
-import type { OutputOptions, PreRenderedAsset, RollupOptions } from 'rollup'
 import type { BuildEnvironmentOptions, Manifest, SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
 import { createAssetFileNames } from '../utilities/create-asset-file-names'
 import { emptyDirectory } from '../utilities/empty-directory'
 import { step } from '../utilities/log'
 import { rollupInputOptions } from '../utilities/rollup-input-options'
+
+type RollupOptions = Exclude<
+  Exclude<ViteInlineConfig['build'], undefined>['rollupOptions'],
+  undefined
+>
+
+// eslint-disable-next-line typescript/no-explicit-any
+type OutputOptions = Exclude<Exclude<RollupOptions['output'], undefined>, any[]>
 
 const mapRollupOutputOptions = (
   options: OutputOptions | OutputOptions[] | undefined,
@@ -45,8 +52,7 @@ const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
         input,
         output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
           assign<OutputOptions, OutputOptions, OutputOptions>({}, options, {
-            assetFileNames:
-              options.assetFileNames ?? ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
+            assetFileNames: options.assetFileNames ?? ((asset) => assetFileNames(asset.name)),
             chunkFileNames: path.join(current.build.assetsDir, 'js/[name]-[hash].js'),
             entryFileNames: (value) => {
               if (value.name === 'service-worker') {
@@ -134,8 +140,7 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
             // state.serverRuntime === 'node'
             //   ? options.manualChunks
             //   : undefined,
-            assetFileNames:
-              options.assetFileNames ?? ((asset: PreRenderedAsset) => assetFileNames(asset.name)),
+            assetFileNames: options.assetFileNames ?? ((asset) => assetFileNames(asset.name)),
             chunkFileNames: '[name]-[hash].js',
             entryFileNames: '[name].js',
             format: 'esm',
