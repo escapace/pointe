@@ -49,7 +49,7 @@ describe('./src/index.spec.ts', () => {
 
   it('esbuild', async () => {
     const targets = browserslistToTargets({
-      queries: '>= 0.25%',
+      queries: 'last 2 versions and not dead and fully supports es6-module',
     })
 
     const result = await build({

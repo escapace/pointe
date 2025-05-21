@@ -1,7 +1,7 @@
 import type { OptionsProduction } from '@pointe/types'
-import builtinModules from 'builtin-modules'
 import fse from 'fs-extra'
 import { assign, flatten, mapValues, uniq } from 'lodash-es'
+import { builtinModules } from 'node:module'
 import path from 'node:path'
 import { getPackageEntryPoints } from 'pkg-entry-points'
 import type { BuildEnvironmentOptions, Manifest, SSROptions } from 'vite'

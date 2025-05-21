@@ -22,21 +22,22 @@ const constants = JSON.parse(
 
 for (const value of Object.values(constants.builds)) {
   await build({
-    absWorkingDir: dirname,
-    external: [
-      ...Object.keys(packageJSON.dependencies ?? []),
-      ...Object.keys(packageJSON.peerDependencies ?? []),
-    ],
     sourcemap: true,
     sourcesContent: false,
     splitting: true,
     treeShaking: true,
     tsconfig: 'tsconfig-build.json',
     ...value,
+    absWorkingDir: dirname,
     define: {
       __VERSION__: JSON.stringify(packageJSON.version),
       ...value.define,
     },
+    external: [
+      ...Object.keys(packageJSON.dependencies ?? []),
+      ...Object.keys(packageJSON.peerDependencies ?? []),
+      ...(value.external ?? []),
+    ],
     rollup: {
       experimentalLogSideEffects: true,
       ...value.rollup,

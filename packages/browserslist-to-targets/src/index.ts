@@ -12,13 +12,18 @@ type BrowserlistTargets =
   | 'and_qq'
   | 'and_uc'
   | 'android'
+  | 'baidu'
+  | 'bb'
   | 'chrome'
   | 'edge'
   | 'firefox'
+  | 'ie_mob'
   | 'ie'
   | 'ios_saf'
   | 'kaios'
+  | 'node'
   | 'op_mini'
+  | 'op_mob'
   | 'opera'
   | 'safari'
   | 'samsung'
@@ -46,13 +51,18 @@ const BROWSER_MAPPING_LIGHTNINGCSS: Record<BrowserlistTargets, LightningcssTarge
   and_qq: undefined,
   and_uc: undefined,
   android: 'android',
+  baidu: undefined,
+  bb: undefined,
   chrome: 'chrome',
   edge: 'edge',
   firefox: 'firefox',
   ie: 'ie',
+  ie_mob: undefined,
   ios_saf: 'ios_saf',
   kaios: undefined,
+  node: undefined,
   op_mini: undefined,
+  op_mob: undefined,
   opera: 'opera',
   safari: 'safari',
   samsung: 'samsung',
@@ -65,13 +75,18 @@ const BROWSER_MAPPING_ESBUILD: Record<BrowserlistTargets, EsbuildTargets | undef
   and_qq: undefined,
   and_uc: undefined,
   android: undefined,
+  baidu: undefined,
+  bb: undefined,
   chrome: 'chrome',
   edge: 'edge',
   firefox: 'firefox',
-  ie: undefined,
+  ie: 'ie',
+  ie_mob: undefined,
   ios_saf: 'ios',
   kaios: undefined,
+  node: undefined,
   op_mini: undefined,
+  op_mob: undefined,
   opera: 'opera',
   safari: 'safari',
   samsung: undefined,

@@ -4,7 +4,7 @@ import sourceMapSupport from 'source-map-support'
 sourceMapSupport.install()
 
 import arg from 'arg'
-import colors from 'chalk'
+import colors from 'picocolors'
 import { includes, pick, flatMap } from 'lodash-es'
 import process from 'node:process'
 import { ZodError } from 'zod'

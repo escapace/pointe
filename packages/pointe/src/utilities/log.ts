@@ -1,4 +1,4 @@
-import color from 'chalk'
+import color from 'picocolors'
 import { EOL } from 'node:os'
 
 const icon = '↬'

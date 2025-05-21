@@ -1,4 +1,4 @@
-import colors from 'chalk'
+import colors from 'picocolors'
 import type { ResultPromise, Options } from 'execa'
 import { EOL } from 'node:os'
 import process from 'node:process'
