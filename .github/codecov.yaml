@@ -17,12 +17,6 @@ coverage:
         threshold: 5%
 
 flags:
-  browserslist-to-targets:
-    paths:
-      - packages/browserslist-to-targets/
-  plugin-ajv:
-    paths:
-      - packages/plugin-ajv/
   plugin-write-assets:
     paths:
       - packages/plugin-write-assets/

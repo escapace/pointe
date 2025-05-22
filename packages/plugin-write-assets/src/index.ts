@@ -8,6 +8,12 @@ interface Options {
   publicDir?: boolean
 }
 
+export const isFile = async (path: string) =>
+  await fs
+    .stat(path)
+    .then((stats) => stats.isFile())
+    .catch(() => false)
+
 export const writeAssets = (options: Options): Plugin => {
   let config: ResolvedConfig
   let options_: Required<Options>
@@ -15,7 +21,6 @@ export const writeAssets = (options: Options): Plugin => {
   return {
     apply: 'serve',
     async buildStart() {
-      // TODO: rimraf outDir
       const outDirectory = path.resolve(config.root, options_.outDir)
 
       if (options_.publicDir) {
@@ -33,16 +38,20 @@ export const writeAssets = (options: Options): Plugin => {
       }
     },
     enforce: 'post',
-    name: '@pointe/write-assets',
+    name: '@pointe/plugin-write-assets',
     async transform(_, id) {
-      const [filename] = id.split(`?`, 2)
+      const url = URL.parse(`file://${id}`)
 
-      if (options_.include(filename)) {
-        const sourcePath = path.resolve(config.root, filename)
+      if (url === null) {
+        return
+      }
 
-        const stat = await fs.stat(sourcePath)
+      const { pathname: filePath } = url
 
-        if (stat.isFile()) {
+      if (options_.include(filePath)) {
+        const sourcePath = path.resolve(config.root, filePath)
+
+        if (await isFile(sourcePath)) {
           const destinationPath = path.join(
             path.resolve(config.root, options_.outDir),
             path.relative(config.root, sourcePath),
