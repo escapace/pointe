@@ -29,7 +29,7 @@
     "source-map-support": "^0.5.21",
     "split2": "^4.2.0",
     "supports-color": "^10.0.0",
-    "zod": "^3.25.17"
+    "zod": "^3.25.20"
   },
   "devDependencies": {
     "@ls-lint/ls-lint": "2.3.0",

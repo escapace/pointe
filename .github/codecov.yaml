@@ -23,9 +23,6 @@ flags:
   plugin-ajv:
     paths:
       - packages/plugin-ajv/
-  plugin-lightningcss:
-    paths:
-      - packages/plugin-lightningcss/
   plugin-write-assets:
     paths:
       - packages/plugin-write-assets/
