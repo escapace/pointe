@@ -1,0 +1,15 @@
+{
+  "builds": {
+    "node": {
+      "define": {
+        "__ENVIRONMENT__": "\"production\"",
+        "__PLATFORM__": "\"node\""
+      },
+      "entryPoints": ["src/index.ts"],
+      "mainFields": ["module", "main"],
+      "outdir": "lib/node",
+      "platform": "node",
+      "target": ["node22.15.0"]
+    }
+  }
+}

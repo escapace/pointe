@@ -17,6 +17,9 @@ coverage:
         threshold: 5%
 
 flags:
+  plugin-index-html:
+    paths:
+      - packages/plugin-index-html/
   plugin-write-assets:
     paths:
       - packages/plugin-write-assets/
