@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import type { ResolvedConfig, Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 
 interface Options {
   include: (filename: string) => boolean
@@ -20,6 +20,9 @@ export const writeAssets = (options: Options): Plugin => {
 
   return {
     apply: 'serve',
+    enforce: 'post',
+    name: '@pointe/plugin-write-assets',
+
     async buildStart() {
       const outDirectory = path.resolve(config.root, options_.outDir)
 
@@ -37,8 +40,6 @@ export const writeAssets = (options: Options): Plugin => {
         ...options,
       }
     },
-    enforce: 'post',
-    name: '@pointe/plugin-write-assets',
     async transform(_, id) {
       const url = URL.parse(`file://${id}`)
 

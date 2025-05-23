@@ -27,9 +27,10 @@ const voidElements = [
 
 export const indexHTML = (options?: { condenseWhitespaceComments?: string[] }) =>
   ({
-    apply: ({ mode }) => mode !== 'development',
     enforce: 'post',
     name: '@pointe/plugin-index-html',
+
+    apply: (_, { command, isPreview }) => (command === 'serve' ? isPreview === true : true),
 
     transformIndexHtml: {
       handler: async (source) => {
