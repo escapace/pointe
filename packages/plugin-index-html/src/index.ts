@@ -1,11 +1,12 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import type { Root } from 'hast'
+import type { Comment, Root } from 'hast'
 import rehypeFormat from 'rehype-format'
 import rehypeParse from 'rehype-parse'
 import rehypeStringify from 'rehype-stringify'
 import { unified } from 'unified'
 import { visitParents } from 'unist-util-visit-parents'
 import type { Plugin } from 'vite'
+import { fromHtml } from 'hast-util-from-html'
 
 const voidElements = [
   'area',
@@ -24,15 +25,22 @@ const voidElements = [
   'wbr',
 ]
 
-export const indexHTML = () =>
+export const indexHTML = (options?: { condenseWhitespaceComments?: string[] }) =>
   ({
-    apply: 'serve',
+    apply: ({ mode }) => mode !== 'development',
     enforce: 'post',
     name: '@pointe/plugin-index-html',
 
     transformIndexHtml: {
       handler: async (source) => {
         let commentContent = false
+        const condenseWhitespaceComments = (
+          options?.condenseWhitespaceComments ?? ['<!--app-html-->']
+        )
+          .flatMap((value) => fromHtml(value, { fragment: true }).children)
+          .filter((value): value is Comment => value.type === 'comment')
+          .map((value) => value.value.trim())
+          .filter((value) => value.length !== 0)
 
         return String(
           await unified()
@@ -92,6 +100,16 @@ export const indexHTML = () =>
                       return
                     }
 
+                    if (
+                      parent.children.some(
+                        (node) =>
+                          node.type === 'comment' &&
+                          condenseWhitespaceComments.includes(node.value.trim()),
+                      )
+                    ) {
+                      return
+                    }
+
                     const index = parent.children.indexOf(node)
 
                     if (index !== -1) {
@@ -129,7 +147,12 @@ export const indexHTML = () =>
                       (value) => value.type === 'comment' || value.type === 'text',
                     ) &&
                     node.children.at(-1)?.type === 'comment' &&
-                    !voidElements.includes(node.tagName)
+                    !voidElements.includes(node.tagName) &&
+                    !node.children.some(
+                      (node) =>
+                        node.type === 'comment' &&
+                        condenseWhitespaceComments.includes(node.value.trim()),
+                    )
                   ) {
                     const level = (parents.length - 1) * 2
 

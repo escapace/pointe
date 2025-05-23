@@ -1,5 +1,5 @@
 {
-  "name": "@pointe/plugin-write-assets",
+  "name": "@pointe/plugin-index-html",
   "description": "",
   "version": "0.0.0",
   "author": {
@@ -8,6 +8,7 @@
   },
   "bugs": "https://github.com/escapace/pointe/issues",
   "dependencies": {
+    "hast-util-from-html": "^2.0.3",
     "rehype-format": "^5.0.1",
     "rehype-parse": "^9.0.1",
     "rehype-stringify": "^10.0.1",
@@ -44,7 +45,7 @@
     "lib/node",
     "lib/types"
   ],
-  "homepage": "https://github.com/escapace/pointe/tree/trunk/packages/plugin-write-assets#readme",
+  "homepage": "https://github.com/escapace/pointe/tree/trunk/packages/plugin-index-html#readme",
   "license": "MPL-2.0",
   "module": "./lib/node/index.js",
   "private": false,

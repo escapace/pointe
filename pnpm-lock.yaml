@@ -44,6 +44,9 @@ importers:
 
   packages/plugin-index-html:
     dependencies:
+      hast-util-from-html:
+        specifier: ^2.0.3
+        version: 2.0.3
       rehype-format:
         specifier: ^5.0.1
         version: 5.0.1
@@ -150,6 +153,9 @@ importers:
       '@pnpm/read-package-json':
         specifier: ^1000.0.9
         version: 1000.0.9
+      '@pointe/plugin-index-html':
+        specifier: workspace:*
+        version: link:../plugin-index-html
       '@pointe/plugin-write-assets':
         specifier: workspace:*
         version: link:../plugin-write-assets

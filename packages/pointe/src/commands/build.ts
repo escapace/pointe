@@ -1,3 +1,4 @@
+import { indexHTML } from '@pointe/plugin-index-html'
 import type { OptionsProduction } from '@pointe/types'
 import fse from 'fs-extra'
 import { assign, flatten, mapValues, uniq } from 'lodash-es'
@@ -69,6 +70,7 @@ const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
     } satisfies BuildEnvironmentOptions,
     environments: undefined,
     mode: state.nodeEnv,
+    plugins: [indexHTML()],
     root: state.directory,
   } satisfies ViteInlineConfig
 }
@@ -152,6 +154,7 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
       terserOptions: undefined,
     } satisfies BuildEnvironmentOptions,
     mode: state.nodeEnv,
+    plugins: [indexHTML()],
     publicDir: false as const,
     root: state.directory,
     ssr: assign({}, current.ssr, ssr),

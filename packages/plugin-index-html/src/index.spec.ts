@@ -35,6 +35,9 @@ const content = `
     <div id="app">
       <!--app-html-->
     </div>
+    <div class="ipsum">
+      <!--comment-->
+    </div>
     <div>
     <!--
         .                                 .o8       oooo
@@ -47,8 +50,8 @@ const content = `
 
     -->
     </div>
-    <div id="app">
-      <!--app-html-->
+    <div class="ipsum">
+      <!--comment-->
     <!--
         .                                 .o8       oooo
       .o8                                "888        888

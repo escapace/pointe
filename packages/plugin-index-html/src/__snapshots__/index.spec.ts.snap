@@ -26,8 +26,9 @@ exports[`index-html >  1`] = `
   </head>
   <body>
     <!--body-tags-open-->
-    <div id="app">
-      <!--app-html-->
+    <div id="app"><!--app-html--></div>
+    <div class="ipsum">
+      <!--comment-->
     </div>
     <div>
       <!--
@@ -41,8 +42,8 @@ exports[`index-html >  1`] = `
       
       -->
     </div>
-    <div id="app">
-      <!--app-html-->
+    <div class="ipsum">
+      <!--comment-->
       <!--
       .                                 .o8       oooo
       .o8                                "888        888
