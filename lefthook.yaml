@@ -46,7 +46,42 @@ pre-commit:
         - packages/*/vendor/**
       glob: '*.{js,mjs,cjs,ts,mts,cts,yml,yaml,json,toml}'
       priority: 4
-      run: pnpm exec eslint --flag unstable_config_lookup_from_file --no-warn-ignored --fix {staged_files}
+      run: |
+        bash -c '
+          shopt -s nullglob
+          set -euo pipefail
+
+          directory="$PWD"
+          files=("$@")
+          config_files=("eslint.config.mjs")
+          configs=()
+
+          for config_file in "${config_files[@]}"; do
+            if [[ -f "${directory}/${config_file}" ]]; then
+              configs+=("${directory}/${config_file}")
+            fi
+
+            configs+=("${directory}"/packages/*/${config_file})
+          done
+
+          for config in "${configs[@]}"; do
+            cd "$(dirname "${config}")"
+            config_dir="$(dirname "${config}")"
+
+            # Filter files that exist in current directory
+            local_files=()
+            for file in "${files[@]}"; do
+              file_dir="$(dirname "${directory}/${file}")"
+              if [[ "${file_dir}" == "${config_dir}" ]]; then
+                local_files+=("${directory}/${file}")
+              fi
+            done
+
+            if [[ ${#local_files[@]} -gt 0 ]]; then
+              pnpm exec eslint --flag v10_config_lookup_from_file --no-warn-ignored --fix "${local_files[@]}"
+            fi
+          done
+        ' -- {staged_files}
       stage_fixed: true
 
     prettier:
@@ -56,7 +91,42 @@ pre-commit:
         - packages/*/vendor/**
       glob: '*.{js,mjs,cjs,ts,mts,cts,yml,yaml,json,md}'
       priority: 5
-      run: bash -c 'for file in packages/*/.prettierignore; do echo "--ignore-path" "$file"; done;' | xargs pnpm exec prettier --ignore-path '.prettierignore' --write {staged_files}
+      run: |
+        bash -c '
+          shopt -s nullglob
+          set -euo pipefail
+
+          directory="$PWD"
+          files=("$@")
+          config_files=(".prettierrc.json")
+          configs=()
+
+          for config_file in "${config_files[@]}"; do
+            if [[ -f "${directory}/${config_file}" ]]; then
+              configs+=("${directory}/${config_file}")
+            fi
+
+            configs+=("${directory}"/packages/*/${config_file})
+          done
+
+          for config in "${configs[@]}"; do
+            cd "$(dirname "${config}")"
+            config_dir="$(dirname "${config}")"
+
+            # Filter files that exist in current directory
+            local_files=()
+            for file in "${files[@]}"; do
+              file_dir="$(dirname "${directory}/${file}")"
+              if [[ "${file_dir}" == "${config_dir}" ]]; then
+                local_files+=("${directory}/${file}")
+              fi
+            done
+
+            if [[ ${#local_files[@]} -gt 0 ]]; then
+              pnpm exec prettier --write "${local_files[@]}"
+            fi
+          done
+        ' -- {staged_files}
       stage_fixed: true
 
     typecheck:

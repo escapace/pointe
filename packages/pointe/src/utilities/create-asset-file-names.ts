@@ -143,31 +143,33 @@ const assetFileNameReturn = (assetsDirectory: string, type?: string) =>
     ? path.join(assetsDirectory, '[name]-[hash].[ext]')
     : path.join(assetsDirectory, type, '[name]-[hash].[ext]')
 
-export const hasExtension = (filename: string, extensions: string[]) =>
-  extensions.some((extension) => filename.toLowerCase().endsWith(`.${extension.toLowerCase()}`))
+export const hasExtension = (names: string[], extensions: string[]) =>
+  extensions.some((extension) =>
+    names.some((name) => name.toLowerCase().endsWith(`.${extension.toLowerCase()}`)),
+  )
 
-export const createAssetFileNames = (assetsDirectory: string) => (filename?: string) => {
-  if (filename === undefined) {
+export const createAssetFileNames = (assetsDirectory: string) => (names?: string[]) => {
+  if (names === undefined || names.length === 0) {
     return assetFileNameReturn(assetsDirectory)
   }
 
-  if (hasExtension(filename, extensionImage)) {
+  if (hasExtension(names, extensionImage)) {
     return assetFileNameReturn(assetsDirectory, 'images')
   }
 
-  if (hasExtension(filename, extensionFont)) {
+  if (hasExtension(names, extensionFont)) {
     return assetFileNameReturn(assetsDirectory, 'fonts')
   }
 
-  if (hasExtension(filename, extensionJavaScript)) {
+  if (hasExtension(names, extensionJavaScript)) {
     return assetFileNameReturn(assetsDirectory, 'scripts')
   }
 
-  if (hasExtension(filename, extensionCSS)) {
+  if (hasExtension(names, extensionCSS)) {
     return assetFileNameReturn(assetsDirectory, 'styles')
   }
 
-  if (hasExtension(filename, extensionMedia)) {
+  if (hasExtension(names, extensionMedia)) {
     return assetFileNameReturn(assetsDirectory, 'media')
   }
 

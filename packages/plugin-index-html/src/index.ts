@@ -25,7 +25,7 @@ const voidElements = [
   'wbr',
 ]
 
-export const indexHTML = (options?: { condenseWhitespaceComments?: string[] }) =>
+export const indexHTML = (options?: { condenseWhitespaceComments?: string[] }): Plugin =>
   ({
     enforce: 'post',
     name: '@pointe/plugin-index-html',
@@ -187,4 +187,4 @@ export const indexHTML = (options?: { condenseWhitespaceComments?: string[] }) =
       },
       order: 'post',
     },
-  }) satisfies Plugin
+  })

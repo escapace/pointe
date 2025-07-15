@@ -41,7 +41,7 @@ export async function dev(state: State) {
     mode: 'development',
     plugins: [
       writeAssets({
-        include: (file) => hasExtension(file, [...extensionImage, ...extensionFont]),
+        include: (file) => hasExtension([file], [...extensionImage, ...extensionFont]),
         outDir: state.clientOutputDirectory,
         publicDir: true,
       }),

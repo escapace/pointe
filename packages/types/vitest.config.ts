@@ -9,5 +9,6 @@ export default defineConfig({
     },
     include: [],
     passWithNoTests: true,
+    projects: ['vitest.config.*.ts'],
   },
 })

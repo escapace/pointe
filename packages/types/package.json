@@ -10,8 +10,8 @@
   "devDependencies": {
     "@ls-lint/ls-lint": "2.3.1",
     "@vitest/coverage-v8": "3.2.4",
-    "eslint": "9.30.1",
-    "eslint-config-escapace": "5.7.1",
+    "eslint": "9.31.0",
+    "eslint-config-escapace": "5.8.0",
     "esroll": "0.4.5",
     "prettier": "3.6.2",
     "prettier-config-escapace": "1.2.1",
@@ -37,7 +37,7 @@
   "license": "MPL-2.0",
   "module": "lib/neutral/index.js",
   "peerDependencies": {
-    "vite": ">=6.3.5"
+    "vite": ">=7.0.4"
   },
   "private": false,
   "publishConfig": {

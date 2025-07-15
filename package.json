@@ -15,7 +15,7 @@
     "eslint": "9.31.0",
     "eslint-config-escapace": "5.8.0",
     "knip": "5.61.3",
-    "lefthook": "1.11.16",
+    "lefthook": "1.12.2",
     "prettier": "3.6.2",
     "prettier-config-escapace": "1.2.1",
     "syncpack": "13.0.4"
@@ -32,7 +32,8 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
-      "lefthook"
+      "lefthook",
+      "oxc-resolver"
     ]
   },
   "private": true,
@@ -53,7 +54,7 @@
     "workspace:ls-lint": "pnpm run --if-present --workspace-concurrency=4 -r --filter '*' ls-lint",
     "workspace:test": "pnpm run --if-present --workspace-concurrency=4 -r --filter '*' test",
     "workspace:typecheck": "pnpm run --if-present --workspace-concurrency=4 -r --filter '*' typecheck",
-    "workspace:update": "pnpm --workspace-concurrency=4 -w -r --filter '*' exec ncu -u --dep prod,dev,peer,optional && pnpm run syncpack"
+    "workspace:update": "pnpm -rw --filter '*' --workspace-concurrency=4 exec ncu -u --peer --dep dev,peer,prod,optional && pnpm run syncpack"
   },
   "sideEffects": false,
   "type": "module"

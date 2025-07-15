@@ -5,7 +5,7 @@ import { assign, flatten, mapValues, uniq } from 'lodash-es'
 import { builtinModules } from 'node:module'
 import path from 'node:path'
 import { getPackageEntryPoints } from 'pkg-entry-points'
-import type { BuildEnvironmentOptions, Manifest, SSROptions } from 'vite'
+import { createFilter, type BuildEnvironmentOptions, type Manifest, type SSROptions } from 'vite'
 import type { State, ViteInlineConfig } from '../types'
 import { createAssetFileNames } from '../utilities/create-asset-file-names'
 import { emptyDirectory } from '../utilities/empty-directory'
@@ -53,14 +53,14 @@ const clientConfig = async (state: State): Promise<ViteInlineConfig> => {
         input,
         output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
           assign<OutputOptions, OutputOptions, OutputOptions>({}, options, {
-            assetFileNames: options.assetFileNames ?? ((asset) => assetFileNames(asset.name)),
-            chunkFileNames: path.join(current.build.assetsDir, 'js/[name]-[hash].js'),
+            assetFileNames: options.assetFileNames ?? ((asset) => assetFileNames(asset.names)),
+            chunkFileNames: path.join(current.build.assetsDir, 'scripts/[name]-[hash].js'),
             entryFileNames: (value) => {
               if (value.name === 'service-worker') {
                 return '[name].js'
               }
 
-              return path.join(current.build.assetsDir, 'js/[name]-[hash].js')
+              return path.join(current.build.assetsDir, 'scripts/[name]-[hash].js')
             },
           } satisfies OutputOptions),
         ),
@@ -83,16 +83,12 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
 
   // prevent listed dependencies from being externalized for ssr, which they will get bundled in
   // build.
-  const noExternal = state.serverRuntime === 'node' ? undefined : current.ssr.noExternal
+  const noExternal = /* state.serverRuntime === 'node' ? undefined : */ current.ssr.noExternal
 
-  // const isExternal =
-  //   noExternal === undefined
-  //     ? () => true
-  //     : noExternal === true
-  //       ? () => false
-  //       : createFilter(undefined, noExternal, {
-  //           resolve: false,
-  //         })
+  const noExternalFilter =
+    noExternal === true || noExternal === undefined
+      ? () => true
+      : createFilter(undefined, noExternal, { resolve: false })
 
   const entryPoints = async (ids: string[]) =>
     flatten(
@@ -106,12 +102,19 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
       ),
     )
 
-  const dependencies = Object.keys(state.packageJson.dependencies ?? {})
+  const packageJsonDependencies = uniq([
+    ...Object.keys(state.packageJson.dependencies ?? {}),
+    ...Object.keys(state.packageJson.peerDependencies ?? {}),
+  ])
+
+  const dependencies = uniq([
+    ...(state.serverRuntime === 'node' ? packageJsonDependencies : []),
+    ...(state.serverRuntime === 'node' ? await entryPoints(packageJsonDependencies) : []),
+  ]).filter((value) => noExternalFilter(value))
 
   const external = uniq([
     ...(Array.isArray(current.ssr.external) ? current.ssr.external : []),
-    ...(state.serverRuntime === 'node' ? dependencies : []),
-    ...(state.serverRuntime === 'node' ? await entryPoints(dependencies) : []),
+    ...dependencies,
     ...builtinModules,
     ...builtinModules.map((value) => `node:${value}`),
     'node:assert/strict',
@@ -135,14 +138,15 @@ const serverConfig = async (state: State): Promise<ViteInlineConfig> => {
       rollupOptions: assign(current.build.rollupOptions, {
         output: mapRollupOutputOptions(current.build.rollupOptions.output, (options) =>
           assign({}, options, {
-            manualChunks:
-              state.serverRuntime === 'node'
-                ? (id: string) => (external.includes(id) ? undefined : 'entry-server.js')
-                : undefined,
+            inlineDynamicImports: true,
+            manualChunks: undefined,
+              // state.serverRuntime === 'node'
+              //   ? (id: string) => (external.includes(id) ? undefined : 'entry-server.js')
+              //   : undefined,
             // state.serverRuntime === 'node'
             //   ? options.manualChunks
             //   : undefined,
-            assetFileNames: options.assetFileNames ?? ((asset) => assetFileNames(asset.name)),
+            assetFileNames: options.assetFileNames ?? ((asset) => assetFileNames(asset.names)),
             chunkFileNames: '[name]-[hash].js',
             entryFileNames: '[name].js',
             format: 'esm',

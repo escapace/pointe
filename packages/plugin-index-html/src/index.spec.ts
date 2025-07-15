@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { indexHTML } from '.'
+import type { IndexHtmlTransformHook } from 'vite'
 
 const content = `
 <!DOCTYPE html>
@@ -72,7 +73,11 @@ const content = `
 
 describe('index-html', () => {
   it('', async () => {
-    const handler = indexHTML().transformIndexHtml.handler
+    const handler = (
+      indexHTML().transformIndexHtml as {
+        handler: IndexHtmlTransformHook
+      }
+    ).handler as (source: string) => Promise<string>
 
     expect(await handler(content)).toMatchSnapshot()
   })
