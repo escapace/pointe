@@ -97,8 +97,9 @@ void (async () => {
         ).join('\n'),
       )
     } else if (error instanceof Error) {
-      console.error(`${colors.red('Error:')} ${error.message}`)
-      process.exit(1)
+      throw error
+      // console.error(`${colors.red('Error:')} ${error.message}`)
+      // process.exit(1)
     } else {
       console.error('Unknown Error')
       process.exit(1)

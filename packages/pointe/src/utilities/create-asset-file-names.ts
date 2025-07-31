@@ -132,11 +132,11 @@ export const extensionImage = [
 
 export const extensionFont = ['eot', 'otf', 'ttc', 'ttf', 'woff', 'woff2']
 
-export const extensionJavaScript = ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json']
+const extensionJavaScript = ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json']
 
-export const extensionCSS = ['css', 'less', 'sass', 'scss', 'styl', 'stylus', 'pcss', 'postcss']
+const extensionCSS = ['css', 'less', 'sass', 'scss', 'styl', 'stylus', 'pcss', 'postcss']
 
-export const extensionMedia = ['mp4', 'webm', 'ogg', 'mp3', 'wav', 'flac', 'aac', 'opus']
+const extensionMedia = ['mp4', 'webm', 'ogg', 'mp3', 'wav', 'flac', 'aac', 'opus']
 
 const assetFileNameReturn = (assetsDirectory: string, type?: string) =>
   type === undefined
