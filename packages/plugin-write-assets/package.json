@@ -19,7 +19,7 @@
     "syncpack": "13.0.4",
     "tsx": "4.20.3",
     "typescript": "5.8.3",
-    "vite": "7.0.6",
+    "vite": "7.0.8",
     "vitest": "3.2.4"
   },
   "engines": {
