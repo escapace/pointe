@@ -15,7 +15,7 @@
     "eslint-config-escapace": "5.9.2",
     "esroll": "0.4.5",
     "prettier": "3.6.2",
-    "prettier-config-escapace": "1.2.1",
+    "prettier-config-escapace": "1.2.2",
     "syncpack": "13.0.4",
     "tsx": "4.20.3",
     "typescript": "5.8.3",
