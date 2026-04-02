@@ -188,7 +188,7 @@ importers:
         version: 1.30.1
       lodash-es:
         specifier: ^4.17.21
-        version: 4.17.23
+        version: 4.18.1
       mlly:
         specifier: ^1.7.4
         version: 1.7.4
@@ -2011,8 +2011,8 @@ packages:
     resolution: {integrity: sha512-nfDwkulwiZYQIGwxdy0RUmowMhKcFVcYXUU7m4QlKYim1rUtg83xm2yjZ40QjDuc291AJjjeSc9b++AWHSgSHw==}
     engines: {node: '>=18'}
 
-  bole@5.0.27:
-    resolution: {integrity: sha512-Hv/NnQSWwgo0yZ1tSi8B8fd2qk9LFRNqtpms7P6dZI67A7HTCy7MP1fwfmZgCbMNURf9+tdHHbbsORp/r0NjJA==}
+  bole@5.0.28:
+    resolution: {integrity: sha512-l+yybyZLV7zTD6EuGxoXsilpER1ctMCpdOqjSYNigJJma39ha85fzCtYccPx06oR1u7uCQLOcUAFFzvfXVBmuQ==}
 
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
@@ -2850,6 +2850,7 @@ packages:
   git-raw-commits@4.0.0:
     resolution: {integrity: sha512-ICsMM1Wk8xSGMowkOmPrzo2Fgmfo4bMHLNX6ytHjajRJUqvHOw/TFapQ+QG75c3X/tTDDhOSRPGC52dDbNM8FQ==}
     engines: {node: '>=16'}
+    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
     hasBin: true
 
   glob-parent@5.1.2:
@@ -3503,8 +3504,8 @@ packages:
     resolution: {integrity: sha512-XT9ewWAC43tiAV7xDAPflMkG0qOPn2QjHqlgX8FOqmWa/rxnyYDulF9T0F7tRy1u+TVTmK/M//6VIOye+2zDXg==}
     engines: {node: '>=20'}
 
-  lodash-es@4.17.23:
-    resolution: {integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==}
+  lodash-es@4.18.1:
+    resolution: {integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==}
 
   lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
@@ -6068,7 +6069,7 @@ snapshots:
 
   '@pnpm/logger@5.2.0':
     dependencies:
-      bole: 5.0.27
+      bole: 5.0.28
       ndjson: 2.0.0
 
   '@pnpm/merge-lockfile-changes@6.0.5':
@@ -6812,7 +6813,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  bole@5.0.27:
+  bole@5.0.28:
     dependencies:
       fast-safe-stringify: 2.1.1
       individual: 3.0.0
@@ -8717,7 +8718,7 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
 
-  lodash-es@4.17.23: {}
+  lodash-es@4.18.1: {}
 
   lodash.camelcase@4.3.0: {}
 
