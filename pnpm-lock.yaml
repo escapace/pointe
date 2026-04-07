@@ -221,8 +221,8 @@ importers:
         specifier: 2.3.1
         version: 2.3.1
       '@pnpm/types':
-        specifier: 1000.7.0
-        version: 1000.7.0
+        specifier: 1001.3.0
+        version: 1001.3.0
       '@types/body-parser':
         specifier: 1.19.6
         version: 1.19.6
@@ -1581,6 +1581,10 @@ packages:
 
   '@pnpm/types@1000.7.0':
     resolution: {integrity: sha512-1s7FvDqmOEIeFGLUj/VO8sF5lGFxeE/1WALrBpfZhDnMXY/x8FbmuygTTE5joWifebcZ8Ww8Kw2CgBoStsIevQ==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/types@1001.3.0':
+    resolution: {integrity: sha512-NLTXheat/u7OEGg5M5vF6Z85zx8uKUZE0+whtX/sbFV2XL48RdnOWGPTKYuVVkv8M+launaLUTgGEXNs/ess2w==}
     engines: {node: '>=18.12'}
 
   '@pnpm/types@11.1.0':
@@ -6365,6 +6369,8 @@ snapshots:
       '@pnpm/types': 11.1.0
 
   '@pnpm/types@1000.7.0': {}
+
+  '@pnpm/types@1001.3.0': {}
 
   '@pnpm/types@11.1.0': {}
 
