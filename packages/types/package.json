@@ -18,7 +18,7 @@
     "syncpack": "13.0.4",
     "tsx": "4.20.3",
     "typescript": "5.8.3",
-    "vitest": "3.2.4"
+    "vitest": "4.1.0"
   },
   "engines": {
     "pnpm": ">=10.10.0"
