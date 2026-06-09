@@ -52,7 +52,7 @@
     "syncpack": "13.0.4",
     "tsx": "4.20.3",
     "typescript": "5.8.3",
-    "vitest": "3.2.4",
+    "vitest": "3.2.6",
     "workbox-build": "7.3.0"
   },
   "engines": {
