@@ -221,8 +221,8 @@ importers:
         specifier: 2.3.1
         version: 2.3.1
       '@pnpm/types':
-        specifier: 1000.7.0
-        version: 1000.7.0
+        specifier: 1101.9.0
+        version: 1101.9.0
       '@types/body-parser':
         specifier: 1.19.6
         version: 1.19.6
@@ -1595,6 +1595,10 @@ packages:
     resolution: {integrity: sha512-wnlOhu7hjv9/qsf2cbK0YqpaV9c4LS69Utxd+r8hq/GWhyrOHcM1QOlfQb0Mzci0q4DDgB8VXT4dhBnEBL4c5g==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/types@1101.9.0':
+    resolution: {integrity: sha512-lB2aSB2h950UX1GX3JW4AZ86xjXD92YJbV92IBSQqHXXZdiemoVKADLA2cDQ4/wKeS7djY8fkITM6X+6iYF62A==}
+    engines: {node: '>=22.13'}
+
   '@pnpm/util.lex-comparator@3.0.0':
     resolution: {integrity: sha512-ead+l3IiuVXwKDf/QJPX6G93cwhXki3yOVEA/VdAO7AhZ5vUuSBxHe6gQKEbB0QacJ4H5VsYxeM1xUgwjjOO/Q==}
     engines: {node: '>=18.12'}
@@ -2881,6 +2885,7 @@ packages:
   eslint@9.32.0:
     resolution: {integrity: sha512-LSehfdpgMeWcTZkWZVIJl+tkZ2nuSkyyB9C27MZqFWXuph7DvaowgcTvKqxvpLW1JZIk8PN7hFY3Rj9LQ7m7lg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -6614,6 +6619,8 @@ snapshots:
   '@pnpm/types@1000.7.0': {}
 
   '@pnpm/types@11.1.0': {}
+
+  '@pnpm/types@1101.9.0': {}
 
   '@pnpm/util.lex-comparator@3.0.0': {}
 
