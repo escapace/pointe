@@ -221,8 +221,8 @@ importers:
         specifier: 2.3.1
         version: 2.3.1
       '@pnpm/types':
-        specifier: 1000.7.0
-        version: 1000.7.0
+        specifier: 1102.1.0
+        version: 1102.1.0
       '@types/body-parser':
         specifier: 1.19.6
         version: 1.19.6
