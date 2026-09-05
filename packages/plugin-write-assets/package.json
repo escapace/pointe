@@ -9,18 +9,18 @@
   "bugs": "https://github.com/escapace/pointe/issues",
   "devDependencies": {
     "@ls-lint/ls-lint": "2.3.1",
-    "@types/node": "24.12.2",
-    "@vitest/coverage-v8": "3.2.4",
-    "eslint": "9.32.0",
+    "@types/node": "24.13.3",
+    "@vitest/coverage-v8": "3.2.7",
+    "eslint": "9.39.5",
     "eslint-config-escapace": "5.9.2",
     "esroll": "0.4.5",
-    "prettier": "3.6.2",
+    "prettier": "3.9.6",
     "prettier-config-escapace": "1.2.2",
     "syncpack": "13.0.4",
-    "tsx": "4.20.3",
+    "tsx": "4.23.12",
     "typescript": "5.8.3",
-    "vite": "7.3.5",
-    "vitest": "3.2.6"
+    "vite": "7.3.6",
+    "vitest": "3.2.7"
   },
   "engines": {
     "node": ">=22.15.0",
