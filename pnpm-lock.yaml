@@ -221,8 +221,8 @@ importers:
         specifier: 2.3.1
         version: 2.3.1
       '@pnpm/types':
-        specifier: 1000.7.0
-        version: 1000.7.0
+        specifier: 1102.1.1
+        version: 1102.1.1
       '@types/body-parser':
         specifier: 1.19.6
         version: 1.19.6
@@ -1577,6 +1577,10 @@ packages:
 
   '@pnpm/types@1102.1.0':
     resolution: {integrity: sha512-h8qqbRIueCujntCBRnVpujeGzwWG+D39Z6pnXHsUp17ZZGLFK/W+ClRLSQZxWFBmgv9z7BNCAi7Arrf/exq5/A==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/types@1102.1.1':
+    resolution: {integrity: sha512-rPauWzpgjzxE/l5OS8gGdeW0K1oF3PPjraGzNg4CA4bbaTDdE2BwmUWJHaADbSF0/EqI0WufrZkSavVTzKFBEg==}
     engines: {node: '>=22.13'}
 
   '@pnpm/util.lex-comparator@4.0.1':
@@ -6455,6 +6459,8 @@ snapshots:
   '@pnpm/types@1000.7.0': {}
 
   '@pnpm/types@1102.1.0': {}
+
+  '@pnpm/types@1102.1.1': {}
 
   '@pnpm/util.lex-comparator@4.0.1': {}
 
